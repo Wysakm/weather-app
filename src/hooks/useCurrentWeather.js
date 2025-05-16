@@ -63,4 +63,4 @@ const useCurrentWeather = (latitude, longitude) => {
     return { weatherData, loading, error };
 };
 
-export default useCurrentWeather;
+export  {useCurrentWeather};
