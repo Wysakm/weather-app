@@ -1,7 +1,7 @@
 import React from 'react';
-import { WeatherDisplay } from './WeatherDisplay';
 import { formatTime } from '../utils/dateUtils';
 import { useWeatherData } from '../hooks/useWeatherData';
+import { weatherCodeToDescription } from '../utils/weather';
 
 export const WeatherForecast = ({ latitude, longitude, t, i18n }) => {
   const { weatherData, loading, weatherIconUrl } = useWeatherData(latitude, longitude);
@@ -10,12 +10,35 @@ export const WeatherForecast = ({ latitude, longitude, t, i18n }) => {
 
   return (
     <div className='container-forecast'>
-      <WeatherDisplay
-        weatherData={weatherData}
-        weatherIconUrl={weatherIconUrl}
-        t={t}
-        i18n={i18n}
-      />
+      <div className='forecast-box-I'>
+        <div className='temp-box'>
+          <div className='icon-weather'>
+            {weatherIconUrl && (
+              <img
+                src={weatherIconUrl}
+                alt={weatherCodeToDescription(weatherData.current.weather_code, i18n.language)}
+                className="weather-icon"
+              />
+            )}
+          </div>
+          <div className='temp'>
+            {weatherData?.current?.temperature_2m}°C
+          </div>
+        </div>
+
+        <div className='weather-condition'>
+          {weatherData?.current && weatherCodeToDescription(weatherData.current.weather_code, i18n.language)}
+        </div>
+
+        <div className='temp-HL'>
+          <div>{t('forecast.High')} : {weatherData?.daily?.temperature_2m_max?.[0]} °C</div>
+          <div>{t('forecast.Low')} : {weatherData?.daily?.temperature_2m_min?.[0]} °C</div>
+        </div>
+        <div className='feels-like'>
+          {t('forecast.FeelsLike')} : {weatherData?.current?.apparent_temperature} °C
+        </div>
+      </div>
+
       <div className='forecast-box-II'>
         <div className='forecast-box-II-left'>
           <div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useCurrentWeather } from './useCurrentWeather';
-import { weatherCodeToIcon } from '../utils/weatherIconMap';
+import { weatherCodeToIcon } from '../utils/weather';
 import { loadWeatherIcon } from '../utils/iconLoader';
 
 export const useWeatherData = (latitude, longitude) => {
