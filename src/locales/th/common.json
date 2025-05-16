@@ -12,13 +12,13 @@
     "Discover": "ค้นหาสถานที่ท่องเที่ยวที่ดีที่สุด",
     "based": "จากข้อมูลสภาพอากาศและคุณภาพอากาศ",
     "location": "พิกัดสถานที่",
-  "searchText": "จังหวัด หรือ สถานที่",
-  "search": "ค้นหา",
-   "Search by Location" : "ค้นหาจากพิกัดสถานที่",
-  "Search by Weather" : "ค้นหาจากสภาพอากาศ",
-  "WeatherCondition" : "สภาพอากาศโดยทั่วไป",
-  "AQL" : "คุณภาพอากาศ"
-},
+    "searchText": "จังหวัด หรือ สถานที่",
+    "search": "ค้นหา",
+    "Search by Location": "ค้นหาจากพิกัดสถานที่",
+    "Search by Weather": "ค้นหาจากสภาพอากาศ",
+    "WeatherCondition": "สภาพอากาศโดยทั่วไป",
+    "AQL": "คุณภาพอากาศ"
+  },
   "weather": {
     "ClearSky": "ท้องฟ้าโปร่ง",
     "MainlyClearSky": "ท้องฟ้าโปร่งใสเป็นส่วนใหญ่",
@@ -27,8 +27,7 @@
     "LightDrizzle": "ฝนตกเบา ๆ",
     "ModerateShowerRain": "ฝนตกปรอย ๆ"
   },
-
-    "aqi": {
+  "aqi": {
     "Good": "ดี ไม่มีผลกระทบ",
     "Moderate": "อากาศปานกลาง",
     "UnhealthyForSensitiveGroups": "เร่ิ่มกระทบกลุ่มเสี่ยง",
@@ -36,9 +35,15 @@
     "VeryUnhealthy": "กระทบต่อสุขภาพรุนแรง",
     "Hazardous": "อันตราย ควรอยู่ในอาคาร"
   },
-    "forecast": {
+  "forecast": {
     "High": "สูงสุด",
     "Low": "ต่ำสุด",
-    "FeelsLike" : " รู้สึกเหมือน"
-    }
+    "FeelsLike": " รู้สึกเหมือน",
+    "Sunrise": "พระอาทิตย์ขึ้น",
+    "Sunset": "พระอาทิตย์ตก",
+    "AM": "น.",
+    "PM": "น.",
+    "RainChance": "โอกาสฝนตก",
+    "UVindex": "รังสืยูวี"
+  }
 }

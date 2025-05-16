@@ -4,15 +4,15 @@ import { provinces } from '../configs/provinces.js';
 import { weatherCodeToIcon, weatherCodeToDescription } from '../utils/weatherIconMap.js'
 import './styles/Weather.css';
 import useCurrentWeather from '../hooks/useCurrentWeather.js';
+import { loadWeatherIcon } from '../utils/iconLoader';
 
 const initialProvince = provinces.find(p => p.names.en === 'Trang');
 
 function Weather() {
   const { t, i18n } = useTranslation();
   const [selectedProvince, setSelectedProvince] = useState(initialProvince);
-
-  // eslint-disable-next-line no-unused-vars
   const [weatherIcon, setWeatherIcon] = useState(null);
+  const [weatherIconUrl, setWeatherIconUrl] = useState(null);
 
   const { weatherData, loading } = useCurrentWeather(selectedProvince.lat, selectedProvince.lon)
 
@@ -23,11 +23,11 @@ function Weather() {
     const getLocation = async () => {
       if (navigator.geolocation) {
         try {
-          // ขอสิทธิ์การเข้าถึง location
+          // ใช้ getCurrentPosition แทน watchPosition เพื่อทดสอบก่อน
           const position = await new Promise((resolve, reject) => {
-            watchId = navigator.geolocation.watchPosition(resolve, reject, {
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
               enableHighAccuracy: true,
-              timeout: 5000,
+              timeout: 10000,
               maximumAge: 0
             });
           });
@@ -35,55 +35,87 @@ function Weather() {
           if (!mounted) return;
 
           const { latitude, longitude } = position.coords;
-          console.log('Updated position:', { latitude, longitude });
+          console.log('Current position:', { latitude, longitude });
 
+          // ลดขนาดพื้นที่การค้นหาจังหวัด
           const province = provinces.find(p => (
-            (p.lat - 0.5 <= latitude && latitude <= p.lat + 0.5) &&
-            (p.lon - 0.5 <= longitude && longitude <= p.lon + 0.5)
+            (p.lat - 0.3 <= latitude && latitude <= p.lat + 0.3) &&
+            (p.lon - 0.3 <= longitude && longitude <= p.lon + 0.3)
           ));
 
           if (province && mounted) {
-            console.log('Found province:', province.names.en);
+            console.log('Found matching province:', {
+              name: province.names.en,
+              provinceLat: province.lat,
+              provinceLon: province.lon,
+              userLat: latitude,
+              userLon: longitude,
+              distance: {
+                lat: Math.abs(province.lat - latitude),
+                lon: Math.abs(province.lon - longitude)
+              }
+            });
             setSelectedProvince(province);
           } else {
+            console.log('No matching province found for coordinates:', {
+              latitude,
+              longitude
+            });
             setSelectedProvince(initialProvince);
           }
 
         } catch (error) {
-          console.error("Location error:", error);
+          console.error("Location error:", error.message);
           if (mounted) {
             setSelectedProvince(initialProvince);
           }
-        }
-      } else {
-        console.log('Geolocation not supported');
-        if (mounted) {
-          setSelectedProvince(initialProvince);
         }
       }
     };
 
     getLocation();
 
+    // ตั้ง interval เพื่ออัพเดทตำแหน่งทุก 5 นาที
+    const intervalId = setInterval(getLocation, 300000);
+
     return () => {
       mounted = false;
+      clearInterval(intervalId);
       if (watchId) {
         navigator.geolocation.clearWatch(watchId);
       }
     };
-  }, []); // Remove initialProvince from dependency array
+  }, []); // ไม่ต้องใส่ dependency
 
   useEffect(() => {
     if (!weatherData?.current) return;
-    const icon = weatherCodeToIcon(
-      weatherData.current.weather_code,
-      weatherData.current.is_day === 1
-    );
-    console.log('Weather Data:', weatherData.current);
-    console.log('Icon:', icon);
-    setWeatherIcon(icon);
+    
+    const loadIcon = async () => {
+      const iconName = weatherCodeToIcon(
+        weatherData.current.weather_code,
+        weatherData.current.is_day === 1
+      );
+      
+      if (iconName) {
+        const iconUrl = await loadWeatherIcon(iconName);
+        setWeatherIcon(iconName);
+        setWeatherIconUrl(iconUrl);
+      }
+    };
+
+    loadIcon();
   }, [weatherData]);
 
+  // เพิ่มฟังก์ชัน formatTime ไว้ใน component
+  const formatTime = (dateTimeString) => {
+    if (!dateTimeString) return '';
+    const time = new Date(dateTimeString);
+    return time.toLocaleTimeString(i18n.language, {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  };
 
   const getFormattedDate = () => {
     const date = new Date();
@@ -139,10 +171,11 @@ function Weather() {
 
               <div className='temp-box'>
                 <div className='icon-weather'>
-                  {weatherIcon && (
+                  {weatherIconUrl && (
                     <img
-                      src={require(`../assets/svg/${weatherIcon}.svg`).default}
+                      src={weatherIconUrl}
                       alt={weatherCodeToDescription(weatherData.current.weather_code, i18n.language)}
+                      className="weather-icon"
                     />
                   )}
                 </div>
@@ -166,7 +199,23 @@ function Weather() {
             </div>
 
             <div className='forecast-box-II'>
-              sss
+              <div className='forecast-box-II-left'>
+                <div>
+                  {t('forecast.Sunrise')} : {formatTime(weatherData?.daily?.sunrise?.[1])} {t('forecast.AM')}
+                </div>
+                <div>
+                  {t('forecast.Sunset')} : {formatTime(weatherData?.daily?.sunset?.[0])} {t('forecast.PM')}
+                </div>
+              </div>
+
+               <div className='forecast-box-II-right'>
+                <div>
+                  {t('forecast.RainChance')} : {weatherData?.daily?.precipitation_probability_max?.[0]}%
+                </div>
+                <div>
+                  {t('forecast.UVindex')} : {weatherData?.daily?.uv_index_max?.[0]} 
+                </div>
+              </div>
             </div>
 
           </div>

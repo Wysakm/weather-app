@@ -43,11 +43,18 @@
   "forecast": {
     "High": "High",
     "Low": "Low",
-    "FeelsLike" : "Feels Like"
+    "FeelsLike" : "Feels Like",
+    "Sunrise" : "Sunrise",
+    "Sunset" : "Sunset",
+    "AM": "AM",
+    "PM": "PM",
+    "RainChance": "Rain Chance",
+    "UVindex": "UV Index"
+    }
   }
     
 
-}
+
 
 
 
