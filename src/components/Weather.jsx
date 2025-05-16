@@ -32,14 +32,12 @@ function Weather() {
         </div>
 
         <div className='container-forecastAql'>
-          {/* <div className='container-forecast'> */}
-            <WeatherForecast
-              latitude={selectedProvince.lat}
-              longitude={selectedProvince.lon}
-              t={t}
-              i18n={i18n}
-            />
-          {/* </div> */}
+          <WeatherForecast
+            latitude={selectedProvince.lat}
+            longitude={selectedProvince.lon}
+            t={t}
+            i18n={i18n}
+          />
           <div className='container-aqi'>
             <div className='aqi-box-I'>aaa</div>
             <div className='aqi-box-II'>sss</div>
