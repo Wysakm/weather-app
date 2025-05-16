@@ -1,0 +1,469 @@
+.search-container-I {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-size: auto;
+  /* background-color: #f0f0f0; fallback */
+  background-position: center;
+  width: 100%;
+  height: 420px;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.searchBox-I {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 90%;
+  width: 80%;
+  position: relative;
+  /* Context for absolutely positioned children */
+}
+
+.searchText-I {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  height: 50px;
+}
+
+.searchText-II {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  height: 50px;
+  margin-bottom: 20px;
+}
+
+.searchText-I h1,
+.searchText-II h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 0;
+  color: var(--color-primary);
+}
+
+.tab-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  background-color: var(--color-primary);
+  border-radius: 50px;
+  width: 50%;
+  height: 45px;
+  margin-top: 20px;
+  position: absolute;
+  /* Absolute position for overlap */
+  top: 38%;
+  /* Adjust this value for vertical positioning */
+  left: 50%;
+  /* Center horizontally */
+  transform: translateX(-50%);
+  /* Center it correctly */
+  z-index: 2;
+  /* Ensure it's above the search-button */
+}
+
+.tab {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 45%;
+  height: 85%;
+  margin: 5px;
+  padding: 0 10px;
+  border-radius: 50px;
+  background-color: transparent;
+  /* พื้นหลังเริ่มต้นเป็นโปร่งใส */
+  color: var(--color-navbar-bg);
+  /* สีตัวอักษรเริ่มต้น */
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.tab.active {
+  background-color: var(--color-navbar-bg);
+  /* พื้นหลังเมื่อแท็บทำงาน */
+  color: var(--color-primary);
+  /* สีตัวอักษรเมื่อแท็บทำงาน */
+}
+
+
+.search-button {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  width: 90%;
+  height: 150px;
+  border: 1px solid var(--color-navbar-bg);
+  background-color: var(--color-navbar-bg);
+  box-shadow: 0 6px 15px var(--color-shadow);
+  border-radius: 8px;
+  margin-top: 35px;
+  position: relative;
+  /* For layering */
+  z-index: 1;
+  /* Behind the tab-container */
+}
+
+.search-button-I {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 80%;
+  height: 80px;
+  /* border: 1px solid black; */
+  margin: 20px 5px 30px 20px;
+  position: relative;
+  transition: background-color 0.3s, color 0.3s;
+  /* ทำให้การเปลี่ยนแปลงนุ่มนวล */
+}
+
+.search-button.location-active {
+  background-color: var(--color-navbar-bg);
+  /* พื้นหลังเมื่อเลือกแท็บ location */
+  color: var(--color-primary);
+  /* สีข้อความเมื่อเลือกแท็บ location */
+}
+
+.search-button.weather-active {
+  background-color: var(--color-navbar-bg);
+  /* พื้นหลังเมื่อเลือกแท็บ weather */
+  color: var(--color-primary);
+  /* สีข้อความเมื่อเลือกแท็บ weather */
+}
+
+.search-button-I p {
+  color: var(--color-primary);
+  font-weight: bold;
+  font-size: 16px;
+  margin: 0;
+  border: 2 px solid var(--color-primary);
+}
+
+
+.search-input {
+  width: 98%;
+  height: 45px;
+  padding: 0 0 0 15px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  background-color: var(--color-navbar-bg);
+  color: var(--color-text);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* เมื่อผู้ใช้คลิกในช่อง input */
+.search-input:focus {
+  box-shadow: 0 0 12px var(--color-shadow);
+}
+
+.search-input::placeholder {
+  /* padding-left: 10px;     ใช้ padding แทน margin ใน placeholder */
+  font-size: 16px;
+  color: var(--color-input);
+  /* เลือกสีเทาให้อ่านง่าย (ตามต้องการ) */
+}
+
+.search-button-II {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  width: 20%;
+  height: 80px;
+  /* border: 1px solid rgb(128, 66, 66); */
+  margin: 20px 20px 30px 5px;
+}
+
+.search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 98%;
+  height: 47px;
+  border-radius: 8px;
+  border: 1px solid var(--color-primary);
+  padding: 0;
+  background-color: var(--color-primary);
+  color: var(--color-navbar-bg);
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.search-button-III {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  width: 80%;
+  height: 80px;
+  /* border: 1px solid black; */
+  margin: 20px 5px 30px 20px;
+  position: relative;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.search-button-III-A {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 50%;
+  height: 80px;
+  /* border: 1px solid black; */
+  border-radius: 16px;
+  margin: 0;
+  position: relative;
+  transition: background-color 0.3s, color 0.3s;
+
+  p {
+    color: var(--color-primary);
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0;
+    border: 2 px solid var(--color-primary);
+  }
+}
+
+.select-WeatherCondition {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 78%;
+  height: 40px;
+  font-size: 16px;
+  border-radius: 8px;
+}
+
+@media screen and (min-width: 768px)  {
+  .select-WeatherCondition {
+    font-size: 12px;
+  }
+  .search-input {
+    font-size: 12px;
+   
+  }
+  .search-input::placeholder {
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .search-container-I {
+    height: 300px;
+  }
+
+  .searchText-I h1 {
+    font-size: 24px;
+  }
+
+  .searchText-II {
+    margin-bottom: 0px;
+  }
+
+  .searchText-II h1 {
+    font-size: 24px;
+  }
+
+  .tab-container {
+    background-color: var(--color-primary);
+    border-radius: 50px;
+    width: 50%;
+    height: 35px;
+    margin-top: 0px;
+    top: 45%;
+  }
+
+  .tab {
+    font-size: 12px;
+  }
+
+  .search-button {
+    height: 120px;
+    margin-top: 30px;
+  }
+
+  .search-button-I p {
+    font-size: 14px;
+  }
+
+  .search-input {
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .search {
+    height: 34px;
+    font-size: 18px;
+  }
+
+  .select-WeatherCondition {
+    height: 32px;
+  }
+}
+
+/* < tablet */
+@media screen and (max-width: 767px) {
+  .search-container-I {
+    background-image: none !important;
+    background-color: #f9f9f6 !important;
+    height: 250px;
+  }
+
+  .searchBox-I {
+    justify-content: flex-start;
+    width: 100%;
+
+  }
+
+  .searchText-I h1 {
+    display: flex;
+    font-size: 20px;
+    width: 100%;
+    color : var(--color-primary)
+  }
+
+
+
+  .searchText-II {
+    display: none;
+  }
+
+  .search-button {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 130px;
+    border-radius: 15px;
+    margin-top: 20px;
+  }
+  .search-button-III{
+    margin: 0 0 5px 0;
+  }
+.search-button-III-A p {
+  font-size: 12px;
+}
+.select-WeatherCondition {
+  font-size: 12px;
+  height: 24px;
+}
+
+  .tab-container {
+    background-color: var(--color-primary);
+    border-radius: 15px;
+    width: 80%;
+    height: 30px;
+    margin-top: 0px;
+    top: 25%;
+  }
+
+  .tab {
+    font-size: 12px;
+  }
+
+  .search-button-I {
+    margin: 20px 0px 5px 0px;
+    width: 100%;
+    margin-bottom: 10px;
+    justify-content: flex-end;
+  }
+
+  .search-button-I p {
+    margin-left: 10px;
+  }
+
+  .search-button-II {
+    margin: 0;
+    width: 30%;
+    margin-bottom: 10px;
+    justify-content: center;
+  }
+
+
+
+  .search-input {
+    width: 90%;
+    height: 28px;
+    font-size: 14px;
+    margin-left: 10px;
+  }
+
+  .search-input::placeholder {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 320px) {
+  .search-container-I { 
+    height: 210px;
+  }
+
+  .searchText-I h1 {
+    display: flex;
+    font-size: 17px;
+    width: 100%;
+  }
+
+  .search-button {
+    height: 110px;
+  }
+  .tab {
+    font-size: 10px;
+  }
+
+
+  .search-button-I p {
+    font-size: 9px;
+  }
+
+  .search-button-II {
+    margin: 0;
+    width: 25%;
+    height: 24px;
+    
+    margin :10px 0 8px 0;
+  }
+  .search {
+    font-size: 12px;
+  }
+
+  .search-input {
+    width: 85%;
+    height: 24px;
+    font-size: 12px;
+  }
+
+  .search-input::placeholder {
+    font-size: 10px;
+  }
+  .search-button-III {
+    width: 95%;
+  }
+
+  .search-button-III-A {
+    height: 60px;
+  }
+
+  .search-button-III-A p {
+  font-size: 10px;
+}
+.select-WeatherCondition {
+  width: 95%;
+}
+
+}
+
+

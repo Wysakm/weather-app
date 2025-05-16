@@ -1,0 +1,180 @@
+.weather-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  border-radius: 16px;
+  background: linear-gradient(to left, #F5FFFE, #E0F7FA);
+  /* ไล่จากขวาไปซ้าย */
+  width: 100%;
+  height: 450px;
+  border: 1px solid var(--color-primary);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 75%;
+  height: 420px;
+  border: 1px solid red;
+}
+
+.container-lacationDate {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+}
+.container-blank {
+  width: 25%;
+  height: 100%;
+  border: 1px solid blue;
+}
+
+.container-location {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: 100%; 
+  border: 1px solid red;
+
+}
+
+.container-date {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25%;
+  height: 100%;
+}
+.container-forecastAql {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 290px;
+  border: 1px solid green;
+}
+
+.container-forecast { 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 49%;
+  height: 100%; 
+  background-color: var(--color-navbar-bg);
+  border-radius: 16px;
+}
+
+.forecast-box-I { 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 75%;
+  border-radius: 16px 16px 0 0 ;
+  border: 1px solid var(--color-border);
+}
+.forecast-box-II { 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 25%;
+  border-radius: 0 0 16px 16px  ;
+  border: 1px solid var(--color-border);
+}
+
+.temp-box { 
+  display: flex;
+  width: 70%;
+  height: 64%;
+  border: 1px solid red;
+}
+
+.icon-weather {
+  width: 30%;
+  height: 100%;
+  border: 1px solid green;
+}
+.temp {
+  width: 70%;
+  height: 100%;
+  border: 1px solid blue;
+}
+
+.weather-condition {
+  width: 70%;
+  height: 10%;
+  border: 1px solid blue;
+}
+ .temp-HL {
+  width: 70%;
+  height: 10%;
+  border: 1px solid red;
+}
+
+.feels-like { 
+  width: 70%;
+  height: 10%;
+  border: 1px solid blue;
+}
+
+
+
+
+
+.aqi-box-I { 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 65%;
+  border-radius: 16px 16px 0 0 ;
+  border: 1px solid var(--color-border);
+}
+.aqi-box-II { 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 35%;
+  border-radius: 0 0 16px 16px  ;
+  border: 1px solid var(--color-border);
+}
+
+
+
+
+
+
+
+
+.container-aqi { 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 49%;
+  height: 100%;
+    background-color: var(--color-navbar-bg);
+    border-radius: 16px;
+
+}
+
+
+.container-weeklyForecast {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 110px;
+  border: 1px solid red;
+}
+
