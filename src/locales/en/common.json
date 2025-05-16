@@ -38,6 +38,12 @@
     "Unhealthy": "Unhealthy",
     "VeryUnhealthy": "Very Unhealthy",
     "Hazardous": "Hazardous"
+  },
+
+  "forecast": {
+    "High": "High",
+    "Low": "Low",
+    "FeelsLike" : "Feels Like"
   }
     
 

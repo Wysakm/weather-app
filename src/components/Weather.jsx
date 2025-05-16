@@ -1,54 +1,88 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { provinces } from '../configs/provinces.js';
-import { weatherCodeToIcon } from '../utils/weatherIconMap.js'
+import { weatherCodeToIcon, weatherCodeToDescription } from '../utils/weatherIconMap.js'
 import './styles/Weather.css';
 import useCurrentWeather from '../hooks/useCurrentWeather.js';
 
-const initialProvince = provinces.find(p => p.names.en === 'Bangkok');
+const initialProvince = provinces.find(p => p.names.en === 'Trang');
 
 function Weather() {
   const { t, i18n } = useTranslation();
   const [selectedProvince, setSelectedProvince] = useState(initialProvince);
-  
+
   // eslint-disable-next-line no-unused-vars
   const [weatherIcon, setWeatherIcon] = useState(null);
 
   const { weatherData, loading } = useCurrentWeather(selectedProvince.lat, selectedProvince.lon)
 
   useEffect(() => {
-    const getLocation = () => {
+    let mounted = true;
+    let watchId = null;
+
+    const getLocation = async () => {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
+        try {
+          // ขอสิทธิ์การเข้าถึง location
+          const position = await new Promise((resolve, reject) => {
+            watchId = navigator.geolocation.watchPosition(resolve, reject, {
+              enableHighAccuracy: true,
+              timeout: 5000,
+              maximumAge: 0
+            });
+          });
 
-            const province = provinces.find(p => (
-              (p.lat - 0.5 <= latitude && latitude <= p.lat + 0.5) &&
-              (p.lon - 0.5 <= longitude && longitude <= p.lon + 0.5)
-            ));
+          if (!mounted) return;
 
-            setSelectedProvince(province || initialProvince);
-          },
-          (error) => {
-            console.error("Error getting location:", error);
+          const { latitude, longitude } = position.coords;
+          console.log('Updated position:', { latitude, longitude });
+
+          const province = provinces.find(p => (
+            (p.lat - 0.5 <= latitude && latitude <= p.lat + 0.5) &&
+            (p.lon - 0.5 <= longitude && longitude <= p.lon + 0.5)
+          ));
+
+          if (province && mounted) {
+            console.log('Found province:', province.names.en);
+            setSelectedProvince(province);
+          } else {
             setSelectedProvince(initialProvince);
           }
-        );
+
+        } catch (error) {
+          console.error("Location error:", error);
+          if (mounted) {
+            setSelectedProvince(initialProvince);
+          }
+        }
       } else {
-        setSelectedProvince(initialProvince);
+        console.log('Geolocation not supported');
+        if (mounted) {
+          setSelectedProvince(initialProvince);
+        }
       }
     };
 
     getLocation();
-  }, []);
+
+    return () => {
+      mounted = false;
+      if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+    };
+  }, []); // Remove initialProvince from dependency array
 
   useEffect(() => {
-    if (!weatherData) return
-    const icon = weatherCodeToIcon(weatherData.current.weather_code);
-    console.log(' icon:', icon)
-    setWeatherIcon(icon)
-  }, [weatherData])
+    if (!weatherData?.current) return;
+    const icon = weatherCodeToIcon(
+      weatherData.current.weather_code,
+      weatherData.current.is_day === 1
+    );
+    console.log('Weather Data:', weatherData.current);
+    console.log('Icon:', icon);
+    setWeatherIcon(icon);
+  }, [weatherData]);
 
 
   const getFormattedDate = () => {
@@ -105,17 +139,30 @@ function Weather() {
 
               <div className='temp-box'>
                 <div className='icon-weather'>
-                  <img src={require('../assets/svg/wi-cloud.svg').default} alt='mySvgImage' />
+                  {weatherIcon && (
+                    <img
+                      src={require(`../assets/svg/${weatherIcon}.svg`).default}
+                      alt={weatherCodeToDescription(weatherData.current.weather_code, i18n.language)}
+                    />
+                  )}
                 </div>
                 <div className='temp'>
-
+                  {weatherData?.current?.temperature_2m}°C
                 </div>
               </div>
 
 
-              <div className='weather-condition'> </div>
-              <div className='temp-HL'></div>
-              <div className='feels-like'></div>
+              <div className='weather-condition'>
+                {weatherData?.current && weatherCodeToDescription(weatherData.current.weather_code, i18n.language)}
+              </div>
+
+              <div className='temp-HL'>
+                <div>{t('forecast.High')} : {weatherData?.daily?.temperature_2m_max?.[0]} °C</div>
+                <div>{t('forecast.Low')} : {weatherData?.daily?.temperature_2m_min?.[0]} °C</div>
+                
+              </div>
+              <div className='feels-like'>
+                {t('forecast.FeelsLike')} : {weatherData?.current?.apparent_temperature} °C</div>
             </div>
 
             <div className='forecast-box-II'>
