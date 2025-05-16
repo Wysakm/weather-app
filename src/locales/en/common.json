@@ -1,0 +1,47 @@
+
+{
+  "nav": {
+    "home": "Home",
+    "recommend": "Recommend",
+    "campStay": "Camp&Stay",
+    "contact": "Contact"
+  },
+  
+  "auth": {
+    "login": "Log In/Sign Up"
+  },
+
+  "search": {
+  "Discover" : "Discover the Best Places to visit",
+  "based" : "- Based on Weather and Air Quality data.",
+  "location": "Location",
+  "searchText": "Province or Place",
+  "search": "Search",
+  "Search by Location" : "Search by Location",
+  "Search by Weather" : "Search by Weather",
+  "WeatherCondition" : "Weather Condition",
+  "AQL" : "Air Quality"
+  },
+
+  "weather": {
+    "ClearSky": "Clear Sky",
+    "MainlyClearSky": "Mainly Clear Sky",
+    "PartlyCloudy": "Partly Cloudy",
+    "Cloudy": "Cloudy",
+    "LightDrizzle": "Light Drizzle",
+    "ModerateShowerRain": "Moderate Shower Rain"
+  },
+  "aqi": {
+    "Good": "Good",
+    "Moderate": "Moderate",
+    "UnhealthyForSensitiveGroups": "Unhealthy for Sensitive Groups",
+    "Unhealthy": "Unhealthy",
+    "VeryUnhealthy": "Very Unhealthy",
+    "Hazardous": "Hazardous"
+  }
+    
+
+}
+
+
+

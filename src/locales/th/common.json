@@ -1,0 +1,39 @@
+{
+  "nav": {
+    "home": "หน้าแรก",
+    "recommend": "แนะนำ",
+    "campStay": "ลานกางเต็นท์&ที่พัก",
+    "contact": "ติดต่อ"
+  },
+  "auth": {
+    "login": "เข้าสู่ระบบ/สมัคร"
+  },
+  "search": {
+    "Discover": "ค้นหาสถานที่ท่องเที่ยวที่ดีที่สุด",
+    "based": "จากข้อมูลสภาพอากาศและคุณภาพอากาศ",
+    "location": "พิกัดสถานที่",
+  "searchText": "จังหวัด หรือ สถานที่",
+  "search": "ค้นหา",
+   "Search by Location" : "ค้นหาจากพิกัดสถานที่",
+  "Search by Weather" : "ค้นหาจากสภาพอากาศ",
+  "WeatherCondition" : "สภาพอากาศโดยทั่วไป",
+  "AQL" : "คุณภาพอากาศ"
+},
+  "weather": {
+    "ClearSky": "ท้องฟ้าโปร่ง",
+    "MainlyClearSky": "ท้องฟ้าโปร่งใสเป็นส่วนใหญ่",
+    "PartlyCloudy": "มีเมฆเป็นบางส่วน",
+    "Cloudy": "มีเมฆมาก",
+    "LightDrizzle": "ฝนตกเบา ๆ",
+    "ModerateShowerRain": "ฝนตกปรอย ๆ"
+  },
+
+    "aqi": {
+    "Good": "ดี ไม่มีผลกระทบ",
+    "Moderate": "อากาศปานกลาง",
+    "UnhealthyForSensitiveGroups": "เร่ิ่มกระทบกลุ่มเสี่ยง",
+    "Unhealthy": "เร่ิมกระทบต่อทุกคน",
+    "VeryUnhealthy": "กระทบต่อสุขภาพรุนแรง",
+    "Hazardous": "อันตราย ควรอยู่ในอาคาร"
+  }
+}
