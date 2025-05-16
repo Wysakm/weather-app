@@ -1,0 +1,26 @@
+body {
+  margin: 0;
+  font-family: "Noto Serif Thai", serif;
+  font-size: 16px;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+  background-color: rgb(190, 217, 217);
+  /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif; */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+  --color-primary: #05362A; /* เขียวเข้ม (ปุ่ม) */
+  --color-secondary: #156B56; /* เขียวอ่อน (ตัวอักษร) */
+  --color-navbar-bg: #fff;  /* พื้นหลัง navbar */
+  --color-border : #656E6C; /* สีกรอบ */
+  --color-shadow: rgba(0, 0, 0, 0.1); /* เงา */
+  --color-input:  #888; /* สีข้อความ */
+  --color-text: black; /* สี placeholder */
+}
