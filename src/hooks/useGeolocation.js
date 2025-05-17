@@ -5,7 +5,6 @@ const initialProvince = provinces.find(p => p.names.en === 'Trang');
 
 export const useGeolocation = () => {
   const [selectedProvince, setSelectedProvince] = useState(null);
-  console.log(' selectedProvince:', selectedProvince)
   const [locationError, setLocationError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -13,7 +12,6 @@ export const useGeolocation = () => {
     let mounted = true;
     setLoading(true);
     const getLocation = async () => {
-      console.log(navigator.geolocation)
       if (!navigator.geolocation) {
         setSelectedProvince(initialProvince);
         setLocationError("Geolocation is not supported");
@@ -21,7 +19,6 @@ export const useGeolocation = () => {
       }
 
       try {
-        console.log('in')
         const position = await new Promise((resolve, reject) => {
           navigator.geolocation.getCurrentPosition(
             resolve,
@@ -35,7 +32,6 @@ export const useGeolocation = () => {
             maximumAge: 300000 // 5 minutes cache
           });
         });
-        console.log(' position:', position)
 
         if (!mounted) return;
 
