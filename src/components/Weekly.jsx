@@ -31,7 +31,6 @@ const Weekly = ({ latitude, longitude, t, i18n }) => {
             minTemp: Math.round(data.daily.temperature_2m_min[index + 1]),
             precipitation: data.daily.precipitation_probability_max[index + 1]
           }));
-        console.log(' formattedData:', formattedData)
 
         setWeeklyForecast(formattedData);
         setIsLoading(false);
