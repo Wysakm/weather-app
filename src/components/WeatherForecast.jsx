@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { formatTime } from '../utils/dateUtils';
 import { useWeatherData } from '../hooks/useWeatherData';
 import { weatherCodeToDescription } from '../utils/weather';
+import { useGeolocation } from '../hooks/useGeolocation';
+import { useCurrentWeather } from '../hooks/useCurrentWeather';
 
-export const WeatherForecast = ({ latitude, longitude, t, i18n }) => {
-  const { weatherData, loading, weatherIconUrl } = useWeatherData(latitude, longitude);
-
+export const WeatherForecast = ({ t, i18n }) => {
+  // const { selectedProvince: province, loading: locationLoading } = useGeolocation();
+  const { weatherIconUrl } = useWeatherData();
+  const { weatherData, loading } = useCurrentWeather();
+  
   if (loading) return <div className="loading-spinner">Loading...</div>;
+  console.log(' weatherData:', weatherData)
 
   return (
     <div className='container-forecast'>

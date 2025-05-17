@@ -1,0 +1,137 @@
+.aqi-box-I {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 50%;
+  border-radius: 16px 16px 0 0;
+  /* border-bottom: 1px solid var(--color-border); */
+  background-color: #bff1ca;
+  gap: 30px;
+} 
+
+.aqi-box-II {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 25%;
+  border-radius: 0 0 16px 16px;
+}
+
+.aqi-box-III { 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 25%;
+  border-top: 1px solid var(--color-border);
+  background-color: #bff1ca;
+}
+
+
+.container-aqi {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 49%;
+  height: 100%;
+  background-color: var(--color-navbar-bg);
+  border-radius: 16px;
+  box-shadow: 2px 2px 6px var(--color-border)
+}
+
+.aqi-score {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 30%;
+  height: 75%;
+  border-radius: 16px;
+  margin-left: 20px;
+}
+
+.aqi-number {
+  font-size: 54px;
+  font-weight: bold;
+  padding: 0;
+  width: auto;
+  height: 64px;
+}
+
+.aqi-label {
+  font-size: 16px;
+  font-weight: bold;
+  padding-left: 10px;
+  margin-bottom: 10px;
+}
+
+.aqi-status {
+  display: flex;
+  justify-content: center;
+  align-items: center ;
+  width: auto;
+  height: auto;
+  font-size: 30px;
+  font-weight: bold;
+  color: var(--color-text);
+  margin: 20px 0px;
+  
+}
+
+
+
+.pollutant-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 90%;
+  /* border-bottom: 1px solid #eee; */
+  padding-bottom: 0.5rem;
+
+}
+
+.pollutant-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;  ;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.pollutant-data {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  gap: 30px;
+
+}
+
+.pollutant-secondary {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+}
+
+.pollutant-secondary-left { 
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 30%;
+  height: 100%;
+  margin-left: 25px;
+}
+
+.pollutant-secondary-right { 
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 30%;
+  height: 100%;
+}

@@ -1,33 +1,47 @@
 import { useState, useEffect } from 'react';
 import { provinces } from '../configs/provinces';
 
-export const useGeolocation = (initialProvince) => {
-  const [selectedProvince, setSelectedProvince] = useState(initialProvince);
+const initialProvince = provinces.find(p => p.names.en === 'Trang');
+
+export const useGeolocation = () => {
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  console.log(' selectedProvince:', selectedProvince)
   const [locationError, setLocationError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let mounted = true;
-
+    setLoading(true);
     const getLocation = async () => {
+      console.log(navigator.geolocation)
       if (!navigator.geolocation) {
+        setSelectedProvince(initialProvince);
         setLocationError("Geolocation is not supported");
         return;
       }
 
       try {
+        console.log('in')
         const position = await new Promise((resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(resolve, reject, {
+          navigator.geolocation.getCurrentPosition(
+            resolve,
+            (rej) => {
+              console.log(' rej:', rej)
+              setSelectedProvince(initialProvince);
+              reject(rej)
+            }, {
             enableHighAccuracy: false, // Better performance
             timeout: 10000,
             maximumAge: 300000 // 5 minutes cache
           });
         });
+        console.log(' position:', position)
 
         if (!mounted) return;
 
         const { latitude, longitude } = position.coords;
         const province = provinces.find(p => (
-          Math.abs(p.lat - latitude) <= 0.3 && 
+          Math.abs(p.lat - latitude) <= 0.3 &&
           Math.abs(p.lon - longitude) <= 0.3
         ));
 
@@ -46,6 +60,7 @@ export const useGeolocation = (initialProvince) => {
 
     getLocation();
     const intervalId = setInterval(getLocation, 300000);
+    setLoading(false);
 
     return () => {
       mounted = false;
@@ -53,5 +68,5 @@ export const useGeolocation = (initialProvince) => {
     };
   }, []);
 
-  return { selectedProvince, locationError };
+  return { selectedProvince, locationError, loading };
 };

@@ -45,5 +45,8 @@
     "PM": "น.",
     "RainChance": "โอกาสฝนตก",
     "UVindex": "รังสืยูวี"
-  }
+  }, 
+  "pollutant" : { 
+      "MainPollutant" : "มลพิษหลัก"
+    }
 }

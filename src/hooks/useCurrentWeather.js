@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
+import { useGeolocation } from './useGeolocation';
 
-const useCurrentWeather = (latitude, longitude) => {
+const useCurrentWeather = () => {
     const [weatherData, setWeatherData] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const {selectedProvince: province} = useGeolocation();
 
     useEffect(() => {
+        setLoading(true);
         const fetchWeather = async () => {
             try {
                 // Construct the URL with latitude, longitude, and timezone
                 let url = new URL('https://api.open-meteo.com/v1/forecast');
-                url.searchParams.append('latitude', latitude);
-                url.searchParams.append('longitude', longitude);
+                url.searchParams.append('latitude', province.lat);
+                url.searchParams.append('longitude', province.lat);
                 url.searchParams.append('timezone', 'Asia/Bangkok');
 
                 // Define weather parameters to fetch
@@ -55,10 +58,10 @@ const useCurrentWeather = (latitude, longitude) => {
             }
         };
 
-        if (latitude && longitude) {
+        if (province) {
             fetchWeather();
         }
-    }, [latitude, longitude]);
+    }, [province]);
 
     return { weatherData, loading, error };
 };

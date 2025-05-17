@@ -3,10 +3,10 @@ import { useCurrentWeather } from './useCurrentWeather';
 import { weatherCodeToIcon } from '../utils/weather';
 import { loadWeatherIcon } from '../utils/iconLoader';
 
-export const useWeatherData = (latitude, longitude) => {
+export const useWeatherData = () => {
   const [weatherIcon, setWeatherIcon] = useState(null);
   const [weatherIconUrl, setWeatherIconUrl] = useState(null);
-  const { weatherData, loading } = useCurrentWeather(latitude, longitude);
+  const { weatherData } = useCurrentWeather();
 
   useEffect(() => {
     if (!weatherData?.current) return;
@@ -25,11 +25,11 @@ export const useWeatherData = (latitude, longitude) => {
     };
 
     loadIcon();
-  }, [weatherData]);
+  }, []);
 
   return {
-    weatherData,
-    loading,
+    // weatherData,
+    // loading,
     weatherIcon,
     weatherIconUrl
   };

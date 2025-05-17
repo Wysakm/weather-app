@@ -1,17 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { provinces } from '../configs/provinces.js';
 import { useGeolocation } from '../hooks/useGeolocation';
 import './styles/Weather.css';
 import { getFormattedDate } from '../utils/dateUtils.js';
 import { WeatherForecast } from './WeatherForecast.jsx';
+import { AirQuality } from './AirQuality';
 
-const initialProvince = provinces.find(p => p.names.en === 'Trang');
+const mockAqiData = {
+  aqi: 24,
+  pm25: 5,
+  pm10: 49,
+  no2: 0.4,
+  so2: 0.4,
+  o3: 0.1,
+  co: 0.4
+};
 
 function Weather() {
   const { t, i18n } = useTranslation();
-  const { selectedProvince, locationError } = useGeolocation(initialProvince);
-
+  const { selectedProvince, loading: locationLoading } = useGeolocation();
+  
+  if (locationLoading || !selectedProvince) return <div className="loading-spinner">Loading...</div>;
+  // console.log(' selectedProvince:', selectedProvince, locationLoading)
+  
   return (
     <div className='weather-container'>
       <div className='container'>
@@ -24,24 +35,18 @@ function Weather() {
             <h2>
               {selectedProvince.names[i18n.language === 'th' ? 'th' : 'en']}
             </h2>
-            {locationError && (
-              <p className="location-error">{locationError}</p>
-            )}
           </div>
           <div className='container-date'>{getFormattedDate(i18n.language)}</div>
         </div>
 
         <div className='container-forecastAql'>
           <WeatherForecast
-            latitude={selectedProvince.lat}
-            longitude={selectedProvince.lon}
+            // latitude={selectedProvince.lat}
+            // longitude={selectedProvince.lon}
             t={t}
             i18n={i18n}
           />
-          <div className='container-aqi'>
-            <div className='aqi-box-I'>aaa</div>
-            <div className='aqi-box-II'>sss</div>
-          </div>
+          <AirQuality t={t} aqiData={mockAqiData} />
         </div>
         <div className='container-weeklyForecast'>
           พยากรณ์อากาศรายสัปดาห์ (Weekly): dddd

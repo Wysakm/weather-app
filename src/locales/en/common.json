@@ -50,6 +50,10 @@
     "PM": "PM",
     "RainChance": "Rain Chance",
     "UVindex": "UV Index"
+    },
+
+    "pollutant" : { 
+      "MainPollutant" : "Main Pollutant"
     }
   }
     
