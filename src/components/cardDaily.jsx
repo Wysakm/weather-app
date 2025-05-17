@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './styles/cardDaily.css';
 import { weatherCodeToDescription } from '../utils/weather';
 import { useWeatherIcon } from '../hooks/useWeatherIcon';

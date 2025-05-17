@@ -1,0 +1,11 @@
+.Rank-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--color-primary);
+  width: 100%;
+  height: auto;
+  padding: 30px 0;
+  border: 1px solid red;
+  background: linear-gradient(to left, #f5f8f6, hsl(180, 16%, 94%), hsl(173, 68%, 95%));
+}
