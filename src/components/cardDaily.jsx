@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './styles/cardDaily.css';
+import { weatherCodeToDescription } from '../utils/weather';
+import { useWeatherIcon } from '../hooks/useWeatherIcon';
 
 const CardDaily = ({ date, weatherCode, maxTemp, minTemp, precipitation, language }) => {
+  const { weatherIconUrl } = useWeatherIcon({ weatherCode , isDay: 1 });
+  
+
   const dateObj = new Date(date);
   const today = new Date('2025-05-17');
   
@@ -17,27 +22,6 @@ const CardDaily = ({ date, weatherCode, maxTemp, minTemp, precipitation, languag
     return `${day}/${month}`;
   };
 
-  // ฟังก์ชันสำหรับเลือกไอคอนตาม weatherCode
-  const getWeatherIcon = (code) => {
-    // ตัวอย่างการเลือกไอคอน (ควรปรับตามระบบไอคอนที่ใช้จริง)
-    switch (code) {
-      case 0:
-        return '☀️';
-      case 1:
-        return '🌤️';
-      case 3:
-        return '☁️';
-      case 45:
-        return '🌫️';
-      case 80:
-        return '🌧️';
-      case 95:
-        return '⛈️';
-      default:
-        return '❓';
-    }
-  };
-
   return (
     <div className="card-daily">
       <div className="day">{formatDate()}</div>
@@ -45,7 +29,17 @@ const CardDaily = ({ date, weatherCode, maxTemp, minTemp, precipitation, languag
         <span className="max">H:{maxTemp}°C / </span>
         <span className="min">L:{minTemp}°C</span>
       </div>
-      <div className="icon">{getWeatherIcon(weatherCode)}</div>
+      <div className="icon">
+        {weatherCode ? (
+          <img
+            src={weatherIconUrl}
+            alt={weatherCodeToDescription(weatherCode, language)}
+            className="weather-icon"
+          />
+        ) : (
+          <div>No weather data</div>
+        )}
+      </div>
       <div className="rain">Rain : {precipitation}%</div>
     </div>
   );

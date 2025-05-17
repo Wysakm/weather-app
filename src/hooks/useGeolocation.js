@@ -23,7 +23,7 @@ export const useGeolocation = () => {
           navigator.geolocation.getCurrentPosition(
             resolve,
             (rej) => {
-              console.log(' rej:', rej)
+              // console.log(' rej:', rej)
               setSelectedProvince(initialProvince);
               reject(rej)
             }, {

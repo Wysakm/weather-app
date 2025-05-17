@@ -33,7 +33,10 @@
 .icon { 
   width: 30px;
   height: 30px;
-  border: 1px solid red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent; /* เพิ่มบรรทัดนี้ */
 }
 
 .condition {
@@ -42,5 +45,12 @@
 
 .rain { 
   font-size: 10px;
+}
+
+.weather-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block; /* เพิ่มบรรทัดนี้ */
 }
 

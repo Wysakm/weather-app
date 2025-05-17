@@ -3,7 +3,6 @@ import { useGeolocation } from './useGeolocation';
 
 const token = process.env.REACT_APP_AQI_TOKEN;
 
-
 const convertAqiToPm25 = (aqi) => {
     const breakpoints = [
         { aqiLow: 0, aqiHigh: 50, pmLow: 0.0, pmHigh: 12.0 },
@@ -23,7 +22,6 @@ const convertAqiToPm25 = (aqi) => {
     return parseFloat(pm25.toFixed(1));
 };
 
-
 const useAqicn = () => {
     const [aqiData, setAqiData] = useState({
         aqi: null,
@@ -37,9 +35,6 @@ const useAqicn = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const { selectedProvince: province } = useGeolocation();
-    console.log(' token:', token)
-
-
 
     useEffect(() => {
         setLoading(true);
@@ -50,15 +45,12 @@ const useAqicn = () => {
                 }
                 // const url = `https://api.waqi.info/feed/${province.names.en.toLowerCase()}/?token=${token}`;
                 const url = `https://api.waqi.info/feed/geo:${province.lat};${province.lon}/?token=${token}`;
-                console.log('API URL:', url);
-                console.log('API Token:', token);
                 const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const data = await response.json();
-                console.log('API Response:', data);
 
                 if (data.status === 'ok') {
                     const iaqi = data.data.iaqi;
@@ -75,14 +67,12 @@ const useAqicn = () => {
                         co: iaqi.co?.v || null
                     };
                     setAqiData(newAqiData);
-                    console.log('Processed AQI Data:', newAqiData);
                 }
                 else {
                     throw new Error('Failed to fetch AQI data');
                 }
                 setLoading(false);
             } catch (e) {
-                console.error('API Error:', e);
                 setError(e.message);
                 setLoading(false);
             }
