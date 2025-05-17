@@ -1,0 +1,46 @@
+.card-daily { 
+  width: 12% ;
+  height: 90%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  /* border: 1px solid red; */
+  gap: 2px;
+  background-color: var(--color-navbar-bg);
+  border-radius: 15px;
+}
+
+.day { 
+  font-size: 16px;
+}
+
+.temp-max-min { 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+
+}
+.max {
+  font-size: 10px;
+}
+.min {
+  font-size: 10px;
+}
+
+.icon { 
+  width: 30px;
+  height: 30px;
+  border: 1px solid red;
+}
+
+.condition {
+   font-size: 12px;
+}
+
+.rain { 
+  font-size: 10px;
+}
+

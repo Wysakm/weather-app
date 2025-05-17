@@ -6,12 +6,12 @@ export const AirQuality = ({ t }) => {
   const { aqiData, loading, error } = useAqicn();
 
   const getAqiColor = (aqi) => {
-    if (aqi <= 50) return '#009966';  // Good
-    if (aqi <= 100) return '#ffde33'; // Moderate
-    if (aqi <= 150) return '#ff9933'; // Unhealthy for Sensitive Groups
-    if (aqi <= 200) return '#cc0033'; // Unhealthy
-    if (aqi <= 300) return '#660099'; // Very Unhealthy
-    return '#7e0023';                 // Hazardous
+    if (aqi <= 50) return 'var(--color-good)';        // Good
+    if (aqi <= 100) return 'var(--color-moderate)';   // Moderate
+    if (aqi <= 150) return 'var(--color-unhealthy-sensitive)';  // Unhealthy for Sensitive Groups
+    if (aqi <= 200) return 'var(--color-unhealthy)';  // Unhealthy
+    if (aqi <= 300) return 'var(--color-very-unhealthy)';  // Very Unhealthy
+    return 'var(--color-hazardous)';                  // Hazardous
   };
 
   const getAqiStatus = (aqi) => {
@@ -23,22 +23,31 @@ export const AirQuality = ({ t }) => {
     return 'aqi.Hazardous';
   };
 
+  const getAqiClassName = (aqi) => {
+    if (aqi <= 50) return 'good';
+    if (aqi <= 100) return 'moderate';
+    if (aqi <= 150) return 'unhealthy-sensitive';
+    if (aqi <= 200) return 'unhealthy';
+    if (aqi <= 300) return 'very-unhealthy';
+    return 'hazardous';
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!aqiData || !aqiData.aqi) return <div>No data available</div>;
 
   return (
     <div className='container-aqi'>
-      <div className='aqi-box-I'>
+      <div className={`aqi-box-I ${getAqiClassName(aqiData.aqi)}`}>
         <div className='aqi-score' style={{ backgroundColor: getAqiColor(aqiData.aqi) }}>
           <div className='aqi-number'>{aqiData.aqi}</div>
-          <div className='aqi-label'>US AQI</div>
+          <div className='aqi-label'>US AQI+</div>
         </div>
         <div className='aqi-status'>
           {t(getAqiStatus(aqiData.aqi))}
         </div>
       </div>
-      <div className='aqi-box-III'>
+      <div className={`aqi-box-III ${getAqiClassName(aqiData.aqi)}`}>
         <div className='pollutant-main'>
           <div className='pollutant-label'>{t('pollutant.MainPollutant')}</div>
           <div className='pollutant-data'>

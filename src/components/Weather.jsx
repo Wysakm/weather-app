@@ -5,6 +5,7 @@ import './styles/Weather.css';
 import { getFormattedDate } from '../utils/dateUtils.js';
 import { WeatherForecast } from './WeatherForecast.jsx';
 import { AirQuality } from './AirQuality';
+import Weekly from './Weekly.jsx';  // เปลี่ยนจาก { Weekly }
 
 const mockAqiData = {
   aqi: 24,
@@ -27,14 +28,12 @@ function Weather() {
     <div className='weather-container'>
       <div className='container'>
         <div className='container-lacationDate'>
-          <div className='container-blank'>
-            {t('aqi.Good')}
-          </div>
+          <div className='container-blank'></div>
 
           <div className='container-location'>
-            <h2>
+            <h1>
               {selectedProvince.names[i18n.language === 'th' ? 'th' : 'en']}
-            </h2>
+            </h1>
           </div>
           <div className='container-date'>{getFormattedDate(i18n.language)}</div>
         </div>
@@ -48,9 +47,14 @@ function Weather() {
           />
           <AirQuality t={t} aqiData={mockAqiData} />
         </div>
-        <div className='container-weeklyForecast'>
-          พยากรณ์อากาศรายสัปดาห์ (Weekly): dddd
-        </div>
+      <div className='container-weeklyForecast'>
+        <Weekly 
+          latitude={selectedProvince.lat}
+          longitude={selectedProvince.lon}
+          t={t}
+          i18n={i18n}
+        />
+      </div>
       </div>
     </div>
   );

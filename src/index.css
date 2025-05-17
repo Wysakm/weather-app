@@ -19,8 +19,22 @@ body {
   --color-primary: #05362A; /* เขียวเข้ม (ปุ่ม) */
   --color-secondary: #156B56; /* เขียวอ่อน (ตัวอักษร) */
   --color-navbar-bg: #fff;  /* พื้นหลัง navbar */
-  --color-border : #656E6C; /* สีกรอบ */
+  --color-border : #e6e8e8; /* สีกรอบ */
   --color-shadow: rgba(0, 0, 0, 0.1); /* เงา */
   --color-input:  #888; /* สีข้อความ */
   --color-text: black; /* สี placeholder */
+
+  --color-good: #009966;
+  --color-moderate: #ffde33;
+  --color-unhealthy-sensitive: #ff9933;
+  --color-unhealthy: #cc0033;
+  --color-very-unhealthy: #660099;
+  --color-hazardous: #7e0023;
+
+    --color-good-bg: #bdded3;
+  --color-moderate-bg: #fcf5d1;
+  --color-unhealthy-sensitive-bg: #f8e8d8;
+  --color-unhealthy-bg: #e0bac4;
+  --color-very-unhealthy-bg: #e2c8ef;
+  --color-hazardous-gg: #f4bccc;
 }

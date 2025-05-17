@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useGeolocation } from './useGeolocation';
 
-const useCurrentWeather = () => {
+export const useCurrentWeather = () => {
     const [weatherData, setWeatherData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -65,5 +65,3 @@ const useCurrentWeather = () => {
 
     return { weatherData, loading, error };
 };
-
-export  {useCurrentWeather};
