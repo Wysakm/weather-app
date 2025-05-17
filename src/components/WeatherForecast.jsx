@@ -8,10 +8,11 @@ import { useCurrentWeather } from '../hooks/useCurrentWeather';
 export const WeatherForecast = ({ t, i18n }) => {
   // const { selectedProvince: province, loading: locationLoading } = useGeolocation();
   const { weatherIconUrl } = useWeatherData();
+  console.log(' weatherIconUrl:', weatherIconUrl)
   const { weatherData, loading } = useCurrentWeather();
   
-  if (loading) return <div className="loading-spinner">Loading...</div>;
   console.log(' weatherData:', weatherData)
+  if (loading || !weatherIconUrl) return <div className="loading-spinner">Loading...</div>;
 
   return (
     <div className='container-forecast'>

@@ -25,7 +25,7 @@ export const useWeatherData = () => {
     };
 
     loadIcon();
-  }, []);
+  }, [weatherData]);
 
   return {
     // weatherData,

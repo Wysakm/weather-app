@@ -14,7 +14,7 @@ const useCurrentWeather = () => {
                 // Construct the URL with latitude, longitude, and timezone
                 let url = new URL('https://api.open-meteo.com/v1/forecast');
                 url.searchParams.append('latitude', province.lat);
-                url.searchParams.append('longitude', province.lat);
+                url.searchParams.append('longitude', province.lon);
                 url.searchParams.append('timezone', 'Asia/Bangkok');
 
                 // Define weather parameters to fetch
