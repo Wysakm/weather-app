@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { formatTime } from '../utils/dateUtils';
 import { useWeatherData } from '../hooks/useWeatherData';
 import { weatherCodeToDescription } from '../utils/weather';
-import { useGeolocation } from '../hooks/useGeolocation';
 import { useCurrentWeather } from '../hooks/useCurrentWeather';
 
 export const WeatherForecast = ({ t, i18n }) => {
