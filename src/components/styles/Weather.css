@@ -3,6 +3,7 @@
   justify-content: center;
   align-items: center;
   color: var(--color-primary);
+  padding: 30px 0;
 
   /* margin-top: 20px; */
   /* border-radius: 16px; */
@@ -61,6 +62,7 @@
   align-items: center;
   width: 100%;
   height: 260px;
+  gap:1rem;
   /* border: 1px solid green; */
 }
 
@@ -69,8 +71,9 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: 49%;
+  width: 50%;
   height: 100%;
+  gap: 1rem;;
   background-color: var(--color-navbar-bg);
   border-radius: 16px;
   box-shadow: 2px 2px 6px var(--color-border)
