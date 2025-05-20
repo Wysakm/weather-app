@@ -8,12 +8,20 @@ function App() {
     <Router>
       <MainLayout>
         <Routes>
-          {routes.map(({ path, element: Element }) => (
+          {routes.map((route) => (
             <Route
-              key={path}
-              path={path}
-              element={<Element />}
-            />
+              key={route.path}
+              path={route.path}
+              element={<route.element />}
+            >
+              {route.children?.map((childRoute) => (
+                <Route
+                  key={childRoute.path}
+                  path={childRoute.path}
+                  element={<childRoute.element />}
+                />
+              ))}
+            </Route>
           ))}
         </Routes>
       </MainLayout>

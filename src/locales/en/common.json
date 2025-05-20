@@ -57,7 +57,13 @@
     },
   "map": {
     "head" : "Weather and Air Quality Forecast in Thailand Today"
-  }
+  },
+
+  "Recommend": {
+  "RecommendedTourist" : "Recommend Tourist Attractions",
+  "Stay" : "Hotel & Resort",
+  "Camp" : "Campground"
+}
 }
     
 
