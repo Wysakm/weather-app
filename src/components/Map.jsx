@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import "./styles/Map.css";
+import MapThailand from './MapThailand';  
 
 function Map() {
   const { t } = useTranslation();
@@ -14,7 +15,7 @@ function Map() {
    
       </div>
       <div className="map-container-I">
-       ddd
+       <MapThailand />
       </div>
       <div className="scale-container">
         <h3 className="scale-header">

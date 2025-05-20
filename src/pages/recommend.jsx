@@ -1,10 +1,16 @@
 import React from 'react';
+import SearchLocationWeather from '../components/SearchLocationWeather';
+import RankPlaces from '../components/RankPlaces';
+import ReccommendedTourist from '../components/ReccommendedTourist';
+
 
 function Recommend() {
   return (
     <div>
-      <h1>แนะนำสถานที่ท่องเที่ยว</h1>
-      <p>ที่เที่ยวแนะนำตามสภาพอากาศ</p>
+      
+       <SearchLocationWeather />
+      <RankPlaces />
+      <ReccommendedTourist /> 
     </div>
   );
 }
