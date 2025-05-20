@@ -54,8 +54,11 @@
 
     "pollutant" : { 
       "MainPollutant" : "Main Pollutant"
-    }
+    },
+  "map": {
+    "head" : "Weather and Air Quality Forecast in Thailand Today"
   }
+}
     
 
 

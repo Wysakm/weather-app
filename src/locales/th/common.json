@@ -30,8 +30,8 @@
   "aqi": {
     "Good": "ดี ไม่มีผลกระทบ",
     "Moderate": "อากาศปานกลาง",
-    "UnhealthyForSensitiveGroups": "เร่ิ่มกระทบกลุ่มเสี่ยง",
-    "Unhealthy": "เร่ิมกระทบต่อทุกคน",
+    "UnhealthyForSensitiveGroups": "เริ่มมกระทบกลุ่มเสี่ยง",
+    "Unhealthy": "เริ่มมกระทบต่อทุกคน",
     "VeryUnhealthy": "กระทบต่อสุขภาพรุนแรง",
     "Hazardous": "อันตราย ควรอยู่ในอาคาร"
   },
@@ -45,8 +45,11 @@
     "PM": "น.",
     "RainChance": "โอกาสฝนตก",
     "UVindex": "รังสืยูวี"
-  }, 
-  "pollutant" : { 
-      "MainPollutant" : "มลพิษหลัก"
-    }
+  },
+  "pollutant": {
+    "MainPollutant": "มลพิษหลัก"
+  },
+  "map": {
+    "head": "พยากรณ์อากาศและคุณภาพอากาศในประเทศไทยวันนี้"
+  }
 }

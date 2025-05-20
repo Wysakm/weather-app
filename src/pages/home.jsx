@@ -2,6 +2,7 @@ import React from 'react';
 import SearchLocationWeather from '../components/SearchLocationWeather';
 import Weather from '../components/Weather';
 import RankPlaces from '../components/RankPlaces';
+import Map from '../components/Map';
 
 
 function Home() {
@@ -10,6 +11,7 @@ function Home() {
       <SearchLocationWeather />
       <Weather />
       <RankPlaces />
+      <Map />
     </div>
   );
 }
