@@ -5,7 +5,7 @@ import CardProvince from './cardProvince';
 const RankPlaces = () => {
   return (
     <div className="Rank-container">
-      <h1>Best weather</h1>
+      <h1>Best weather location in Thailand</h1>
 
       <div className="Rank-container-I">
         <CardProvince />
