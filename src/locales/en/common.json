@@ -63,6 +63,10 @@
   "RecommendedTourist" : "Recommend Tourist Attractions",
   "Stay" : "Hotel & Resort",
   "Camp" : "Campground"
+},
+"CampStay": {
+  "CampHeader" : "Campground recommendation with the best weather.",
+  "StayHeader" : "Hotel & Resort recommendation with the best weather."
 }
 }
     

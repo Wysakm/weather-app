@@ -97,6 +97,21 @@
   /* สีตัวอักษรเมื่อแท็บทำงาน */
 }
 
+.tab .icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  transition: filter 0.3s ease;
+  /* สีเทาเมื่อไม่ active */
+  filter: grayscale(100%) opacity(0.6);
+}
+
+.tab .icon.active {
+  opacity: 1;
+  filter: brightness(0%) saturate(0%);
+}
+
+
 
 .search-button {
   display: flex;

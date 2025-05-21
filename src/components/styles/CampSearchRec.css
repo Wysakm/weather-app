@@ -1,0 +1,16 @@
+.campRec-container {
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+width: 100%;
+height: auto;
+border: 1px solid blue;
+background-color: blanchedalmond ;
+}
+.campSearchRac-header { 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 16px 0 ;
+}

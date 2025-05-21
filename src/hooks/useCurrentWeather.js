@@ -6,6 +6,7 @@ export const useCurrentWeather = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const {selectedProvince: province} = useGeolocation();
+    console.log(' province:', province)
 
     useEffect(() => {
         setLoading(true);

@@ -16,7 +16,6 @@ const CardTourist = ({ province, name, imgUrl }) => {
         <div className="card-more-info-I">{province}</div>
         <div className="card-more-info-II" >More Info</div>
       </div>
-
     </div>
    
 
