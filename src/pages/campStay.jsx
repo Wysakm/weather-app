@@ -3,18 +3,11 @@ import SearchCampStay from '../components/SearchCampStay';
 import CampSearchRec from '../components/CampSearchRac';
 import { Outlet, useParams } from 'react-router-dom';
 import CampBox from '../components/CampBox';
+import StayBox from '../components/StayBox';
+
 
 function CampStay() {
   const { id } = useParams();
-  // const [articleType, setArticleType] = useState(null);
-
-  // useEffect(() => {
-  //   if (placesId) setArticleType('places');
-  //   else if (stayId) setArticleType('stay');
-  //   else if (campId) setArticleType('camp');
-  //   else setArticleType('');
-
-  // }, [id]);
 
   if (!id) {
     return (
@@ -22,6 +15,7 @@ function CampStay() {
         <SearchCampStay />
         <CampSearchRec />
         <CampBox />
+        <StayBox />
       </>
     );
   } else {

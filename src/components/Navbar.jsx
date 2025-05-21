@@ -19,9 +19,8 @@ const Navbar = () => {
 
   return (
     <div className="navbar">
-
       <div className="nav-container1">
-        <img src='./image/logo192.png' alt='Breathe-Away Logo' className='nav-logo' />
+        <img src='/image/logo192.png' alt='Breathe-Away Logo' className='nav-logo' />
         <div className='text-logo'>
           Breathe-Away
         </div>
@@ -59,7 +58,7 @@ const Navbar = () => {
       <div className="nav-container3">
 
         <div className='language'>
-          <img src='./image/language.svg' alt='Language' className='language-icon' />
+          <img src='/image/language.svg' alt='Language' className='language-icon' />
 
           <label htmlFor="language-select" className="visually-hidden">Select Language</label>
           <select

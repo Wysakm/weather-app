@@ -18,6 +18,11 @@ const CampSearchRac = () => {
       <div className="campSearchRac-header">
         <h1>{t('CampStay.CampHeader')}</h1>
       </div>
+
+       <div className="staySearchRac-header">
+        <h1>{t('CampStay.StayHeader')}</h1>
+      </div>
+
       <TabProvinces />
       <Weather option={{ province: p }} />
 

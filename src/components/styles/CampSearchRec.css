@@ -13,4 +13,13 @@ background-color: blanchedalmond ;
   justify-content: center;
   align-items: center;
   margin: 16px 0 ;
+  background-color: aqua;
+}
+
+.staySearchRac-header { 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 16px 0 ;
+  background-color: aquamarine;
 }

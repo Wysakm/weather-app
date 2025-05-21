@@ -15,19 +15,24 @@ const Article = () => {
   });
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-const type = queryParams.get('type');
-  // useEffect(() => {
+  const type = queryParams.get('type');
 
-  // }, [id]);
+  // Dummy weather data for display
+  const weatherData = {
+    temperature: "30°C",
+    condition: "Cloudy",
+    airQuality: "24",
+    mainPollutant: "PM2.5",
+  };
 
   const getTitle = () => {
     switch (type) {
       case 'places':
-        return 'เพิ่มสถานที่ท่องเที่ยว';
+        return 'สถานที่ท่องเที่ยว';
       case 'stay':
-        return 'เพิ่มที่พัก';
+        return 'ที่พัก';
       case 'camp':
-        return 'เพิ่มแคมป์';
+        return 'แคมป์';
       default:
         return 'เพิ่มบทความ';
     }
@@ -56,6 +61,15 @@ const type = queryParams.get('type');
   return (
     <div className="article-container">
       <h2>{getTitle()}</h2>
+      {article.images.length > 0 && (
+        <img className="main-image" src={URL.createObjectURL(article.images[0])} alt="Main" />
+      )}
+      <div className="weather-widget">
+        <h3>Today</h3>
+        <p>{weatherData.temperature} - {weatherData.condition}</p>
+        <p>AQI: {weatherData.airQuality} (Good)</p>
+        <p>Main Pollutant: {weatherData.mainPollutant}</p>
+      </div>
       <form onSubmit={handleSubmit} className="article-form">
         <div className="form-group">
           <label>ชื่อสถานที่:</label>
