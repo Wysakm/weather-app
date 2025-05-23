@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useGeolocation } from './useGeolocation';
+import { useLocationStore } from '../stores/useLocationStore';
 
 const token = process.env.REACT_APP_AQI_TOKEN;
 
@@ -34,7 +34,7 @@ const useAqicn = () => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const { selectedProvince: province } = useGeolocation();
+    const { selectedProvince: province } = useLocationStore();
 
     useEffect(() => {
         setLoading(true);

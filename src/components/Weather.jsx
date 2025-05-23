@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useGeolocation } from '../hooks/useGeolocation';
+import { useLocationStore } from '../stores/useLocationStore.js';
 import './styles/Weather.css';
 import { getFormattedDate } from '../utils/dateUtils.js';
 import { WeatherForecast } from './WeatherForecast.jsx';
@@ -20,11 +20,16 @@ const mockAqiData = {
 function Weather({ option }) {
   console.log(' option:', option)
   const { t, i18n } = useTranslation();
-  const { selectedProvince, loading: locationLoading } = useGeolocation({province: option?.province || null});
-  
+  const { selectedProvince, loading: locationLoading, setLocation } = useLocationStore();
+
+  useEffect(() => {
+    setLocation(option?.province)
+  }, [])
+
+
   if (locationLoading || !selectedProvince) return <div className="loading-spinner">Loading...</div>;
   // console.log(' selectedProvince:', selectedProvince, locationLoading)
-  
+
   return (
     <div className='weather-container'>
       <div className='container'>
@@ -48,14 +53,14 @@ function Weather({ option }) {
           />
           <AirQuality t={t} aqiData={mockAqiData} />
         </div>
-      <div className='container-weeklyForecast'>
-        <Weekly 
-          latitude={selectedProvince.lat}
-          longitude={selectedProvince.lon}
-          t={t}
-          i18n={i18n}
-        />
-      </div>
+        <div className='container-weeklyForecast'>
+          <Weekly
+            latitude={selectedProvince.lat}
+            longitude={selectedProvince.lon}
+            t={t}
+            i18n={i18n}
+          />
+        </div>
       </div>
     </div>
   );

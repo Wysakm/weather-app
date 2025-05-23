@@ -4,8 +4,6 @@ import './styles/Weather.css';
 import { getFormattedDate } from '../utils/dateUtils.js';
 import { WeatherForecast } from './WeatherForecast.jsx';
 import { AirQuality } from './AirQuality';
-import Weekly from './Weekly.jsx';  // เปลี่ยนจาก { Weekly }
-import { useGeolocation } from '../hooks/useGeolocation.js';
 
 const mockAqiData = {
   aqi: 24,
@@ -19,11 +17,7 @@ const mockAqiData = {
 
 function ForecastAqi() {
   const { t, i18n } = useTranslation();
-  // const { selectedProvince, loading: locationLoading } = useGeolocation();
-  
-  // if (locationLoading || !selectedProvince) return <div className="loading-spinner">Loading...</div>;
-  // console.log(' selectedProvince:', selectedProvince, locationLoading)
-  
+
   return (
     <div className='weather-container'>
       <div className='container'>

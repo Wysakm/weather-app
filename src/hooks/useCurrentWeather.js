@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useGeolocation } from './useGeolocation';
+import { useLocationStore } from '../stores/useLocationStore';
 
 export const useCurrentWeather = () => {
     const [weatherData, setWeatherData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const {selectedProvince: province} = useGeolocation();
+    const {selectedProvince: province} = useLocationStore();
     console.log(' province:', province)
 
     useEffect(() => {
