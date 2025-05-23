@@ -1,6 +1,6 @@
 import React from 'react';
 import './styles-pages/articles.css';
-import WeatherArticle from '../components/WeatheArticle';
+import TravelerContainer from '../components/TravelerContainer';
 
 const Article = () => {
   return (
@@ -30,41 +30,20 @@ const Article = () => {
           image 
         </div>
         <div className='article-box-I-right'>
-          <WeatherArticle option="Railay Beach" />
+       
         </div>
         </div>
 
 
         <div className='content-container'>
-          d <br />
-          ddd
-          ddd <br />
-          ddd <br />
-          ddd <br />
-          ddd <br />
-          ddd <br />
-          ddd <br />                          
-          ddd <br />
-          ddd <br />
-          ddd <br />
-          ddd <br />
-          ddd <br />
-          ddd <br />  
-          ddd <br />
-          ddd <br />
-          ddd <br />
-          ddd <br />
-          ddd <br />
-          ddd <br />
-          ddd <br />
-          ddd <br />
-          ddd <br />
-          ddd <br />
-          ddd <br />
-          ddd <br />
-          ddd <br />
+        
         </div>
 
+        <TravelerContainer />
+       
+        
+
+      
     </div>
     
     

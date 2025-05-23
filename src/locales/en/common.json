@@ -67,7 +67,11 @@
 "CampStay": {
   "CampHeader" : "Campground recommendation with the best weather.",
   "StayHeader" : "Hotel & Resort recommendation with the best weather."
-}
+},
+
+"Travel" : { 
+  "Traveler" : "Traveler experinces"
+} 
 }
     
 

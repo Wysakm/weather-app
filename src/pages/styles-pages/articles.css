@@ -83,6 +83,16 @@
 
 }
 
+.article-box-II {
+    display: flex;
+  justify-content: center;
+
+  width: 100%;
+  height: auto; 
+  border: 1px solid blue; 
+  margin: 16px;
+
+}
 
 
 
