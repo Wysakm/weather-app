@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import SearchCampStay from '../components/SearchCampStay';
 import CampSearchRec from '../components/CampSearchRac';
 import { Outlet, useParams } from 'react-router-dom';

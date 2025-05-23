@@ -11,7 +11,7 @@ const CardProvince = () => {
 
       <div className='card-body'>
         <div className='card-container-I'>
-          <h2>Province</h2>
+          <h3>Province</h3>
           <div>Temp : 28°C</div>
           <div>US AQI+ : 50 mg/m³ </div>
           <div>PM2.5 : 10 µg/m³ </div>

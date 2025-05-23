@@ -1,16 +1,93 @@
 .article-container {
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
-  background-color: #f8f8f8;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  background-color: var(--color-aticles-bg);
+  /* border: 1px solid red; */
+
 }
 
-h2 {
-  font-size: 2rem;
-  color: #333;
+.article-box { 
+  width: 80%;
+  height: auto;
+  border: 1px solid blue;
+  margin: 32px 16px;
+
+  h1 { 
+    margin: 16px;
+  }
 }
+
+.district-province { 
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: auto;
+  margin: 16px ;
+  border: 1px solid red;
+  gap: 16px;
+}
+
+.tag-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: auto;
+  margin: 16px ;
+  gap: 16px;
+}
+
+.tag { 
+  width: auto;
+  border: 1px solid black;
+  padding: 0 16px;
+}
+
+.article-box-I { 
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+  height: 375px; 
+  border: 1px solid blue; 
+  margin: 16px;
+}
+.article-box-I-left { 
+  width: 600px;
+  height: 100%;
+  border: 1px solid red;
+}
+.article-box-I-right { 
+  width: 400px;
+  height: 100%;
+  border: 1px solid red;
+}
+
+.content-container {
+  display: flex;
+  width: 80%;
+  height: auto;
+  border: 1px solid blue;
+  margin-top: 3rem;
+}
+.traveler-container { 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  width: 80%;
+  height: auto;
+  border: 1px solid blue;
+
+}
+
+
+
+
+
+
 
 .main-image {
   width: 100%;
