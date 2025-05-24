@@ -50,19 +50,20 @@
   display: flex;
   justify-content: space-between;
   width: 80%;
-  height: 375px; 
+  height: 420px; 
   border: 1px solid blue; 
   margin: 16px;
 }
 .article-box-I-left { 
-  width: 600px;
+  width: 575px;
   height: 100%;
   border: 1px solid red;
 }
 .article-box-I-right { 
-  width: 400px;
+  width: 420px;
   height: 100%;
   border: 1px solid red;
+  border-radius: 16px;
 }
 
 .content-container {

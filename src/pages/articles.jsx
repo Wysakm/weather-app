@@ -1,6 +1,7 @@
 import React from 'react';
 import './styles-pages/articles.css';
 import TravelerContainer from '../components/TravelerContainer';
+import WeatherArticle from '../components/WeatherArticle';
 
 const Article = () => {
   return (
@@ -30,7 +31,7 @@ const Article = () => {
           image 
         </div>
         <div className='article-box-I-right'>
-       
+       <WeatherArticle />
         </div>
         </div>
 

@@ -22,10 +22,9 @@ function Weather({ option }) {
   const { t, i18n } = useTranslation();
   const { selectedProvince, loading: locationLoading, setLocation } = useLocationStore();
 
-  useEffect(() => {
-    setLocation(option?.province)
-  }, [])
-
+useEffect(() => {
+  setLocation(option?.province)
+}, [option?.province, setLocation])
 
   if (locationLoading || !selectedProvince) return <div className="loading-spinner">Loading...</div>;
   // console.log(' selectedProvince:', selectedProvince, locationLoading)
