@@ -2,6 +2,8 @@ import React from 'react';
 import './styles-pages/articles.css';
 import TravelerContainer from '../components/TravelerContainer';
 import WeatherArticle from '../components/WeatherArticle';
+import WeeklyArticle from '../components/WeeklyArticle';
+import AirQualityArticle from '../components/AirQualityArticle';
 
 const Article = () => {
   return (
@@ -13,25 +15,21 @@ const Article = () => {
           <h3> Province</h3>
         </div>
 
-    <div className='tag-container'>
-      <div className='tag'>
-        Nation Park
-      </div>
-      <div className='tag'>
-        Beach
-      </div>
-      <div className='tag'>
-        Climbing
+        <div className='tag-container'>
+          <div className='tag'>Nation Park</div>
+          <div className='tag'>Beach</div>
+          <div className='tag'>Climbing</div>
         </div>
-    </div>
-    </div>
+      </div>
 
-       <div className='article-box-I'>
+      <div className='article-box-I'>
         <div className='article-box-I-left'>
           image 
         </div>
         <div className='article-box-I-right'>
        <WeatherArticle />
+       <WeeklyArticle />
+       <AirQualityArticle />
         </div>
         </div>
 
