@@ -4,7 +4,7 @@ import './styles/AirQualityArticle.css';
 const AirQualityArticle = () => {
   return (
     <div className="aqi-container">
-      <div className='aqi-status'>
+      <div className='aqi-status-article'>
         <div className='aqi'>
           <div className='aqi-box'>
             <div className='number'>20</div>
