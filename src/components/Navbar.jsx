@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import './styles/Navbar.css';
+import LoginButton from './LoginButton';
+import { useAuth, } from '../contexts/AuthContext';
+import { Avatar } from 'antd';
 // 🔹 นำเข้าไฟล์ CSS ที่เราสร้าง
 
 const Navbar = () => {
   const { t, i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { isAuthenticated, } = useAuth();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -72,9 +76,19 @@ const Navbar = () => {
           </select>
         </div>
 
-        <div className='botton-login'>
-          <Link to="login">{t('auth.login')}</Link>
-        </div>
+        {isAuthenticated ? (
+          <div className='profile'>
+            <Avatar />
+            {/* <Link to="/profile">
+              <img src='/image/profile.svg' alt='Profile' className='profile-icon' />
+            </Link> */}
+          </div>
+        ) : (
+          <div className='login'>
+            <LoginButton />
+          </div>
+        )}
+        {/* <LoginButton /> */}
 
         <img src="./image/person.svg" alt="login-mobile" className='botton-login-mobile' />
 

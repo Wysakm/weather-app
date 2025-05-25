@@ -3,7 +3,7 @@ import Recommend from '../pages/recommend';
 import CampStay from '../pages/campStay';
 import Contact from '../pages/contact';
 import Article from '../pages/articles';
-// import Blog from '../pages/blog';
+
 
 export const routes = [
   {
@@ -34,5 +34,5 @@ export const routes = [
   {
     path: '/contact',
     element: Contact
-  }
+  },
 ];
