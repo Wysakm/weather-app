@@ -35,7 +35,8 @@ apiClient.interceptors.response.use(
       // Token หมดอายุหรือไม่ถูกต้อง
       removeToken();
       message.error('กรุณาเข้าสู่ระบบใหม่');
-      window.location.href = '/login';
+      debugger
+      window.location.href = '/';
     } else if (error.response?.status === 403) {
       // ไม่มีสิทธิ์เข้าถึง
       message.error('คุณไม่มีสิทธิ์เข้าถึงส่วนนี้');

@@ -21,13 +21,17 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const initAuth = async () => {
       const token = getToken();
+      console.log(token);
       if (token) {
         try {
           await authAPI.verifyToken();
           setIsAuthenticated(true);
+          console.log(getUserInfo());
+          console.log(getUserRole());
           setUser(getUserInfo());
           setRole(getUserRole());
         } catch (error) {
+          console.error('Token verification failed:', error);
           removeToken();
         }
       }

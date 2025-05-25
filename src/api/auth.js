@@ -9,7 +9,7 @@ export const authAPI = {
       const { token, user } = await response.data.data;
 
       setToken(token);
-      setUserRole(user.role);
+      setUserRole(JSON.stringify(user.role));
       setUserInfo(user);
       
       return response.data;
@@ -23,17 +23,17 @@ export const authAPI = {
     try {
       await apiClient.post('/auth/logout');
       removeToken();
-      window.location.href = '/login';
+      window.location.href = '/';
     } catch (error) {
       removeToken();
-      window.location.href = '/login';
+      window.location.href = '/';
     }
   },
 
   // ตรวจสอบ token
   verifyToken: async () => {
     try {
-      const response = await apiClient.get('/auth/verify');
+      const response = await apiClient.post('/auth/verify');
       return response.data;
     } catch (error) {
       removeToken();
