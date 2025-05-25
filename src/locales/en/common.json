@@ -11,6 +11,16 @@
     "login": "Log In/Sign Up"
   },
 
+  "user" : {
+    "userManage": "User Manage",
+    "postManage": "Post Manage",
+    "placeManage": "Place Manage",
+    "typeManage": "Type Manage",
+    "logOut": "Log Out",
+    "myAccount": "My Account",
+    "post": "Post"   
+  },
+
   "search": {
   "Discover" : "Discover the Best Places to visit",
   "based" : "- Based on Weather and Air Quality data.",

@@ -5,7 +5,7 @@ import './styles/Navbar.css';
 import LoginButton from './LoginButton';
 import { useAuth, } from '../contexts/AuthContext';
 import { Avatar, Dropdown, Skeleton } from 'antd';
-import { LogoutOutlined, UserOutlined, DashboardOutlined, TeamOutlined, FileTextOutlined, EnvironmentOutlined, AppstoreOutlined } from '@ant-design/icons';
+import { LogoutOutlined, UserOutlined, TeamOutlined, FileTextOutlined, EnvironmentOutlined, AppstoreOutlined } from '@ant-design/icons';
 
 const Navbar = () => {
   const { t, i18n } = useTranslation();
@@ -36,13 +36,11 @@ const Navbar = () => {
       {
         key: 'profile',
         label: (
-          <div style={{ padding: '8px 12px' }}>
-            <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+          <div style={{ padding: '8px 12px', height: '2rem' }}>
+            <div style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '4px' }}>
               {user?.username || user?.email}
             </div>
-            <div style={{ fontSize: '12px', color: '#666' }}>
-              {user?.email}
-            </div>
+        
             {/* <div style={{ fontSize: '11px', color: '#999', marginTop: '2px' }}>
               Role: {user?.role?.role_name.toLowerCase() || 'user'}
             </div> */}
@@ -57,20 +55,11 @@ const Navbar = () => {
     // Admin specific menu items
     const adminItems = [
       {
-        key: 'dashboard',
-        label: (
-          <Link to="/admin/dashboard" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <DashboardOutlined />
-            {t('nav.dashboard') || 'Dashboard'}
-          </Link>
-        ),
-      },
-      {
         key: 'user-manage',
         label: (
           <Link to="/admin/users" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <TeamOutlined />
-            {t('nav.userManage') || 'User Manage'}
+            {t('user.userManage') || 'User Manage'}
           </Link>
         ),
       },
@@ -79,7 +68,7 @@ const Navbar = () => {
         label: (
           <Link to="/admin/posts" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <FileTextOutlined />
-            {t('nav.postManage') || 'Post Manage'}
+            {t('user.postManage') || 'Post Manage'}
           </Link>
         ),
       },
@@ -88,7 +77,7 @@ const Navbar = () => {
         label: (
           <Link to="/admin/places" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <EnvironmentOutlined />
-            {t('nav.placeManage') || 'Place Manage'}
+            {t('user.placeManage') || 'Place Manage'}
           </Link>
         ),
       },
@@ -97,7 +86,7 @@ const Navbar = () => {
         label: (
           <Link to="/admin/types" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <AppstoreOutlined />
-            {t('nav.typeManage') || 'Type Manage'}
+            {t('user.typeManage') || 'Type Manage'}
           </Link>
         ),
       },
@@ -113,7 +102,7 @@ const Navbar = () => {
         label: (
           <Link to="/account" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <UserOutlined />
-            {t('nav.myAccount') || 'My Account'}
+            {t('user.myAccount') || 'My Account'}
           </Link>
         ),
       },
@@ -122,7 +111,7 @@ const Navbar = () => {
         label: (
           <Link to="/my-posts" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <FileTextOutlined />
-            {t('nav.myPosts') || 'Post'}
+            {t('user.post') || 'Post'}
           </Link>
         ),
       },
@@ -138,7 +127,7 @@ const Navbar = () => {
         label: (
           <span onClick={logout} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <LogoutOutlined />
-            {t('nav.logout') || 'Logout'}
+            {t('user.logOut') || 'Logout'}
           </span>
         ),
       },
@@ -214,14 +203,15 @@ const Navbar = () => {
               menu={{ items: getAvatarMenuItems() }}
               trigger={['click']}
               placement="bottomRight"
+              overlayStyle={{ minWidth: '180px' }}
             >
               <Avatar
                 style={{
                   backgroundColor: user?.role === 'admin' ? '#ff4757' : 'var(--color-primary)',
                   color: 'white',
-                  width: '42px',
-                  height: '42px',
-                  fontSize: '1.5rem',
+                  width: '36px',
+                  height: '36px',
+                  fontSize: '18px',
                   fontWeight: 'bold',
                   cursor: 'pointer',
                   border: user?.role === 'admin' ? '2px solid #ff6b7d' : 'none',
