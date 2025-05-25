@@ -4,13 +4,13 @@ import { Link } from 'react-router-dom';
 import './styles/Navbar.css';
 import LoginButton from './LoginButton';
 import { useAuth, } from '../contexts/AuthContext';
-import { Avatar } from 'antd';
-// 🔹 นำเข้าไฟล์ CSS ที่เราสร้าง
+import { Avatar, Dropdown, Skeleton } from 'antd';
+import { LogoutOutlined, UserOutlined, DashboardOutlined, TeamOutlined, FileTextOutlined, EnvironmentOutlined, AppstoreOutlined } from '@ant-design/icons';
 
 const Navbar = () => {
   const { t, i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const { isAuthenticated, } = useAuth();
+  const { isAuthenticated, user, logout, loading } = useAuth();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -20,6 +20,139 @@ const Navbar = () => {
     i18n.changeLanguage(lang);
   };
 
+  // Get first letter of user's name or email
+  const getFirstLetter = () => {
+    if (user?.name) {
+      return user.name.charAt(0).toUpperCase();
+    } else if (user?.email) {
+      return user.email.charAt(0).toUpperCase();
+    }
+    return 'U'; // Default fallback
+  };
+
+  // Create different menu items based on user role
+  const getAvatarMenuItems = () => {
+    const baseItems = [
+      {
+        key: 'profile',
+        label: (
+          <div style={{ padding: '8px 12px' }}>
+            <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+              {user?.username || user?.email}
+            </div>
+            <div style={{ fontSize: '12px', color: '#666' }}>
+              {user?.email}
+            </div>
+            {/* <div style={{ fontSize: '11px', color: '#999', marginTop: '2px' }}>
+              Role: {user?.role?.role_name.toLowerCase() || 'user'}
+            </div> */}
+          </div>
+        ),
+      },
+      {
+        type: 'divider',
+      },
+    ];
+
+    // Admin specific menu items
+    const adminItems = [
+      {
+        key: 'dashboard',
+        label: (
+          <Link to="/admin/dashboard" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <DashboardOutlined />
+            {t('nav.dashboard') || 'Dashboard'}
+          </Link>
+        ),
+      },
+      {
+        key: 'user-manage',
+        label: (
+          <Link to="/admin/users" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <TeamOutlined />
+            {t('nav.userManage') || 'User Manage'}
+          </Link>
+        ),
+      },
+      {
+        key: 'post-manage',
+        label: (
+          <Link to="/admin/posts" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <FileTextOutlined />
+            {t('nav.postManage') || 'Post Manage'}
+          </Link>
+        ),
+      },
+      {
+        key: 'place-manage',
+        label: (
+          <Link to="/admin/places" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <EnvironmentOutlined />
+            {t('nav.placeManage') || 'Place Manage'}
+          </Link>
+        ),
+      },
+      {
+        key: 'type-manage',
+        label: (
+          <Link to="/admin/types" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <AppstoreOutlined />
+            {t('nav.typeManage') || 'Type Manage'}
+          </Link>
+        ),
+      },
+      {
+        type: 'divider',
+      },
+    ];
+
+    // User specific menu items
+    const userItems = [
+      {
+        key: 'my-account',
+        label: (
+          <Link to="/account" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <UserOutlined />
+            {t('nav.myAccount') || 'My Account'}
+          </Link>
+        ),
+      },
+      {
+        key: 'my-posts',
+        label: (
+          <Link to="/my-posts" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <FileTextOutlined />
+            {t('nav.myPosts') || 'Post'}
+          </Link>
+        ),
+      },
+    ];
+
+    // Logout item (common for both roles)
+    const logoutItem = [
+      {
+        type: 'divider',
+      },
+      {
+        key: 'logout',
+        label: (
+          <span onClick={logout} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <LogoutOutlined />
+            {t('nav.logout') || 'Logout'}
+          </span>
+        ),
+      },
+    ];
+
+    // Combine items based on role
+    if (user?.role.role_name.toLowerCase() === 'admin') {
+      return [...baseItems, ...adminItems, ...logoutItem];
+    } else {
+      return [...baseItems, ...userItems, ...logoutItem];
+    }
+  };
+
+  if (loading) return <Skeleton />
 
   return (
     <div className="navbar">
@@ -60,7 +193,6 @@ const Navbar = () => {
       </div>
 
       <div className="nav-container3">
-
         <div className='language'>
           <img src='/image/language.svg' alt='Language' className='language-icon' />
 
@@ -77,21 +209,35 @@ const Navbar = () => {
         </div>
 
         {isAuthenticated ? (
-          <div className='profile'>
-            <Avatar />
-            {/* <Link to="/profile">
-              <img src='/image/profile.svg' alt='Profile' className='profile-icon' />
-            </Link> */}
+          <div className='profile' style={{ paddingRight: '1.5rem' }}>
+            <Dropdown
+              menu={{ items: getAvatarMenuItems() }}
+              trigger={['click']}
+              placement="bottomRight"
+            >
+              <Avatar
+                style={{
+                  backgroundColor: user?.role === 'admin' ? '#ff4757' : 'var(--color-primary)',
+                  color: 'white',
+                  width: '42px',
+                  height: '42px',
+                  fontSize: '1.5rem',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  border: user?.role === 'admin' ? '2px solid #ff6b7d' : 'none',
+                }}
+              >
+                {getFirstLetter()}
+              </Avatar>
+            </Dropdown>
           </div>
         ) : (
           <div className='login'>
             <LoginButton />
           </div>
         )}
-        {/* <LoginButton /> */}
 
         <img src="./image/person.svg" alt="login-mobile" className='botton-login-mobile' />
-
       </div>
     </div>
   );

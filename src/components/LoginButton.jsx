@@ -1,4 +1,4 @@
-import { Modal } from 'antd'
+import { Button, Modal } from 'antd'
 import React, { useState } from 'react'
 import Login from './Login'
 import { useTranslation } from 'react-i18next';
@@ -20,9 +20,9 @@ const LoginButton = () => {
 
   return (
     <>
-      <div className='botton-login' onClick={showModal}>
-        <div>{t('auth.login')}</div>
-      </div>
+      <Button className='botton-login' onClick={showModal}>
+        {t('auth.login')}
+      </Button>
       <Modal
         // title="Basic Modal"
         // closable={{ 'aria-label': 'Custom Close Button' }}
@@ -33,7 +33,7 @@ const LoginButton = () => {
         footer={null}
         header={null}
         width={400}
-        styles={{ 
+        styles={{
           content: {
             // padding: '2rem',
           },
