@@ -7,6 +7,8 @@ import Types from '../pages/admin/types'; // แก้ไขจาก '../pages/
 import Places from '../pages/admin/places'; 
 import Posts from '../pages/admin/posts';
 import Users from '../pages/admin/users';
+import AddPlace from '../pages/admin/addPlace';
+
 
 // import Users from '../pages/admin/users';
 // import Posts from '../pages/admin/posts';
@@ -58,10 +60,16 @@ export const routes = [
     path: '/admin/posts',
     element: Posts
   },
+
 {
     path: '/admin/places',
     element: Places
-},
+}, 
+{
+    path: '/admin/addPlace',
+    element: AddPlace
+  },
+
 
   {
     path: '/admin/types', // เปลี่ยนจาก '/types' เป็น '/admin/types'

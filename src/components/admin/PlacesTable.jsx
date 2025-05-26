@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import { 
   Table, 
   Button, 
@@ -9,7 +10,7 @@ import {
   Popconfirm, 
   message,
   Typography,
-  Select
+  Select 
 } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 
@@ -17,6 +18,7 @@ const { Title } = Typography;
 const { Option } = Select;
 
 const PlacesTable = () => {
+  const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingPlace, setEditingPlace] = useState(null);
   const [form] = Form.useForm();
@@ -30,35 +32,35 @@ const PlacesTable = () => {
     {
       id: 1,
       name: 'Doi Suthep Temple',
-      location: 'Suthep, Mueang',
+      district: 'Suthep, Mueang',
       type: 'Religious Place',
       province: 'Chiang Mai',
     },
     {
       id: 2,
       name: 'Phi Phi Islands',
-      location: 'Ao Nang',
+      district: 'Ao Nang',
       type: 'Natural Attraction',
       province: 'Krabi',
     },
     {
       id: 3,
       name: 'Grand Palace',
-      location: 'Phra Nakhon',
+      district: 'Phra Nakhon',
       type: 'Cultural Site',
       province: 'Bangkok',
     },
     {
       id: 4,
       name: 'Night Bazaar',
-      location: 'Chang Khlan',
+      district: 'Chang Khlan',
       type: 'Entertainment',
       province: 'Chiang Mai',
     },
     {
       id: 5,
       name: 'Sukhothai Historical Park',
-      location: 'Mueang Kao',
+      district: 'Mueang Kao',
       type: 'Cultural Site',
       province: 'Sukhothai',
     },
@@ -99,14 +101,14 @@ const PlacesTable = () => {
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
-      title: 'Location',
-      dataIndex: 'location',
-      key: 'location',
-    },
-    {
       title: 'Type',
       dataIndex: 'type',
       key: 'type',
+    },
+    {
+      title: 'District',
+      dataIndex: 'district',
+      key: 'district',
     },
     {
       title: 'Province',
@@ -148,9 +150,7 @@ const PlacesTable = () => {
   ];
 
   const handleAdd = () => {
-    setEditingPlace(null);
-    form.resetFields();
-    setIsModalVisible(true);
+    navigate('/admin/addPlace');
   };
 
   const handleEdit = (place) => {
@@ -168,21 +168,11 @@ const PlacesTable = () => {
     setLoading(true);
     
     setTimeout(() => {
-      if (editingPlace) {
-        // Update existing place
-        setPlaces(places.map(place => 
-          place.id === editingPlace.id ? { ...place, ...values } : place
-        ));
-        message.success('Place updated successfully');
-      } else {
-        // Add new place
-        const newPlace = {
-          id: Math.max(...places.map(p => p.id)) + 1,
-          ...values
-        };
-        setPlaces([...places, newPlace]);
-        message.success('Place added successfully');
-      }
+      // Update existing place
+      setPlaces(places.map(place => 
+        place.id === editingPlace.id ? { ...place, ...values } : place
+      ));
+      message.success('Place updated successfully');
       setIsModalVisible(false);
       form.resetFields();
       setLoading(false);
@@ -281,8 +271,9 @@ const PlacesTable = () => {
         size="middle"
       />
 
+      {/* Modal สำหรับ Edit เท่านั้น */}
       <Modal
-        title={editingPlace ? 'Edit Place' : 'Add New Place'}
+        title="Edit Place"
         open={isModalVisible}
         onCancel={handleCancel}
         footer={null}
@@ -373,7 +364,7 @@ const PlacesTable = () => {
                 loading={loading}
                 size="large"
               >
-                {editingPlace ? 'Update' : 'Create'}
+                Update
               </Button>
             </Space>
           </Form.Item>
