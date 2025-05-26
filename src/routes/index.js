@@ -58,7 +58,7 @@ export const routes = [
   },
   
   { 
-    path: '/admin/posts',
+    path: '/posts',
     element: Posts
   },
 

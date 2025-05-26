@@ -109,7 +109,7 @@ const Navbar = () => {
       {
         key: 'my-posts',
         label: (
-          <Link to="/my-posts" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Link to="/posts" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <FileTextOutlined />
             {t('user.post') || 'Post'}
           </Link>
