@@ -21,15 +21,12 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const initAuth = async () => {
       const token = getToken();
-      console.log(token);
       if (token) {
         try {
           await authAPI.verifyToken();
           setIsAuthenticated(true);
-          console.log(getUserInfo());
-          console.log(getUserRole());
           setUser(getUserInfo());
-          setRole(getUserRole());
+          setRole(JSON.parse(getUserRole()));
         } catch (error) {
           console.error('Token verification failed:', error);
           removeToken();
@@ -73,6 +70,11 @@ export const AuthProvider = ({ children }) => {
     return roles.includes(role);
   };
 
+  const isAdmin = () => {
+    console.log('Checking if user is admin:', role);
+  return role?.role_name.toLowerCase() === 'admin';
+};
+
   const value = {
     isAuthenticated,
     user,
@@ -81,7 +83,8 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     hasRole,
-    hasAnyRole
+    hasAnyRole,
+    isAdmin
   };
 
   return (

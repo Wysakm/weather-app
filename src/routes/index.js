@@ -8,6 +8,7 @@ import Places from '../pages/admin/places';
 import Posts from '../pages/admin/posts';
 import Users from '../pages/admin/users';
 import AddPlace from '../pages/admin/addPlace';
+import AddPost from '../pages/addPost';
 
 
 // import Users from '../pages/admin/users';
@@ -59,6 +60,12 @@ export const routes = [
   { 
     path: '/admin/posts',
     element: Posts
+  },
+
+  {
+    path: '/addPost',
+    element: AddPost // เปลี่ยนจาก AddPost เป็น Posts เพื่อให้ตรงกับโครงสร้างที่มีอยู่
+   
   },
 
 {

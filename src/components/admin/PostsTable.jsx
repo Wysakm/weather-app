@@ -13,10 +13,10 @@ import {
   Tag,
 } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 const { Title } = Typography;
 const { Option } = Select;
-
 
 const PostsTable = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -25,6 +25,7 @@ const PostsTable = () => {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const navigate = useNavigate();
 
   // Sample data
   const [posts, setPosts] = useState([
@@ -164,9 +165,7 @@ const PostsTable = () => {
   ];
 
   const handleAdd = () => {
-    setEditingPost(null);
-    form.resetFields();
-    setIsModalVisible(true);
+    navigate('/addPost');
   };
 
   const handleEdit = (post) => {
@@ -184,21 +183,11 @@ const PostsTable = () => {
     setLoading(true);
     
     setTimeout(() => {
-      if (editingPost) {
-        // Update existing post
-        setPosts(posts.map(post => 
-          post.id === editingPost.id ? { ...post, ...values } : post
-        ));
-        message.success('Post updated successfully');
-      } else {
-        // Add new post
-        const newPost = {
-          id: Math.max(...posts.map(p => p.id)) + 1,
-          ...values,
-        };
-        setPosts([...posts, newPost]);
-        message.success('Post added successfully');
-      }
+      // Update existing post
+      setPosts(posts.map(post => 
+        post.id === editingPost.id ? { ...post, ...values } : post
+      ));
+      message.success('Post updated successfully');
       setIsModalVisible(false);
       form.resetFields();
       setLoading(false);
@@ -288,8 +277,9 @@ const PostsTable = () => {
         />
       </div>
 
+      {/* Edit Modal only */}
       <Modal
-        title={editingPost ? 'Edit Post' : 'Add New Post'}
+        title="Edit Post"
         open={isModalVisible}
         onCancel={handleCancel}
         footer={null}
@@ -365,7 +355,7 @@ const PostsTable = () => {
                 loading={loading}
                 size="large"
               >
-                {editingPost ? 'Update' : 'Create'}
+                Update
               </Button>
             </Space>
           </Form.Item>
