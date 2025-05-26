@@ -133,7 +133,13 @@ const TypeTable = () => {
   };
 
   return (
-    <div style={{ padding: '24px', width: '80%',display: 'flex', flexDirection: 'column',  }}>  
+    <div style={{ 
+      padding: '24px', 
+      width: '80%',
+      display: 'flex', 
+      flexDirection: 'column',
+      minHeight: '100vh'
+    }}>  
       
         <div style={{ 
           display: 'flex', 
@@ -157,21 +163,23 @@ const TypeTable = () => {
           </Button>
         </div>
 
-        <Table
-          columns={columns}
-          dataSource={types}
-          loading={loading}
-          rowKey="id"
-          pagination={{
-            pageSize: 10,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total, range) =>
-              `${range[0]}-${range[1]} of ${total} items`,
-          }}
-          bordered
-          size="middle"
-        />
+        <div style={{ flex: 1 }}>
+          <Table
+            columns={columns}
+            dataSource={types}
+            loading={loading}
+            rowKey="id"
+            pagination={{
+              pageSize: 10,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total, range) =>
+                `${range[0]}-${range[1]} of ${total} items`,
+            }}
+            bordered
+            size="middle"
+          />
+        </div>
 
         <Modal
           title={editingType ? 'Edit Type' : 'Add New Type'}

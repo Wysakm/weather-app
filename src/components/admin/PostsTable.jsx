@@ -215,7 +215,8 @@ const PostsTable = () => {
       padding: '24px', 
       width: '80%',
       display: 'flex', 
-      flexDirection: 'column'
+      flexDirection: 'column',
+      minHeight: '100vh'
     }}>
       
       <div style={{ 
@@ -269,21 +270,23 @@ const PostsTable = () => {
         </Select>
       </div>
 
-      <Table
-        columns={columns}
-        dataSource={filteredPosts}
-        loading={loading}
-        rowKey="id"
-        pagination={{
-          pageSize: 10,
-          showSizeChanger: true,
-          showQuickJumper: true,
-          showTotal: (total, range) =>
-            `${range[0]}-${range[1]} of ${total} items`,
-        }}
-        bordered
-        size="middle"
-      />
+      <div style={{ flex: 1 }}>
+        <Table
+          columns={columns}
+          dataSource={filteredPosts}
+          loading={loading}
+          rowKey="id"
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${total} items`,
+          }}
+          bordered
+          size="middle"
+        />
+      </div>
 
       <Modal
         title={editingPost ? 'Edit Post' : 'Add New Post'}

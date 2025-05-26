@@ -189,7 +189,8 @@ const PlacesTable = () => {
       padding: '24px', 
       width: '80%',
       display: 'flex', 
-      flexDirection: 'column'
+      flexDirection: 'column',
+      minHeight: '100vh'
     }}>
       
       <div style={{ 
@@ -255,21 +256,23 @@ const PlacesTable = () => {
         </Select>
       </div>
 
-      <Table
-        columns={columns}
-        dataSource={filteredPlaces}
-        loading={loading}
-        rowKey="id"
-        pagination={{
-          pageSize: 10,
-          showSizeChanger: true,
-          showQuickJumper: true,
-          showTotal: (total, range) =>
-            `${range[0]}-${range[1]} of ${total} items`,
-        }}
-        bordered
-        size="middle"
-      />
+      <div style={{ flex: 1 }}>
+        <Table
+          columns={columns}
+          dataSource={filteredPlaces}
+          loading={loading}
+          rowKey="id"
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${total} items`,
+          }}
+          bordered
+          size="middle"
+        />
+      </div>
 
       {/* Modal สำหรับ Edit เท่านั้น */}
       <Modal
