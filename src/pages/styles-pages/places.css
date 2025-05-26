@@ -1,0 +1,10 @@
+.placeManage-container { 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: auto;
+  padding-top: 2rem;
+  border: 1px solid red;
+}
