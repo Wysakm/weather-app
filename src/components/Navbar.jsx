@@ -66,7 +66,7 @@ const Navbar = () => {
       {
         key: 'post-manage',
         label: (
-          <Link to="/admin/posts" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Link to="/posts" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <FileTextOutlined />
             {t('user.postManage') || 'Post Manage'}
           </Link>

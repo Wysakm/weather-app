@@ -1,10 +1,12 @@
 import React from 'react';
+import ContactInfo from '../components/contactInfo';
+import SendEmail from '../components/sendEmail';
 
 function Contact() {
   return (
-    <div>
-      <h1>ติดต่อเรา</h1>
-      <p>ช่องทางการติดต่อ เช่น อีเมล หรือฟอร์ม</p>
+    <div >
+      <ContactInfo />
+      <SendEmail />
     </div>
   );
 }
