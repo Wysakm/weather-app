@@ -1,58 +1,100 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Form, Input, Button, Typography, Space, message, Divider } from 'antd';
 import { UserOutlined, LockOutlined, GoogleOutlined } from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { GOOGLE_CLIENT_ID } from '../config/googleAuth';
 
 const { Title } = Typography;
 
 const Login = ({ handleCancel }) => {
-  const { login } = useAuth();
+  const { login, loginWithGoogle, googleLoaded } = useAuth();
+  const navigate = useNavigate();
+
+  const handleGoogleResponse = useCallback(async (response) => {
+    try {
+      const success = await loginWithGoogle(response);
+      if (success) {
+        message.success('Google login successful!');
+        if (handleCancel) handleCancel();
+      } else {
+        message.error('Google login failed');
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      message.error('An error occurred during login');
+    }
+  }, [loginWithGoogle, handleCancel]);
+
+  useEffect(() => {
+    // Initialize Google Sign-In when script is loaded
+    if (googleLoaded && window.google) {
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true
+      });
+    }
+  }, [googleLoaded, handleGoogleResponse]);
 
   const onFinish = async (values) => {
     console.log('Login values:', values);
-    // จำลองการ login สำเร็จ
-    const loginSuccess = await login(values)
+    const loginSuccess = await login(values);
     if (!loginSuccess) {
-      message.error('เข้าสู่ระบบล้มเหลว! กรุณาตรวจสอบข้อมูลของคุณ');
+      message.error('Login failed! Please check your credentials');
       return;
     }
-    handleCancel()
-    message.success('เข้าสู่ระบบสำเร็จ!');
-    // navigate ไปหน้าอื่น เช่น dashboard
-    // navigate('/dashboard');
+    if (handleCancel) handleCancel();
+    message.success('Login successful!');
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
-    message.error('กรุณากรอกข้อมูลให้ครบถ้วน');
+    message.error('Please fill in all required fields');
   };
 
   const handleGoogleLogin = () => {
-    console.log('Google login clicked');
-    // ที่นี่คุณสามารถเพิ่มการ integrate กับ Google OAuth
-    message.info('กำลังเชื่อมต่อกับ Google...');
+    if (!googleLoaded) {
+      message.warning('Please wait, Google Sign-In is loading...');
+      return;
+    }
 
-    // ตัวอย่างการใช้ Google OAuth
-    // window.location.href = 'YOUR_GOOGLE_OAUTH_URL';
+    if (window.google && window.google.accounts) {
+      window.google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          console.log('One-tap sign-in not displayed');
+        }
+      });
+    } else {
+      message.error('Google Sign-In is not available, please try again');
+    }
+  };
+
+  const handleRegisterClick = () => {
+    navigate('/register');
+    if (handleCancel) {
+      handleCancel();
+    }
   };
 
   return (
-    <div style={{ width: '100%', }}  >
+    <div style={{ width: '100%' }}>
       <Space className='login-container' direction="vertical" size="small" style={{ width: '100%' }}>
         <div style={{ textAlign: 'center' }}>
           <Title level={2} style={{ color: '#1890ff', marginBottom: '10px' }}>
-            เข้าสู่ระบบ
+            Sign In
           </Title>
           <p style={{ color: '#666', fontSize: '14px' }}>
-            กรุณาใส่ข้อมูลของคุณเพื่อเข้าสู่ระบบ
+            Please enter your credentials to sign in
           </p>
         </div>
 
-        {/* Google Login Button */}
         <Button
           icon={<GoogleOutlined />}
           size="large"
           onClick={handleGoogleLogin}
+          loading={!googleLoaded}
           style={{
             width: '100%',
             borderRadius: '6px',
@@ -65,11 +107,11 @@ const Login = ({ handleCancel }) => {
             gap: '8px'
           }}
         >
-          เข้าสู่ระบบด้วย Google
+          Sign in with Google
         </Button>
 
         <Divider>
-          <span style={{ color: '#999', fontSize: '12px' }}>หรือ</span>
+          <span style={{ color: '#999', fontSize: '12px' }}>or</span>
         </Divider>
 
         <Form
@@ -80,43 +122,39 @@ const Login = ({ handleCancel }) => {
           autoComplete="off"
         >
           <Form.Item
-            label="อีเมล"
+            label="Email"
             name="username"
             rules={[
               {
                 required: true,
-                message: 'กรุณากรอกอีเมล!'
+                message: 'Please enter your email!'
               },
-              // {
-              //   type: 'email',
-              //   message: 'รูปแบบอีเมลไม่ถูกต้อง!'
-              // }
             ]}
           >
             <Input
               prefix={<UserOutlined />}
-              placeholder="กรอกอีเมลของคุณ"
+              placeholder="Enter your email"
               size="large"
             />
           </Form.Item>
 
           <Form.Item
-            label="รหัสผ่าน"
+            label="Password"
             name="password"
             rules={[
               {
                 required: true,
-                message: 'กรุณากรอกรหัสผ่าน!'
+                message: 'Please enter your password!'
               },
               {
                 min: 6,
-                message: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร!'
+                message: 'Password must be at least 6 characters!'
               }
             ]}
           >
             <Input.Password
               prefix={<LockOutlined />}
-              placeholder="กรอกรหัสผ่านของคุณ"
+              placeholder="Enter your password"
               size="large"
             />
           </Form.Item>
@@ -133,26 +171,25 @@ const Login = ({ handleCancel }) => {
                 border: 'none'
               }}
             >
-              เข้าสู่ระบบ
+              Sign In
             </Button>
           </Form.Item>
         </Form>
 
         <div style={{ textAlign: 'center' }}>
           <Button type="link" style={{ padding: 0 }}>
-            ลืมรหัสผ่าน?
+            Forgot password?
           </Button>
           <br />
           <span style={{ color: '#666' }}>
-            ยังไม่มีบัญชี? {' '}
-            <Button type="link" style={{ padding: 0 }}>
-              สมัครสมาชิก
+            Don't have an account? {' '}
+            <Button type="link" style={{ padding: 0 }} onClick={handleRegisterClick}>
+              Sign up
             </Button>
           </span>
         </div>
       </Space>
     </div>
-    // </div>
   );
 };
 

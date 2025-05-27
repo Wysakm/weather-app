@@ -3,7 +3,7 @@ import Recommend from '../pages/recommend';
 import CampStay from '../pages/campStay';
 import Contact from '../pages/contact';
 import Article from '../pages/articles';
-import Types from '../pages/admin/types'; // แก้ไขจาก '../pages/admin/types' เป็น '../pages/types'
+import Types from '../pages/admin/types';
 import Places from '../pages/admin/places'; 
 import Posts from '../pages/admin/posts';
 import Users from '../pages/admin/users';
@@ -11,16 +11,7 @@ import AddPlace from '../pages/admin/addPlace';
 import AddPost from '../pages/addPost';
 import Terms from '../pages/terms';
 import PrivacyPolicy from '../pages/privacy';
-
-
-
-// import Users from '../pages/admin/users';
-// import Posts from '../pages/admin/posts';
-// import Places from '../pages/admin/places';
-
-// User pages  
-// import Account from '../pages/account';
-// import MyPosts from '../pages/my-posts';
+import Register from '../pages/register'; // เปลี่ยนกลับมาเป็น register.jsx
 
 export const routes = [
   {
@@ -54,7 +45,6 @@ export const routes = [
   },
 
   //admin routes
-
   {
     path: '/admin/users',
     element: Users
@@ -67,22 +57,20 @@ export const routes = [
 
   {
     path: '/addPost',
-    element: AddPost // เปลี่ยนจาก AddPost เป็น Posts เพื่อให้ตรงกับโครงสร้างที่มีอยู่
-   
+    element: AddPost
   },
 
-{
+  {
     path: '/admin/places',
     element: Places
-}, 
-{
+  }, 
+  {
     path: '/admin/addPlace',
     element: AddPlace
   },
 
-
   {
-    path: '/admin/types', // เปลี่ยนจาก '/types' เป็น '/admin/types'
+    path: '/admin/types',
     element: Types
   },
 
@@ -93,5 +81,9 @@ export const routes = [
   {
     path: '/privacy',
     element: PrivacyPolicy
+  }, 
+  {
+    path: '/register',
+    element: Register
   }
 ];
