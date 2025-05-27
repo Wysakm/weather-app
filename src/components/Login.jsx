@@ -1,13 +1,11 @@
 import React from 'react';
-import { Form, Input, Button, Card, Typography, Space, message, Divider } from 'antd';
+import { Form, Input, Button, Typography, Space, message, Divider } from 'antd';
 import { UserOutlined, LockOutlined, GoogleOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const { Title } = Typography;
 
 const Login = ({ handleCancel }) => {
-  const navigate = useNavigate();
   const { login } = useAuth();
 
   const onFinish = async (values) => {

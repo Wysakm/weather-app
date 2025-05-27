@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import emailjs from '@emailjs/browser';
 import './styles/sendEmail.css';
 
 const SendEmail = () => {
@@ -13,6 +14,18 @@ const SendEmail = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [statusMessage, setStatusMessage] = useState({ text: '', type: '' });
 
+    // กำหนดค่า EmailJS
+    const EMAILJS_SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+    const EMAILJS_TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
+    const EMAILJS_PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+
+    // Initialize EmailJS
+    useEffect(() => {
+        if (EMAILJS_PUBLIC_KEY) {
+            emailjs.init(EMAILJS_PUBLIC_KEY);
+        }
+    }, [EMAILJS_PUBLIC_KEY]);
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -25,12 +38,38 @@ const SendEmail = () => {
         setIsSubmitting(true);
         setStatusMessage({ text: '', type: '' });
 
+        // ตรวจสอบการตั้งค่า EmailJS
+        if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+            setStatusMessage({
+                text: 'EmailJS is not configured. Please check your .env file and restart the server.',
+                type: 'error'
+            });
+            setIsSubmitting(false);
+            return;
+        }
+
         try {
-            // จำลองการส่งอีเมล (คุณสามารถแทนที่ด้วย EmailJS หรือ API จริง)
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // ส่งอีเมลผ่าน EmailJS
+            const templateParams = {
+                name: formData.name,
+                email: formData.email,
+                phone: formData.phone || 'ไม่ระบุ',
+                subject: formData.subject,
+                message: formData.message,
+                time: new Date().toLocaleString(),
+                reply_to: formData.email,
+                to_name: 'Weather App Team'
+            };
+
+            await emailjs.send(
+                EMAILJS_SERVICE_ID,
+                EMAILJS_TEMPLATE_ID,
+                templateParams,
+                EMAILJS_PUBLIC_KEY
+            );
             
             setStatusMessage({
-                text: 'Message sent successfully!',
+                text: 'Message sent successfully! We will get back to you soon.',
                 type: 'success'
             });
             
@@ -42,9 +81,24 @@ const SendEmail = () => {
                 subject: '',
                 message: ''
             });
+
         } catch (error) {
+            let errorMessage = 'Failed to send message. Please try again later.';
+            
+            if (error.status === 400) {
+                errorMessage = 'Bad Request: Please check your EmailJS template configuration.';
+            } else if (error.status === 401) {
+                errorMessage = 'Unauthorized: Invalid public key or service access.';
+            } else if (error.status === 404) {
+                errorMessage = 'Not Found: Service or template ID is incorrect.';
+            } else if (error.status === 422) {
+                errorMessage = 'Invalid template: Check your template configuration.';
+            } else if (error.text) {
+                errorMessage = `Error: ${error.text}`;
+            }
+            
             setStatusMessage({
-                text: 'An error occurred. Please try again.',
+                text: errorMessage,
                 type: 'error'
             });
         } finally {
@@ -52,9 +106,20 @@ const SendEmail = () => {
         }
     };
 
+    // แสดงสถานะการตั้งค่า
+    const isConfigured = EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY;
+
     return (
         <div className="contact-form">
             <h2>Send us a message</h2>
+            
+            {!isConfigured && (
+                <div className="status-message error">
+                    ⚠️ EmailJS is not configured. Please check your .env file and restart the server.
+                    <br />
+                    Missing: {!EMAILJS_SERVICE_ID && 'SERVICE_ID '}{!EMAILJS_TEMPLATE_ID && 'TEMPLATE_ID '}{!EMAILJS_PUBLIC_KEY && 'PUBLIC_KEY'}
+                </div>
+            )}
             
             {statusMessage.text && (
                 <div className={`status-message ${statusMessage.type}`}>
@@ -70,6 +135,7 @@ const SendEmail = () => {
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
+                        placeholder="Enter your full name"
                         required
                     />
                 </div>
@@ -81,6 +147,7 @@ const SendEmail = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
+                        placeholder="Enter your email address"
                         required
                     />
                 </div>
@@ -92,6 +159,7 @@ const SendEmail = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
+                        placeholder="Enter your phone number (optional)"
                     />
                 </div>
 
@@ -106,7 +174,9 @@ const SendEmail = () => {
                         <option value="">Please select a subject</option>
                         <option value="General Inquiry">General Inquiry</option>
                         <option value="Technical Support">Technical Support</option>
-                        <option value="Business">Business</option>
+                        <option value="Business Partnership">Business Partnership</option>
+                        <option value="Feature Request">Feature Request</option>
+                        <option value="Bug Report">Bug Report</option>
                         <option value="Others">Others</option>
                     </select>
                 </div>
@@ -117,6 +187,8 @@ const SendEmail = () => {
                         name="message"
                         value={formData.message}
                         onChange={handleChange}
+                        placeholder="Please describe your inquiry in detail..."
+                        rows="5"
                         required
                     />
                 </div>
@@ -125,7 +197,7 @@ const SendEmail = () => {
                     <button 
                         type="submit" 
                         className="submit-btn" 
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || !isConfigured}
                     >
                         {isSubmitting ? 'Sending...' : 'Send Message'}
                     </button>
