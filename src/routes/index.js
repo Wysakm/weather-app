@@ -10,6 +10,7 @@ import Users from '../pages/admin/users';
 import AddPlace from '../pages/admin/addPlace';
 import AddPost from '../pages/addPost';
 import Terms from '../pages/terms';
+import PrivacyPolicy from '../pages/privacy';
 
 
 
@@ -88,8 +89,9 @@ export const routes = [
   {
     path: '/terms',
     element: Terms
+  }, 
+  {
+    path: '/privacy',
+    element: PrivacyPolicy
   }
-
-
-
 ];

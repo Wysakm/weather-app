@@ -9,6 +9,14 @@ const TermsText = () => {
       <Typography>
         <h1 style={{ color: 'var(--color-primary)' }}>Terms of Service / ข้อกำหนดและเงื่อนไขการใช้บริการ</h1>
         
+        <div style={{ marginBottom: '20px' }}>
+          <Text type="secondary">
+            Last updated: May 27, 2025
+            <br />
+            อัปเดตล่าสุด: 27 พฤษภาคม 2025
+          </Text>
+        </div>
+        
         <div>
           <Title level={3}>1. Terms of Service (ToS) / ข้อกำหนดการใช้บริการ</Title>
           <Paragraph>
@@ -172,7 +180,6 @@ const TermsText = () => {
         <div>
           <Title level={3}>11. Contact Us / ติดต่อเรา</Title>
           <Paragraph>Email: support@example.com / อีเมล: support@example.com</Paragraph>
-          <Paragraph>Last updated: May 27, 2025 / อัปเดตล่าสุด: 27 พฤษภาคม 2025</Paragraph>
           <Paragraph>This page is available in both English and Thai. / หน้านี้มีทั้งภาษาอังกฤษและไทย</Paragraph>
         </div>
       </Typography>
