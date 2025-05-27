@@ -9,6 +9,8 @@ import Posts from '../pages/admin/posts';
 import Users from '../pages/admin/users';
 import AddPlace from '../pages/admin/addPlace';
 import AddPost from '../pages/addPost';
+import Terms from '../pages/terms';
+
 
 
 // import Users from '../pages/admin/users';
@@ -82,27 +84,12 @@ export const routes = [
     path: '/admin/types', // เปลี่ยนจาก '/types' เป็น '/admin/types'
     element: Types
   },
-  // Admin routes
 
-  // {
-  //   path: '/admin/users',
-  //   element: Users
-  // },
-  // {
-  //   path: '/admin/posts',
-  //   element: Posts
-  // },
-  
-  //   path: '/admin/places',
-  //   element: Places
-   
-  // User routes
-  // {
-  //   path: '/account',
-  //   element: Account
-  // },
-  // {
-  //   path: '/my-posts',
-  //   element: MyPosts
-  // },
+  {
+    path: '/terms',
+    element: Terms
+  }
+
+
+
 ];
