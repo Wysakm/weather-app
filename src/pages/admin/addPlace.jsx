@@ -210,7 +210,42 @@ const AddPlace = () => {
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
-      // Create the place using the API
+      // Check for duplicate places before creating (including Google reference)
+      const duplicates = await placesAPI.checkDuplicate(
+        values.name_place,
+        values.latitude,
+        values.longitude,
+        ggRef // เพิ่ม Google Places reference ในการตรวจสอบ
+      );
+
+      if (duplicates) {
+        // const existingPlace = duplicates[0];
+        
+        // // Check if it's an exact name match or proximity match
+        // const isNameMatch = existingPlace.name_place?.toLowerCase().trim() === values.name_place.toLowerCase().trim();
+        // const latDiff = Math.abs(parseFloat(existingPlace.latitude) - parseFloat(values.latitude));
+        // const lngDiff = Math.abs(parseFloat(existingPlace.longitude) - parseFloat(values.longitude));
+        // const isProximityMatch = latDiff < 0.001 && lngDiff < 0.001;
+
+        let duplicateReason = 'Dublicate place';
+        // if (isNameMatch && isProximityMatch) {
+        //   duplicateReason = 'same name and location';
+        // } else if (isNameMatch) {
+        //   duplicateReason = 'same name';
+        // } else if (isProximityMatch) {
+        //   duplicateReason = 'same location';
+        // }
+
+        message.warning({
+          content: `Place already exists with ${duplicateReason} ! Please check if this is the place you want to add.`,
+          // content: `Place already exists with ${duplicateReason}: "${existingPlace.name_place}"! Please check if this is the place you want to add.`,
+          duration: 8,
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Create the place using the API if no duplicates found
       await placesAPI.create({
         name_place: values.name_place,
         province: values.province,

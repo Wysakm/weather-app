@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { 
   Table, 
   Button, 
@@ -15,58 +15,85 @@ import {
 import { EditOutlined, DeleteOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { postsAPI } from '../../api/posts';
 
 const { Title } = Typography;
 const { Option } = Select;
+const { TextArea } = Input;
 
 const PostsTable = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [tableLoading, setTableLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [posts, setPosts] = useState([]);
   const navigate = useNavigate();
-  const { isAdmin, user } = useAuth();
+  const { isAdmin, user, token } = useAuth();
 
-  // Sample data
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      title: 'Thi Lo Su Waterfall, Tak - The Largest and Most Beautiful Waterfall in Asia',
-      author: 'travelthai',
-      authorId: 1,
-      status: 'Pending',
-    },
-    {
-      id: 2,
-      title: 'Phu Chi Fa, Chiang Rai - World-Class Sea of Mist Viewpoint',
-      author: 'northernguide',
-      authorId: 2,
-      status: 'Approved',
-    },
-    {
-      id: 3,
-      title: 'Koh Lipe, Satun - Paradise of the Andaman Sea',
-      author: 'seathai',
-      authorId: 1,
-      status: 'Pending',
-    },
-    {
-      id: 4,
-      title: 'Experience Old Town Atmosphere at Chiang Khan, Loei',
-      author: 'isanguide',
-      authorId: 3,
-      status: 'Approved',
-    },
-    {
-      id: 5,
-      title: 'Naka Cave, Bueng Kan - Mysterious Cave in the Forest',
-      author: 'esanguide',
-      authorId: 1,
-      status: 'Rejected',
-    },
-  ]);
+  const API_BASE_URL = 'http://localhost:3030/api';
+
+  // สร้าง headers ด้วย useMemo เพื่อ optimize performance
+  const headers = useMemo(() => ({
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  }), [token]);
+
+  // Fetch posts from API
+  useEffect(() => {
+    if (!token) return;
+
+    const fetchPosts = async () => {
+      setTableLoading(true);
+      try {
+        const response = await fetch(`${API_BASE_URL}/posts/`, {
+          method: 'GET',
+          headers,
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setPosts(data);
+        } else {
+          message.error('Failed to fetch posts');
+        }
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+        message.error('Error fetching posts');
+      } finally {
+        setTableLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, [token, headers]); // ใส่ headers ใน dependency
+
+  // สร้างฟังก์ชัน fetchPosts แยกสำหรับใช้ใน handlers อื่นๆ
+  const refetchPosts = async () => {
+    if (!token) return;
+    
+    setTableLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/posts/`, {
+        method: 'GET',
+        headers,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setPosts(data);
+      } else {
+        message.error('Failed to fetch posts');
+      }
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      message.error('Error fetching posts');
+    } finally {
+      setTableLoading(false);
+    }
+  };
 
   const statusOptions = [
     { value: 'all', label: 'All Status' },
@@ -81,7 +108,7 @@ const PostsTable = () => {
 
     // ถ้าไม่ใช่ admin ให้แสดงเฉพาะโพสต์ของตัวเอง
     if (!isAdmin()) {
-      filtered = posts.filter(post => post.authorId === user?.id);
+      filtered = posts.filter(post => post.id_user === user?.id_user);
     }
 
     // Apply search filter
@@ -121,9 +148,17 @@ const PostsTable = () => {
         title: 'Post Title',
         dataIndex: 'title',
         key: 'title',
-        width: isAdmin() ? '45%' : '60%',
+        width: isAdmin() ? '35%' : '50%',
         ellipsis: true,
         sorter: (a, b) => a.title.localeCompare(b.title),
+      },
+      {
+        title: 'Body',
+        dataIndex: 'body',
+        key: 'body',
+        width: '25%',
+        ellipsis: true,
+        render: (text) => text?.substring(0, 100) + (text?.length > 100 ? '...' : ''),
       }
     ];
 
@@ -131,10 +166,10 @@ const PostsTable = () => {
     if (isAdmin()) {
       baseColumns.push({
         title: 'Author',
-        dataIndex: 'author',
-        key: 'author',
-        width: '20%',
-        sorter: (a, b) => a.author.localeCompare(b.author),
+        dataIndex: 'username',
+        key: 'username',
+        width: '15%',
+        sorter: (a, b) => (a.username || '').localeCompare(b.username || ''),
         responsive: ['md'],
       });
     }
@@ -144,16 +179,16 @@ const PostsTable = () => {
         title: 'Status',
         dataIndex: 'status',
         key: 'status',
-        width: '15%',
+        width: '10%',
         responsive: ['sm'],
         render: (status) => (
-          <Tag color={getStatusColor(status)}>{status}</Tag>
+          <Tag color={getStatusColor(status)}>{status || 'Pending'}</Tag>
         ),
       },
       {
         title: 'Actions',
         key: 'actions',
-        width: '20%',
+        width: '15%',
         render: (_, record) => (
           <Space 
             size="small" 
@@ -175,7 +210,7 @@ const PostsTable = () => {
             </Button>
             <Popconfirm
               title="Are you sure you want to delete this post?"
-              onConfirm={() => handleDelete(record.id)}
+              onConfirm={() => handleDelete(record.id_post)}
               okText="Yes"
               cancelText="No"
             >
@@ -207,42 +242,80 @@ const PostsTable = () => {
 
   const handleEdit = (post) => {
     // ตรวจสอบสิทธิ์ก่อนแก้ไข
-    if (!isAdmin() && post.authorId !== user?.id) {
+    if (!isAdmin() && post.id_user !== user?.id_user) {
       message.error('You can only edit your own posts');
       return;
     }
 
     setEditingPost(post);
-    form.setFieldsValue(post);
+    form.setFieldsValue({
+      title: post.title,
+      body: post.body,
+      status: post.status || 'Pending',
+      image: post.image
+    });
     setIsModalVisible(true);
   };
 
-  const handleDelete = (id) => {
-    const post = posts.find(p => p.id === id);
+  const handleDelete = async (id_post) => {
+    const post = posts.find(p => p.id_post === id_post);
     
-    // ตรวจสอบสิทธิ์ก่อนลบ
-    if (!isAdmin() && post?.authorId !== user?.id) {
+    if (!isAdmin() && post?.id_user !== user?.id_user) {
       message.error('You can only delete your own posts');
       return;
     }
 
-    setPosts(posts.filter(post => post.id !== id));
-    message.success('Post deleted successfully');
+    try {
+      setTableLoading(true);
+      const response = await fetch(`${API_BASE_URL}/posts/${id_post}`, {
+        method: 'DELETE',
+        headers, // ใช้ headers แทน getHeaders()
+      });
+
+      if (response.ok) {
+        message.success('Post deleted successfully');
+        refetchPosts();
+      } else {
+        message.error('Failed to delete post');
+      }
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      message.error('Error deleting post');
+    } finally {
+      setTableLoading(false);
+    }
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     setLoading(true);
     
-    setTimeout(() => {
-      // Update existing post
-      setPosts(posts.map(post => 
-        post.id === editingPost.id ? { ...post, ...values } : post
-      ));
-      message.success('Post updated successfully');
-      setIsModalVisible(false);
-      form.resetFields();
+    try {
+      const response = await fetch(`${API_BASE_URL}/posts/${editingPost.id_post}`, {
+        method: 'PUT',
+        headers, // ใช้ headers แทน getHeaders()
+        body: JSON.stringify({
+          title: values.title,
+          body: values.body,
+          status: values.status,
+          image: values.image,
+          id_place: editingPost.id_place
+        }),
+      });
+
+      if (response.ok) {
+        message.success('Post updated successfully');
+        setIsModalVisible(false);
+        form.resetFields();
+        refetchPosts();
+      } else {
+        message.error('Failed to update post');
+      }
+    } catch (error) {
+      console.error('Error updating post:', error);
+      message.error('Error updating post');
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   const handleCancel = () => {
@@ -329,8 +402,8 @@ const PostsTable = () => {
         <Table
           columns={getColumns()}
           dataSource={filteredPosts}
-          loading={loading}
-          rowKey="id"
+          loading={tableLoading}
+          rowKey="id_post"
           pagination={{
             pageSize: 10,
             showSizeChanger: true,
@@ -378,23 +451,33 @@ const PostsTable = () => {
             />
           </Form.Item>
 
-          {/* แสดง Author field เฉพาะ admin */}
-          {isAdmin() && (
-            <Form.Item
-              name="author"
-              label="Author"
-              rules={[
-                { required: true, message: 'Please input author!' },
-                { min: 2, message: 'Author must be at least 2 characters!' },
-                { max: 50, message: 'Author cannot exceed 50 characters!' }
-              ]}
-            >
-              <Input 
-                placeholder="Enter author name"
-                size="large"
-              />
-            </Form.Item>
-          )}
+          <Form.Item
+            name="body"
+            label="Post Body"
+            rules={[
+              { required: true, message: 'Please input post body!' },
+              { min: 10, message: 'Post body must be at least 10 characters!' }
+            ]}
+          >
+            <TextArea 
+              placeholder="Enter post content"
+              rows={4}
+              size="large"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="image"
+            label="Image URL"
+            rules={[
+              { type: 'url', message: 'Please enter a valid URL!' }
+            ]}
+          >
+            <Input 
+              placeholder="Enter image URL"
+              size="large"
+            />
+          </Form.Item>
 
           <Form.Item
             name="status"
