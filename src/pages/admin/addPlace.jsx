@@ -8,9 +8,13 @@ import {
   Typography, 
   Row, 
   Col, 
-  message 
+  message,
+  InputNumber
 } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
+import apiClient from '../../api/client';
+import { placeTypesAPI } from '../../api/placeTypes';
+import { placesAPI } from '../../api/places';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -19,34 +23,86 @@ const AddPlace = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [placeTypes, setPlaceTypes] = useState([]);
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markerRef = useRef(null);
   const autocompleteRef = useRef(null);
+  const [provinces, setProvinces] = useState([])
+  const [ggRef, setGgRef] = useState('')
+
+  useEffect(() => {
+    const fetchProvinces = async () => {
+      // setProvincesLoading(true);
+      try {
+        const response = (await apiClient.get('/provinces')).data;
+        const provinceOptions = response.data.map(province => ({
+          value: province.id_province,
+          label: province.name,
+        }));
+        setProvinces(provinceOptions);
+      } catch (error) {
+        console.error('Error fetching provinces:', error);
+        message.error('Failed to load provinces');
+      } finally {
+        // setProvincesLoading(false);
+      }
+    };
+
+    fetchProvinces();
+  }, []);
 
   const fillFormFields = useCallback((place) => {
     const addressComponents = place.address_components || [];
-    let district = '', province = '';
-
-    // Extract address components
+    let district = '';
+    setGgRef(place.reference);
+    
+    // Extract address components - try multiple district types
     addressComponents.forEach(component => {
       const types = component.types;
-      if (types.includes('administrative_area_level_1')) {
-        province = component.long_name;
-      } else if (types.includes('sublocality_level_1')) {
-        district = component.long_name;
+      
+      // Try different district types from Google Places
+      if (types.includes('sublocality_level_1') || 
+          types.includes('administrative_area_level_2') ||
+          types.includes('locality') ||
+          types.includes('sublocality')) {
+        if (!district) { // Only set if not already found
+          district = component.long_name;
+        }
       }
     });
 
-    // Fill form fields
+    // Fill form fields with Google Places data
     form.setFieldsValue({
-      placeName: place.name || '',
-      province: province,
-      district: district,
+      name_place: place.name || '',
+      district: district, // Auto-fill district from Google Places or leave empty
       latitude: place.geometry ? place.geometry.location.lat() : '',
       longitude: place.geometry ? place.geometry.location.lng() : ''
     });
   }, [form]);
+
+  // Fetch place types from API
+  const fetchPlaceTypes = useCallback(async () => {
+    try {
+      const response = await placeTypesAPI.getAll();
+      // Handle different possible response formats
+      let data = response.data;
+      if (response.data && Array.isArray(response.data.data)) {
+        data = response.data.data;
+      } else if (response.data && Array.isArray(response.data)) {
+        data = response.data;
+      } else if (Array.isArray(response)) {
+        data = response;
+      } else {
+        data = [];
+      }
+      setPlaceTypes(data);
+    } catch (error) {
+      console.error('Error fetching place types:', error);
+      message.error('Failed to load place types');
+      setPlaceTypes([]);
+    }
+  }, []);
 
   const initMap = useCallback(() => {
     if (!mapRef.current) return;
@@ -56,7 +112,24 @@ const AddPlace = () => {
     
     mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
       center: bangkok,
-      zoom: 13
+      zoom: 13,
+      draggable: false,                    // ปิดการลาก
+      zoomControl: false,                  // ปิด zoom buttons
+      scrollwheel: false,                  // ปิด scroll wheel zoom
+      disableDoubleClickZoom: true,        // ปิด double click zoom
+      mapTypeControl: false,               // ปิด map type control
+      scaleControl: false,                 // ปิด scale control
+      streetViewControl: false,            // ปิด street view control
+      rotateControl: false,                // ปิด rotate control
+      fullscreenControl: false,            // ปิด fullscreen control
+      panControl: false,                   // ปิด pan control
+      keyboardShortcuts: false,            // ปิด keyboard shortcuts
+      clickableIcons: false,               // ปิด clickable icons
+      gestureHandling: 'none',             // ปิด gesture handling
+
+      // หรือใช้แบบนี้เพื่อปิดทุกอย่าง
+      disableDefaultUI: true,
+
     });
 
     // Add marker
@@ -118,6 +191,8 @@ const AddPlace = () => {
   }, [form, fillFormFields]);
 
   useEffect(() => {
+    fetchPlaceTypes(); // Fetch place types on component mount
+    
     if (window.google && window.google.maps) {
       initMap();
     } else {
@@ -130,16 +205,35 @@ const AddPlace = () => {
       
       return () => clearInterval(checkGoogleMaps);
     }
-  }, [initMap]); // เพิ่ม initMap ใน dependency array
+  }, [initMap, fetchPlaceTypes]); // เพิ่ม initMap ใน dependency array
 
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
-      console.log('Form Data:', values);
+      // Create the place using the API
+      await placesAPI.create({
+        name_place: values.name_place,
+        province: values.province,
+        district: values.district,
+        reference: ggRef,
+        latitude: values.latitude,
+        longitude: values.longitude,
+        place_type_id: values.place_type_id
+      });
+      
       message.success('Place added successfully!');
       navigate('/admin/places');
     } catch (error) {
-      message.error('Failed to add place');
+      console.error('Error adding place:', error);
+      if (error.response?.status === 401) {
+        message.error('Please login to add place');
+      } else if (error.response?.status === 403) {
+        message.error('You do not have permission to add places');
+      } else if (error.response?.status === 400) {
+        message.error('Invalid data provided');
+      } else {
+        message.error('Failed to add place');
+      }
     } finally {
       setLoading(false);
     }
@@ -190,31 +284,32 @@ const AddPlace = () => {
         <Row gutter={20}>
           <Col xs={24} md={12}>
             <Form.Item
-              name="placeName"
+              name="name_place"
               label="Place Name"
               rules={[
-                { required: true, message: 'Please enter place name!' }
+                { required: true, message: 'Please enter place name!' },
+                { min: 2, message: 'Place name must be at least 2 characters!' },
+                { max: 100, message: 'Place name cannot exceed 100 characters!' }
               ]}
             >
-              <Input size="large" />
+              <Input size="large" placeholder="Enter place name" />
             </Form.Item>
           </Col>
 
           <Col xs={24} md={12}>
             <Form.Item
-              name="placeType"
+              name="place_type_id"
               label="Place Type"
               rules={[
                 { required: true, message: 'Please select place type!' }
               ]}
             >
-              <Select placeholder="Select Type" size="large">
-                <Option value="Natural Attraction">Natural Attraction</Option>
-                <Option value="Cultural Site">Cultural Site</Option>
-                <Option value="Religious Place">Religious Place</Option>
-                <Option value="Entertainment">Entertainment</Option>
-                <Option value="Shopping">Shopping</Option>
-                <Option value="Restaurant">Restaurant</Option>
+              <Select placeholder="Select place type" size="large">
+                {placeTypes.map(type => (
+                  <Option key={type.id_place_type || type.id} value={type.id_place_type || type.id}>
+                    {type.type_name || type.name}
+                  </Option>
+                ))}
               </Select>
             </Form.Item>
           </Col>
@@ -227,19 +322,29 @@ const AddPlace = () => {
                 { required: true, message: 'Please enter province!' }
               ]}
             >
-              <Input size="large" />
+              {/* <Input size="large" /> */}
+              <Select
+                showSearch
+                style={{ width: 200 }}
+                placeholder="Search to Select"
+                optionFilterProp="label"
+                filterSort={(optionA, optionB) =>
+                  (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+                }
+                options={provinces}
+              />
             </Form.Item>
           </Col>
 
           <Col xs={24} md={12}>
             <Form.Item
               name="district"
-              label="District"
+              label="District (Optional)"
               rules={[
-                { required: true, message: 'Please enter district!' }
+                { required: false }
               ]}
             >
-              <Input size="large" />
+              <Input size="large" placeholder="Enter district (optional)" />
             </Form.Item>
           </Col>
 
@@ -248,10 +353,17 @@ const AddPlace = () => {
               name="latitude"
               label="Latitude"
               rules={[
-                { required: true, message: 'Please enter latitude!' }
+                { required: true, message: 'Please enter latitude!' },
+                { type: 'number', min: -90, max: 90, message: 'Latitude must be between -90 and 90!' }
               ]}
             >
-              <Input type="number" step="any" size="large" />
+              <InputNumber 
+                placeholder="Enter latitude"
+                size="large"
+                style={{ width: '100%' }}
+                step={0.000001}
+                precision={6}
+              />
             </Form.Item>
           </Col>
 
@@ -260,10 +372,17 @@ const AddPlace = () => {
               name="longitude"
               label="Longitude"
               rules={[
-                { required: true, message: 'Please enter longitude!' }
+                { required: true, message: 'Please enter longitude!' },
+                { type: 'number', min: -180, max: 180, message: 'Longitude must be between -180 and 180!' }
               ]}
             >
-              <Input type="number" step="any" size="large" />
+              <InputNumber 
+                placeholder="Enter longitude"
+                size="large"
+                style={{ width: '100%' }}
+                step={0.000001}
+                precision={6}
+              />
             </Form.Item>
           </Col>
 

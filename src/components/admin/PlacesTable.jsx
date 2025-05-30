@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from 'react-router-dom';
 import { 
   Table, 
@@ -10,9 +10,12 @@ import {
   Popconfirm, 
   message,
   Typography,
-  Select 
+  Select,
+  InputNumber
 } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, PlusOutlined, SearchOutlined, ReloadOutlined } from '@ant-design/icons';
+import { placesAPI } from '../../api/places';
+import { placeTypesAPI } from '../../api/placeTypes';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -25,96 +28,108 @@ const PlacesTable = () => {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
-  const [provinceFilter, setProvinceFilter] = useState('all');
+  const [places, setPlaces] = useState([]);
+  const [placeTypes, setPlaceTypes] = useState([]);
 
-  // Sample data
-  const [places, setPlaces] = useState([
-    {
-      id: 1,
-      name: 'Doi Suthep Temple',
-      district: 'Suthep, Mueang',
-      type: 'Religious Place',
-      province: 'Chiang Mai',
-    },
-    {
-      id: 2,
-      name: 'Phi Phi Islands',
-      district: 'Ao Nang',
-      type: 'Natural Attraction',
-      province: 'Krabi',
-    },
-    {
-      id: 3,
-      name: 'Grand Palace',
-      district: 'Phra Nakhon',
-      type: 'Cultural Site',
-      province: 'Bangkok',
-    },
-    {
-      id: 4,
-      name: 'Night Bazaar',
-      district: 'Chang Khlan',
-      type: 'Entertainment',
-      province: 'Chiang Mai',
-    },
-    {
-      id: 5,
-      name: 'Sukhothai Historical Park',
-      district: 'Mueang Kao',
-      type: 'Cultural Site',
-      province: 'Sukhothai',
-    },
-  ]);
+  // Fetch all places from API
+  const fetchPlaces = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await placesAPI.getAll();
+      // Handle different possible response formats
+      let data = response.data;
+      if (response.data && Array.isArray(response.data.data)) {
+        data = response.data.data;
+      } else if (response.data && Array.isArray(response.data)) {
+        data = response.data;
+      } else if (Array.isArray(response)) {
+        data = response;
+      } else {
+        data = [];
+      }
+      console.log(' data:', data)
 
-  const typeOptions = [
-    { value: 'all', label: 'All Types' },
-    { value: 'Natural Attraction', label: 'Natural Attraction' },
-    { value: 'Cultural Site', label: 'Cultural Site' },
-    { value: 'Religious Place', label: 'Religious Place' },
-    { value: 'Entertainment', label: 'Entertainment' },
-  ];
+      setPlaces(data);
+    } catch (error) {
+      console.error('Error fetching places:', error);
+      if (error.response?.status === 401) {
+        message.error('Please login to access this feature');
+      } else if (error.response?.status === 403) {
+        message.error('You do not have permission to access this feature');
+      } else {
+        message.error('Failed to load places');
+      }
+      setPlaces([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  const provinceOptions = [
-    { value: 'all', label: 'All Provinces' },
-    { value: 'Bangkok', label: 'Bangkok' },
-    { value: 'Chiang Mai', label: 'Chiang Mai' },
-    { value: 'Krabi', label: 'Krabi' },
-    { value: 'Sukhothai', label: 'Sukhothai' },
-    { value: 'Phuket', label: 'Phuket' },
-    { value: 'Ayutthaya', label: 'Ayutthaya' },
-  ];
+  // Fetch place types from API
+  const fetchPlaceTypes = useCallback(async () => {
+    try {
+      const response = await placeTypesAPI.getAll();
+      // Handle different possible response formats
+      let data = response.data;
+      if (response.data && Array.isArray(response.data.data)) {
+        data = response.data.data;
+      } else if (response.data && Array.isArray(response.data)) {
+        data = response.data;
+      } else if (Array.isArray(response)) {
+        data = response;
+      } else {
+        data = [];
+      }
+      setPlaceTypes(data);
+    } catch (error) {
+      console.error('Error fetching place types:', error);
+      message.error('Failed to load place types');
+      setPlaceTypes([]);
+    }
+  }, []);
+
+  // Load data on component mount
+  useEffect(() => {
+    fetchPlaces();
+    fetchPlaceTypes();
+  }, [fetchPlaces, fetchPlaceTypes]);
 
   // Filter data based on search and filters
   const filteredPlaces = places.filter(place => {
-    const matchesSearch = place.name.toLowerCase().includes(searchText.toLowerCase());
-    const matchesType = typeFilter === 'all' || place.type === typeFilter;
-    const matchesProvince = provinceFilter === 'all' || place.province === provinceFilter;
+    const placeName = place.name_place || place.name || '';
+    const matchesSearch = placeName.toLowerCase().includes(searchText.toLowerCase());
+    const matchesType = typeFilter === 'all' || place.place_type_id === typeFilter;
     
-    return matchesSearch && matchesType && matchesProvince;
+    return matchesSearch && matchesType;
   });
 
   const columns = [
     {
       title: 'Place Name',
-      dataIndex: 'name',
-      key: 'name',
-      sorter: (a, b) => a.name.localeCompare(b.name),
+      dataIndex: 'name_place',
+      key: 'name_place',
+      sorter: (a, b) => (a.name_place || '').localeCompare(b.name_place || ''),
     },
     {
       title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'place_type_id',
+      key: 'place_type_id',
+      render: (typeId) => {
+        const type = placeTypes.find(t => (t.id_place_type || t.id) === typeId);
+        return type?.type_name || type?.name || 'Unknown';
+      }
     },
     {
-      title: 'District',
-      dataIndex: 'district',
-      key: 'district',
+      title: 'Latitude',
+      dataIndex: 'latitude',
+      key: 'latitude',
+      render: (lat) => lat ? parseFloat(lat).toFixed(4) : '-'
     },
     {
-      title: 'Province',
-      dataIndex: 'province',
-      key: 'province',
-      sorter: (a, b) => a.province.localeCompare(b.province),
+      title: 'Longitude',
+      dataIndex: 'longitude',
+      key: 'longitude',
+      render: (lng) => lng ? parseFloat(lng).toFixed(4) : '-'
     },
     {
       title: 'Actions',
@@ -131,7 +146,7 @@ const PlacesTable = () => {
           </Button>
           <Popconfirm
             title="Are you sure you want to delete this place?"
-            onConfirm={() => handleDelete(record.id)}
+            onConfirm={() => handleDelete(record.id || record.id_place)}
             okText="Yes"
             cancelText="No"
           >
@@ -155,33 +170,67 @@ const PlacesTable = () => {
 
   const handleEdit = (place) => {
     setEditingPlace(place);
-    form.setFieldsValue(place);
+    form.setFieldsValue({
+      name_place: place.name_place,
+      latitude: place.latitude,
+      longitude: place.longitude,
+      place_type_id: place.place_type_id
+    });
     setIsModalVisible(true);
   };
 
-  const handleDelete = (id) => {
-    setPlaces(places.filter(place => place.id !== id));
-    message.success('Place deleted successfully');
+  const handleDelete = async (id) => {
+    try {
+      await placesAPI.delete(id);
+      message.success('Place deleted successfully');
+      fetchPlaces(); // Refresh the list
+    } catch (error) {
+      console.error('Error deleting place:', error);
+      if (error.response?.status === 401) {
+        message.error('Please login to delete');
+      } else if (error.response?.status === 403) {
+        message.error('You do not have permission to delete');
+      } else if (error.response?.status === 404) {
+        message.error('Place not found');
+      } else {
+        message.error('Failed to delete place');
+      }
+    }
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
+    if (!editingPlace) return; // Only handle editing now
+    
     setLoading(true);
     
-    setTimeout(() => {
+    try {
       // Update existing place
-      setPlaces(places.map(place => 
-        place.id === editingPlace.id ? { ...place, ...values } : place
-      ));
+      await placesAPI.update(editingPlace.id || editingPlace.id_place, values);
       message.success('Place updated successfully');
+      
       setIsModalVisible(false);
       form.resetFields();
+      fetchPlaces(); // Refresh the list
+    } catch (error) {
+      console.error('Error updating place:', error);
+      if (error.response?.status === 401) {
+        message.error('Please login to update');
+      } else if (error.response?.status === 403) {
+        message.error('You do not have permission to update');
+      } else if (error.response?.status === 400) {
+        message.error('Invalid data provided');
+      } else {
+        message.error('Update failed');
+      }
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
     form.resetFields();
+    setEditingPlace(null);
   };
 
   return (
@@ -202,18 +251,28 @@ const PlacesTable = () => {
         <Title level={2} style={{ margin: 0, fontSize: '2rem', fontWeight: 'bold' }}>
           Place Manage
         </Title>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={handleAdd}
-          size="large"
-          style={{
-            backgroundColor: 'var(--color-primary)', 
-            fontWeight: 'bold',
-          }}
-        >
-          Add Place
-        </Button>
+        <Space>
+          <Button
+            icon={<ReloadOutlined />}
+            onClick={fetchPlaces}
+            loading={loading}
+            size="large"
+          >
+            Refresh
+          </Button>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleAdd}
+            size="large"
+            style={{
+              backgroundColor: 'var(--color-primary)', 
+              fontWeight: 'bold',
+            }}
+          >
+            Add Place
+          </Button>
+        </Space>
       </div>
 
       <div style={{ 
@@ -236,21 +295,10 @@ const PlacesTable = () => {
           style={{ minWidth: '150px' }}
           size="large"
         >
-          {typeOptions.map(option => (
-            <Option key={option.value} value={option.value}>
-              {option.label}
-            </Option>
-          ))}
-        </Select>
-        <Select
-          value={provinceFilter}
-          onChange={setProvinceFilter}
-          style={{ minWidth: '150px' }}
-          size="large"
-        >
-          {provinceOptions.map(option => (
-            <Option key={option.value} value={option.value}>
-              {option.label}
+          <Option value="all">All Types</Option>
+          {placeTypes.map(type => (
+            <Option key={type.id_place_type || type.id} value={type.id_place_type || type.id}>
+              {type.type_name || type.name}
             </Option>
           ))}
         </Select>
@@ -261,7 +309,7 @@ const PlacesTable = () => {
           columns={columns}
           dataSource={filteredPlaces}
           loading={loading}
-          rowKey="id"
+          rowKey={(record) => record.id || record.id_place}
           pagination={{
             pageSize: 10,
             showSizeChanger: true,
@@ -274,7 +322,7 @@ const PlacesTable = () => {
         />
       </div>
 
-      {/* Modal สำหรับ Edit เท่านั้น */}
+      {/* Modal for Edit Only */}
       <Modal
         title="Edit Place"
         open={isModalVisible}
@@ -290,7 +338,7 @@ const PlacesTable = () => {
           autoComplete="off"
         >
           <Form.Item
-            name="name"
+            name="name_place"
             label="Place Name"
             rules={[
               { required: true, message: 'Please input place name!' },
@@ -305,52 +353,56 @@ const PlacesTable = () => {
           </Form.Item>
 
           <Form.Item
-            name="location"
-            label="Location"
+            name="latitude"
+            label="Latitude"
             rules={[
-              { required: true, message: 'Please input location!' },
-              { min: 2, message: 'Location must be at least 2 characters!' },
-              { max: 100, message: 'Location cannot exceed 100 characters!' }
+              { required: true, message: 'Please input latitude!' },
+              { type: 'number', min: -90, max: 90, message: 'Latitude must be between -90 and 90!' }
             ]}
           >
-            <Input 
-              placeholder="Enter location"
+            <InputNumber 
+              placeholder="Enter latitude"
               size="large"
+              style={{ width: '100%' }}
+              step={0.000001}
+              precision={6}
             />
           </Form.Item>
 
           <Form.Item
-            name="type"
-            label="Type"
+            name="longitude"
+            label="Longitude"
             rules={[
-              { required: true, message: 'Please select type!' }
+              { required: true, message: 'Please input longitude!' },
+              { type: 'number', min: -180, max: 180, message: 'Longitude must be between -180 and 180!' }
+            ]}
+          >
+            <InputNumber 
+              placeholder="Enter longitude"
+              size="large"
+              style={{ width: '100%' }}
+              step={0.000001}
+              precision={6}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="place_type_id"
+            label="Place Type"
+            rules={[
+              { required: true, message: 'Please select place type!' }
             ]}
           >
             <Select 
-              placeholder="Select type"
+              placeholder="Select place type"
               size="large"
             >
-              {typeOptions.filter(option => option.value !== 'all').map(option => (
-                <Option key={option.value} value={option.value}>
-                  {option.label}
+              {placeTypes.map(type => (
+                <Option key={type.id_place_type || type.id} value={type.id_place_type || type.id}>
+                  {type.type_name || type.name}
                 </Option>
               ))}
             </Select>
-          </Form.Item>
-
-          <Form.Item
-            name="province"
-            label="Province"
-            rules={[
-              { required: true, message: 'Please input province!' },
-              { min: 2, message: 'Province must be at least 2 characters!' },
-              { max: 50, message: 'Province cannot exceed 50 characters!' }
-            ]}
-          >
-            <Input 
-              placeholder="Enter province"
-              size="large"
-            />
           </Form.Item>
 
           <Form.Item style={{ marginBottom: 0, marginTop: '24px' }}>
