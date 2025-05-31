@@ -71,7 +71,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const isAdmin = () => {
-    console.log('Checking if user is admin:', role);
   return role?.role_name.toLowerCase() === 'admin';
 };
 

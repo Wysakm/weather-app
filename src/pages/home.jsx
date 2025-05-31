@@ -7,7 +7,7 @@ import Map from '../components/Map';
 
 function Home() {
   return (
-  <div>
+    <div>
       <SearchLocationWeather />
       <Weather />
       <RankPlaces />

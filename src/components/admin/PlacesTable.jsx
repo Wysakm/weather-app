@@ -329,7 +329,6 @@ const PlacesTable = () => {
         onCancel={handleCancel}
         footer={null}
         width={500}
-        destroyOnClose
       >
         <Form
           form={form}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Table,
   Button,
@@ -34,36 +34,14 @@ const PostsTable = () => {
   const navigate = useNavigate();
   const { isAdmin, user, isAuthenticated } = useAuth();
 
-  // Fetch posts from API
-  useEffect(() => {
-    console.log(' token:', user, isAuthenticated)
-
-    if (isAuthenticated) return;
-
-    const fetchPosts = async () => {
-      setTableLoading(true);
-      try {
-        const data = (await apiClient.get('/posts/')).data.data || [];
-        console.log(' data:', data)
-        setPosts(data);
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-        message.error('Error fetching posts');
-      } finally {
-        setTableLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, [user, isAuthenticated]);
-
-  // สร้างฟังก์ชัน fetchPosts แยกสำหรับใช้ใน handlers อื่นๆ
-  const refetchPosts = async () => {
-    if (isAuthenticated) return;
+  // Consolidated fetch posts function
+  const fetchPosts = useCallback(async () => {
+    if (!isAuthenticated) return;
 
     setTableLoading(true);
     try {
-      const data = await apiClient.get('/posts/');
+      const response = await apiClient.get('/posts/');
+      const data = response.data?.data || [];
       setPosts(data);
     } catch (error) {
       console.error('Error fetching posts:', error);
@@ -71,7 +49,12 @@ const PostsTable = () => {
     } finally {
       setTableLoading(false);
     }
-  };
+  }, [isAuthenticated]);
+
+  // Fetch posts from API
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
   const statusOptions = [
     { value: 'all', label: 'All Status' },
@@ -80,8 +63,8 @@ const PostsTable = () => {
     { value: 'Rejected', label: 'Rejected' },
   ];
 
-  // Filter data based on user role
-  const getFilteredPosts = () => {
+  // Filter data based on user role - optimized with useMemo
+  const filteredPosts = useMemo(() => {
     let filtered = posts;
 
     // ถ้าไม่ใช่ admin ให้แสดงเฉพาะโพสต์ของตัวเอง
@@ -102,9 +85,7 @@ const PostsTable = () => {
     }
 
     return filtered;
-  };
-
-  const filteredPosts = getFilteredPosts();
+  }, [posts, searchText, statusFilter, isAdmin, user?.id_user]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -119,8 +100,51 @@ const PostsTable = () => {
     }
   };
 
-  // Define columns based on user role
-  const getColumns = () => {
+  // Memoized handlers for better performance
+  const handleAdd = useCallback(() => {
+    navigate('/addPost');
+  }, [navigate]);
+
+  const handleEdit = useCallback((post) => {
+    // ตรวจสอบสิทธิ์ก่อนแก้ไข
+    if (!isAdmin() && post.id_user !== user?.id_user) {
+      message.error('You can only edit your own posts');
+      return;
+    }
+
+    setEditingPost(post);
+    form.setFieldsValue({
+      title: post.title,
+      body: post.body,
+      status: post.status || 'Pending',
+      image: post.image
+    });
+    setIsModalVisible(true);
+  }, [isAdmin, user?.id_user, form]);
+
+  const handleDelete = useCallback(async (id_post) => {
+    const post = posts.find(p => p.id_post === id_post);
+
+    if (!isAdmin() && post?.id_user !== user?.id_user) {
+      message.error('You can only delete your own posts');
+      return;
+    }
+
+    try {
+      setTableLoading(true);
+      await apiClient.delete(`/posts/${id_post}`);
+      message.success('Post deleted successfully');
+      fetchPosts();
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      message.error('Error deleting post');
+    } finally {
+      setTableLoading(false);
+    }
+  }, [posts, isAdmin, user?.id_user, fetchPosts]);
+
+  // Define columns based on user role - memoized for performance
+  const columns = useMemo(() => {
     const baseColumns = [
       {
         title: 'Post Title',
@@ -130,14 +154,6 @@ const PostsTable = () => {
         ellipsis: true,
         sorter: (a, b) => a.title.localeCompare(b.title),
       },
-      // {
-      //   title: 'Body',
-      //   dataIndex: 'body',
-      //   key: 'body',
-      //   width: '25%',
-      //   ellipsis: true,
-      //   render: (text) => text?.substring(0, 100) + (text?.length > 100 ? '...' : ''),
-      // }
     ];
 
     // เพิ่มคอลัมน์ Author เฉพาะ admin
@@ -168,23 +184,14 @@ const PostsTable = () => {
         key: 'actions',
         width: '15%',
         render: (_, record) => (
-          <Space
-            size="small"
-            direction={window.innerWidth < 768 ? "vertical" : "horizontal"}
-            style={{ display: 'flex', flexWrap: 'wrap' }}
-          >
+          <Space size="small">
             <Button
               type="primary"
               icon={<EditOutlined />}
-              size={window.innerWidth < 768 ? "small" : "small"}
+              size="small"
               onClick={() => handleEdit(record)}
-              style={{
-                fontSize: window.innerWidth < 768 ? '10px' : '12px',
-                padding: window.innerWidth < 768 ? '2px 6px' : '4px 8px',
-                minWidth: window.innerWidth < 768 ? '40px' : 'auto'
-              }}
             >
-              {window.innerWidth < 768 ? '' : 'Edit'}
+              Edit
             </Button>
             <Popconfirm
               title="Are you sure you want to delete this post?"
@@ -196,14 +203,9 @@ const PostsTable = () => {
                 type="primary"
                 danger
                 icon={<DeleteOutlined />}
-                size={window.innerWidth < 768 ? "small" : "small"}
-                style={{
-                  fontSize: window.innerWidth < 768 ? '10px' : '12px',
-                  padding: window.innerWidth < 768 ? '2px 6px' : '4px 8px',
-                  minWidth: window.innerWidth < 768 ? '40px' : 'auto'
-                }}
+                size="small"
               >
-                {window.innerWidth < 768 ? '' : 'Delete'}
+                Delete
               </Button>
             </Popconfirm>
           </Space>
@@ -212,51 +214,9 @@ const PostsTable = () => {
     );
 
     return baseColumns;
-  };
+  }, [isAdmin, handleEdit, handleDelete]);
 
-  const handleAdd = () => {
-    navigate('/addPost');
-  };
-
-  const handleEdit = (post) => {
-    // ตรวจสอบสิทธิ์ก่อนแก้ไข
-    if (!isAdmin() && post.id_user !== user?.id_user) {
-      message.error('You can only edit your own posts');
-      return;
-    }
-
-    setEditingPost(post);
-    form.setFieldsValue({
-      title: post.title,
-      body: post.body,
-      status: post.status || 'Pending',
-      image: post.image
-    });
-    setIsModalVisible(true);
-  };
-
-  const handleDelete = async (id_post) => {
-    const post = posts.find(p => p.id_post === id_post);
-
-    if (!isAdmin() && post?.id_user !== user?.id_user) {
-      message.error('You can only delete your own posts');
-      return;
-    }
-
-    try {
-      setTableLoading(true);
-      await apiClient.delete(`/posts/${id_post}`);
-      message.success('Post deleted successfully');
-      refetchPosts();
-    } catch (error) {
-      console.error('Error deleting post:', error);
-      message.error('Error deleting post');
-    } finally {
-      setTableLoading(false);
-    }
-  };
-
-  const handleSubmit = async (values) => {
+  const handleSubmit = useCallback(async (values) => {
     setLoading(true);
 
     try {
@@ -271,26 +231,26 @@ const PostsTable = () => {
       message.success('Post updated successfully');
       setIsModalVisible(false);
       form.resetFields();
-      refetchPosts();
+      fetchPosts();
     } catch (error) {
       console.error('Error updating post:', error);
       message.error('Error updating post');
     } finally {
       setLoading(false);
     }
-  };
+  }, [editingPost, form, fetchPosts]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setIsModalVisible(false);
     form.resetFields();
-  };
+  }, [form]);
 
-  // Get title based on user role
-  const getPageTitle = () => {
+  // Get title based on user role - memoized for performance
+  const pageTitle = useMemo(() => {
     return isAdmin() ? 'Posts Manage' : 'My Posts';
-  };
+  }, [isAdmin]);
 
-  if (!isAuthenticated || tableLoading) return <Skeleton active />;
+  if (loading || tableLoading) return <Skeleton active />;
 
   return (
     <div style={{
@@ -308,7 +268,7 @@ const PostsTable = () => {
         marginBottom: '24px'
       }}>
         <Title level={2} style={{ margin: 0, fontSize: '2rem', fontWeight: 'bold' }}>
-          {getPageTitle()}
+          {pageTitle}
         </Title>
         <Button
           type="primary"
@@ -364,7 +324,7 @@ const PostsTable = () => {
 
       <div style={{ flex: 1 }}>
         <Table
-          columns={getColumns()}
+          columns={columns}
           dataSource={filteredPosts}
           loading={tableLoading}
           rowKey="id_post"
@@ -392,7 +352,6 @@ const PostsTable = () => {
         onCancel={handleCancel}
         footer={null}
         width={600}
-        destroyOnClose
       >
         <Form
           form={form}
