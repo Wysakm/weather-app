@@ -22,10 +22,9 @@ export const postsAPI = {
   },
 
   // Create new post
-  create: async (formData) => {
+  create: async (data) => {
     try {
-      // For FormData, axios automatically handles Content-Type with proper boundary
-      const response = await apiClient.post('/posts', formData);
+      const response = await apiClient.post('/posts', data);
       return response.data;
     } catch (error) {
       throw error;

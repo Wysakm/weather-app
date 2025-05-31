@@ -42,7 +42,6 @@ const AddPost = () => {
   const [formData, setFormData] = useState({
     title: '',
     location: '',
-    type: '',
     coverImage: null,
     content: '',
     status: 'pending',
@@ -456,9 +455,13 @@ const AddPost = () => {
         return;
       }
 
-      // Create FormData for file upload
-      const submitData = new FormData();
-      
+      // Validate that content is not empty or contains only empty HTML
+      const cleanContent = formData.content?.replace(/<p><br\s*\/?><\/p>/g, '').replace(/<p><\/p>/g, '').trim();
+      if (!formData.content || !cleanContent || cleanContent === '' || cleanContent === '<p></p>') {
+        message.error('Please add some content to your post!');
+        return;
+      }
+
       // Find the selected place to get its ID
       const selectedPlace = allPlaces.find(place => place.label === values.location);
       console.log('Selected location:', values.location);
@@ -469,32 +472,50 @@ const AddPost = () => {
         message.error('Please select a valid location from the list!');
         return;
       }
-      
-      // Add text fields matching backend expectations
-      submitData.append('title', values.title);
-      submitData.append('body', formData.content || ''); // Backend expects 'body' not 'content'
-      submitData.append('status', formData.status);
-      submitData.append('id_place', selectedPlace.place.id_place || selectedPlace.place.id); // Map location to place ID
-      
-      // Add cover image file
+
+      // Convert image to base64 data URL
+      let imageDataUrl = '';
       if (formData.coverImage) {
-        submitData.append('image', formData.coverImage); // Backend might expect 'image' not 'coverImage'
+        console.log('Converting image to base64:', formData.coverImage);
+        const imageFile = formData.coverImage.originFileObj || formData.coverImage;
+        
+        if (imageFile instanceof File) {
+          try {
+            imageDataUrl = await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = (e) => resolve(e.target.result);
+              reader.onerror = reject;
+              reader.readAsDataURL(imageFile);
+            });
+            console.log('Image converted to base64, length:', imageDataUrl.length);
+          } catch (error) {
+            console.error('Error converting image to base64:', error);
+            message.error('Failed to process image. Please try again.');
+            return;
+          }
+        } else {
+          console.error('Invalid image file object:', imageFile);
+          message.error('Invalid image file. Please select a valid image.');
+          return;
+        }
       }
+
+      // Create JSON data object matching backend expectations
+      const submitData = {
+        title: values.title.trim(),
+        body: formData.content.trim(),
+        status: 'pending', // Always send 'pending' status
+        image: imageDataUrl, // Send base64 data URL
+        id_place: selectedPlace.place.id_place || selectedPlace.place.id
+      };
 
       console.log('Form submitted with data:', {
-        title: values.title,
-        location: values.location,
-        body: formData.content,
-        status: formData.status,
-        id_place: selectedPlace.place.id_place || selectedPlace.place.id,
-        image: formData.coverImage ? formData.coverImage.name : 'None'
+        title: submitData.title,
+        body: submitData.body ? 'Content provided' : 'No content',
+        status: submitData.status,
+        id_place: submitData.id_place,
+        image: submitData.image ? `Base64 data (${submitData.image.length} chars)` : 'No image'
       });
-
-      // Debug: Log FormData contents
-      console.log('FormData contents:');
-      for (let [key, value] of submitData.entries()) {
-        console.log(key, value);
-      }
 
       // Submit to API using postsAPI
       const result = await postsAPI.create(submitData);
@@ -505,11 +526,21 @@ const AddPost = () => {
       // Reset form after successful submission
       form.resetFields();
       setFormData({
+        title: '',
+        location: '',
         content: '',
-        status: 'Draft',
+        status: 'pending',
         visible: true,
         coverImage: null
       });
+      
+      // Clear Quill editor content
+      if (quillRef.current) {
+        quillRef.current.setContents([]);
+      }
+      
+      // Clear preview
+      setPreviewContent('');
       
       // Optionally navigate to posts list or stay on page
       // navigate('/admin/posts');
@@ -577,8 +608,19 @@ const AddPost = () => {
       // Handle file status
       if (fileList.length > 0) {
         const file = fileList[0];
+        console.log('File in onChange:', file);
+        console.log('OriginFileObj:', file.originFileObj);
+        
         if (file.status === 'done' || file.status === 'uploading' || !file.status) {
-          setFormData(prev => ({ ...prev, coverImage: file.originFileObj || file }));
+          // Ensure we store the actual file object, not the Ant Design wrapper
+          const actualFile = file.originFileObj || file;
+          if (actualFile instanceof File) {
+            setFormData(prev => ({ ...prev, coverImage: actualFile }));
+            console.log('Stored file in formData:', actualFile.name);
+          } else {
+            console.warn('Not a File object:', actualFile);
+            setFormData(prev => ({ ...prev, coverImage: file }));
+          }
         }
       } else {
         setFormData(prev => ({ ...prev, coverImage: null }));
@@ -723,29 +765,6 @@ const AddPost = () => {
                   Add Place
                 </Button>
               </Input.Group>
-            </Form.Item>
-
-            <Form.Item
-              label="Type"
-              name="type"
-              rules={[{ required: true, message: 'Please select a type!' }]}
-            >
-              <Select
-                placeholder="Select a type"
-                size="large"
-                loading={placeTypes.length === 0}
-                showSearch
-                optionFilterProp="children"
-                filterOption={(input, option) =>
-                  (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
-                }
-              >
-                {placeTypes.map(type => (
-                  <Option key={type.id_place_type || type.id} value={type.type_name || type.name}>
-                    {type.type_name || type.name}
-                  </Option>
-                ))}
-              </Select>
             </Form.Item>
 
             <Form.Item
