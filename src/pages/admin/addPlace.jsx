@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Form, 
@@ -19,63 +19,106 @@ import { placesAPI } from '../../api/places';
 const { Title } = Typography;
 const { Option } = Select;
 
+// Constants
+const BANGKOK_CENTER = { lat: 13.7563, lng: 100.5018 };
+const GOOGLE_MAPS_CHECK_INTERVAL = 100;
+const COORDINATE_PRECISION = 0.001;
+const MAP_CONFIG = {
+  zoom: 13,
+  disableDefaultUI: true,
+  gestureHandling: 'none',
+  draggable: false,
+  zoomControl: false,
+  scrollwheel: false,
+  disableDoubleClickZoom: true,
+  mapTypeControl: false,
+  scaleControl: false,
+  streetViewControl: false,
+  rotateControl: false,
+  fullscreenControl: false,
+  panControl: false,
+  keyboardShortcuts: false,
+  clickableIcons: false,
+};
+
+// Utility functions
+const extractDistrictFromPlace = (addressComponents) => {
+  if (!addressComponents?.length) return '';
+  
+  const districtTypes = [
+    'sublocality_level_1',
+    'administrative_area_level_2', 
+    'locality',
+    'sublocality'
+  ];
+  
+  for (const component of addressComponents) {
+    const hasDistrictType = districtTypes.some(type => component.types.includes(type));
+    if (hasDistrictType) {
+      return component.long_name;
+    }
+  }
+  return '';
+};
+
+const normalizeApiResponse = (response) => {
+  if (response.data?.data && Array.isArray(response.data.data)) {
+    return response.data.data;
+  }
+  if (response.data && Array.isArray(response.data)) {
+    return response.data;
+  }
+  if (Array.isArray(response)) {
+    return response;
+  }
+  return [];
+};
+
 const AddPlace = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [placeTypes, setPlaceTypes] = useState([]);
+  const [provinces, setProvinces] = useState([]);
+  const [googleReference, setGoogleReference] = useState('');
+  
+  // Refs for Google Maps
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markerRef = useRef(null);
   const autocompleteRef = useRef(null);
-  const [provinces, setProvinces] = useState([])
-  const [ggRef, setGgRef] = useState('')
 
-  useEffect(() => {
-    const fetchProvinces = async () => {
-      // setProvincesLoading(true);
-      try {
-        const response = (await apiClient.get('/provinces')).data;
-        const provinceOptions = response.data.map(province => ({
-          value: province.id_province,
-          label: province.name,
-        }));
-        setProvinces(provinceOptions);
-      } catch (error) {
-        console.error('Error fetching provinces:', error);
-        message.error('Failed to load provinces');
-      } finally {
-        // setProvincesLoading(false);
-      }
-    };
+  // Memoized province options for better performance
+  const provinceOptions = useMemo(() => 
+    provinces.map(province => ({
+      value: province.id_province,
+      label: province.name,
+    })), [provinces]
+  );
 
-    fetchProvinces();
+  // Fetch provinces data
+  const fetchProvinces = useCallback(async () => {
+    try {
+      const response = await apiClient.get('/provinces');
+      setProvinces(response.data?.data || []);
+    } catch (error) {
+      console.error('Error fetching provinces:', error);
+      message.error('Failed to load provinces');
+    }
   }, []);
 
-  const fillFormFields = useCallback((place) => {
-    const addressComponents = place.address_components || [];
-    let district = '';
-    setGgRef(place.reference);
-    
-    // Extract address components - try multiple district types
-    addressComponents.forEach(component => {
-      const types = component.types;
-      
-      // Try different district types from Google Places
-      if (types.includes('sublocality_level_1') || 
-          types.includes('administrative_area_level_2') ||
-          types.includes('locality') ||
-          types.includes('sublocality')) {
-        if (!district) { // Only set if not already found
-          district = component.long_name;
-        }
-      }
-    });
+  useEffect(() => {
+    fetchProvinces();
+  }, [fetchProvinces]);
 
+  const fillFormFields = useCallback((place) => {
+    const district = extractDistrictFromPlace(place.address_components);
+    setGoogleReference(place.reference || '');
+    
     // Fill form fields with Google Places data
     form.setFieldsValue({
       name_place: place.name || '',
-      district: district, // Auto-fill district from Google Places or leave empty
+      district: district,
       latitude: place.geometry ? place.geometry.location.lat() : '',
       longitude: place.geometry ? place.geometry.location.lng() : ''
     });
@@ -85,17 +128,7 @@ const AddPlace = () => {
   const fetchPlaceTypes = useCallback(async () => {
     try {
       const response = await placeTypesAPI.getAll();
-      // Handle different possible response formats
-      let data = response.data;
-      if (response.data && Array.isArray(response.data.data)) {
-        data = response.data.data;
-      } else if (response.data && Array.isArray(response.data)) {
-        data = response.data;
-      } else if (Array.isArray(response)) {
-        data = response;
-      } else {
-        data = [];
-      }
+      const data = normalizeApiResponse(response);
       setPlaceTypes(data);
     } catch (error) {
       console.error('Error fetching place types:', error);
@@ -107,34 +140,15 @@ const AddPlace = () => {
   const initMap = useCallback(() => {
     if (!mapRef.current) return;
     
-    // Initialize map with Bangkok center
-    const bangkok = { lat: 13.7563, lng: 100.5018 };
-    
+    // Initialize map with Bangkok center using constant
     mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
-      center: bangkok,
-      zoom: 13,
-      draggable: false,                    // ปิดการลาก
-      zoomControl: false,                  // ปิด zoom buttons
-      scrollwheel: false,                  // ปิด scroll wheel zoom
-      disableDoubleClickZoom: true,        // ปิด double click zoom
-      mapTypeControl: false,               // ปิด map type control
-      scaleControl: false,                 // ปิด scale control
-      streetViewControl: false,            // ปิด street view control
-      rotateControl: false,                // ปิด rotate control
-      fullscreenControl: false,            // ปิด fullscreen control
-      panControl: false,                   // ปิด pan control
-      keyboardShortcuts: false,            // ปิด keyboard shortcuts
-      clickableIcons: false,               // ปิด clickable icons
-      gestureHandling: 'none',             // ปิด gesture handling
-
-      // หรือใช้แบบนี้เพื่อปิดทุกอย่าง
-      disableDefaultUI: true,
-
+      center: BANGKOK_CENTER,
+      ...MAP_CONFIG
     });
 
     // Add marker
     markerRef.current = new window.google.maps.Marker({
-      position: bangkok,
+      position: BANGKOK_CENTER,
       map: mapInstanceRef.current,
       draggable: true
     });
@@ -172,7 +186,7 @@ const AddPlace = () => {
       });
     }
 
-    // Handle marker drag
+    // Handle marker drag with reverse geocoding
     markerRef.current.addListener('dragend', () => {
       const position = markerRef.current.getPosition();
       form.setFieldsValue({
@@ -201,11 +215,11 @@ const AddPlace = () => {
           clearInterval(checkGoogleMaps);
           initMap();
         }
-      }, 100);
+      }, GOOGLE_MAPS_CHECK_INTERVAL);
       
       return () => clearInterval(checkGoogleMaps);
     }
-  }, [initMap, fetchPlaceTypes]); // เพิ่ม initMap ใน dependency array
+  }, [initMap, fetchPlaceTypes]);
 
   const handleSubmit = async (values) => {
     setLoading(true);
@@ -215,30 +229,12 @@ const AddPlace = () => {
         values.name_place,
         values.latitude,
         values.longitude,
-        ggRef // เพิ่ม Google Places reference ในการตรวจสอบ
+        googleReference // Use googleReference state variable
       );
 
       if (duplicates) {
-        // const existingPlace = duplicates[0];
-        
-        // // Check if it's an exact name match or proximity match
-        // const isNameMatch = existingPlace.name_place?.toLowerCase().trim() === values.name_place.toLowerCase().trim();
-        // const latDiff = Math.abs(parseFloat(existingPlace.latitude) - parseFloat(values.latitude));
-        // const lngDiff = Math.abs(parseFloat(existingPlace.longitude) - parseFloat(values.longitude));
-        // const isProximityMatch = latDiff < 0.001 && lngDiff < 0.001;
-
-        let duplicateReason = 'Dublicate place';
-        // if (isNameMatch && isProximityMatch) {
-        //   duplicateReason = 'same name and location';
-        // } else if (isNameMatch) {
-        //   duplicateReason = 'same name';
-        // } else if (isProximityMatch) {
-        //   duplicateReason = 'same location';
-        // }
-
         message.warning({
-          content: `Place already exists with ${duplicateReason} ! Please check if this is the place you want to add.`,
-          // content: `Place already exists with ${duplicateReason}: "${existingPlace.name_place}"! Please check if this is the place you want to add.`,
+          content: 'Duplicate place! Please check if this is the place you want to add.',
           duration: 8,
         });
         setLoading(false);
@@ -250,7 +246,7 @@ const AddPlace = () => {
         name_place: values.name_place,
         province: values.province,
         district: values.district,
-        reference: ggRef,
+        reference: googleReference, // Use googleReference state variable
         latitude: values.latitude,
         longitude: values.longitude,
         place_type_id: values.place_type_id
@@ -274,9 +270,32 @@ const AddPlace = () => {
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     navigate('/admin/places');
-  };
+  }, [navigate]);
+
+  // Memoized form validation rules
+  const formRules = useMemo(() => ({
+    name_place: [
+      { required: true, message: 'Please enter place name!' },
+      { min: 2, message: 'Place name must be at least 2 characters!' },
+      { max: 100, message: 'Place name cannot exceed 100 characters!' }
+    ],
+    place_type_id: [
+      { required: true, message: 'Please select place type!' }
+    ],
+    province: [
+      { required: true, message: 'Please select province!' }
+    ],
+    latitude: [
+      { required: true, message: 'Please enter latitude!' },
+      { type: 'number', min: -90, max: 90, message: 'Latitude must be between -90 and 90!' }
+    ],
+    longitude: [
+      { required: true, message: 'Please enter longitude!' },
+      { type: 'number', min: -180, max: 180, message: 'Longitude must be between -180 and 180!' }
+    ]
+  }), []);
 
   return (
     <div style={{
@@ -321,11 +340,7 @@ const AddPlace = () => {
             <Form.Item
               name="name_place"
               label="Place Name"
-              rules={[
-                { required: true, message: 'Please enter place name!' },
-                { min: 2, message: 'Place name must be at least 2 characters!' },
-                { max: 100, message: 'Place name cannot exceed 100 characters!' }
-              ]}
+              rules={formRules.name_place}
             >
               <Input size="large" placeholder="Enter place name" />
             </Form.Item>
@@ -335,9 +350,7 @@ const AddPlace = () => {
             <Form.Item
               name="place_type_id"
               label="Place Type"
-              rules={[
-                { required: true, message: 'Please select place type!' }
-              ]}
+              rules={formRules.place_type_id}
             >
               <Select placeholder="Select place type" size="large">
                 {placeTypes.map(type => (
@@ -353,20 +366,17 @@ const AddPlace = () => {
             <Form.Item
               name="province"
               label="Province"
-              rules={[
-                { required: true, message: 'Please enter province!' }
-              ]}
+              rules={formRules.province}
             >
-              {/* <Input size="large" /> */}
               <Select
                 showSearch
-                style={{ width: 200 }}
                 placeholder="Search to Select"
                 optionFilterProp="label"
                 filterSort={(optionA, optionB) =>
                   (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
                 }
-                options={provinces}
+                options={provinceOptions}
+                size="large"
               />
             </Form.Item>
           </Col>
@@ -387,10 +397,7 @@ const AddPlace = () => {
             <Form.Item
               name="latitude"
               label="Latitude"
-              rules={[
-                { required: true, message: 'Please enter latitude!' },
-                { type: 'number', min: -90, max: 90, message: 'Latitude must be between -90 and 90!' }
-              ]}
+              rules={formRules.latitude}
             >
               <InputNumber 
                 placeholder="Enter latitude"
@@ -406,10 +413,7 @@ const AddPlace = () => {
             <Form.Item
               name="longitude"
               label="Longitude"
-              rules={[
-                { required: true, message: 'Please enter longitude!' },
-                { type: 'number', min: -180, max: 180, message: 'Longitude must be between -180 and 180!' }
-              ]}
+              rules={formRules.longitude}
             >
               <InputNumber 
                 placeholder="Enter longitude"
