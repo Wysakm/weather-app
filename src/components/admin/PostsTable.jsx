@@ -22,6 +22,49 @@ const { Title } = Typography;
 const { Option } = Select;
 const { TextArea } = Input;
 
+// Constants
+const STATUS_OPTIONS = [
+  { value: 'all', label: 'All Status' },
+  { value: 'Pending', label: 'Pending' },
+  { value: 'Approved', label: 'Approved' },
+  { value: 'Rejected', label: 'Rejected' },
+];
+
+const PAGINATION_CONFIG = {
+  pageSize: 10,
+  showSizeChanger: true,
+  showQuickJumper: true,
+  showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+};
+
+const FORM_RULES = {
+  title: [
+    { required: true, message: 'Please input post title!' },
+    { min: 5, message: 'Post title must be at least 5 characters!' },
+    { max: 200, message: 'Post title cannot exceed 200 characters!' }
+  ],
+  body: [
+    { required: true, message: 'Please input post body!' },
+    { min: 10, message: 'Post body must be at least 10 characters!' }
+  ],
+  image: [
+    { type: 'url', message: 'Please enter a valid URL!' }
+  ],
+  status: [
+    { required: true, message: 'Please select status!' }
+  ]
+};
+
+// Utility functions
+const getStatusColor = (status) => {
+  const statusColors = {
+    'Pending': 'orange',
+    'Approved': 'green',
+    'Rejected': 'red'
+  };
+  return statusColors[status] || 'default';
+};
+
 const PostsTable = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
@@ -56,18 +99,11 @@ const PostsTable = () => {
     fetchPosts();
   }, [fetchPosts]);
 
-  const statusOptions = [
-    { value: 'all', label: 'All Status' },
-    { value: 'Pending', label: 'Pending' },
-    { value: 'Approved', label: 'Approved' },
-    { value: 'Rejected', label: 'Rejected' },
-  ];
-
   // Filter data based on user role - optimized with useMemo
   const filteredPosts = useMemo(() => {
     let filtered = posts;
 
-    // ถ้าไม่ใช่ admin ให้แสดงเฉพาะโพสต์ของตัวเอง
+    // Show only user's own posts if not admin
     if (!isAdmin()) {
       filtered = posts.filter(post => post.id_user === user?.id_user);
     }
@@ -87,26 +123,13 @@ const PostsTable = () => {
     return filtered;
   }, [posts, searchText, statusFilter, isAdmin, user?.id_user]);
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'Pending':
-        return 'orange';
-      case 'Approved':
-        return 'green';
-      case 'Rejected':
-        return 'red';
-      default:
-        return 'default';
-    }
-  };
-
   // Memoized handlers for better performance
   const handleAdd = useCallback(() => {
     navigate('/addPost');
   }, [navigate]);
 
   const handleEdit = useCallback((post) => {
-    // ตรวจสอบสิทธิ์ก่อนแก้ไข
+    // Check permissions before editing
     if (!isAdmin() && post.id_user !== user?.id_user) {
       message.error('You can only edit your own posts');
       return;
@@ -156,7 +179,7 @@ const PostsTable = () => {
       },
     ];
 
-    // เพิ่มคอลัมน์ Author เฉพาะ admin
+    // Add author column only for admin
     if (isAdmin()) {
       baseColumns.push({
         title: 'Author',
@@ -247,10 +270,18 @@ const PostsTable = () => {
 
   // Get title based on user role - memoized for performance
   const pageTitle = useMemo(() => {
-    return isAdmin() ? 'Posts Manage' : 'My Posts';
+    return isAdmin() ? 'Posts Management' : 'My Posts';
   }, [isAdmin]);
 
-  if (loading || tableLoading) return <Skeleton active />;
+  // Memoized loading state for better performance
+  const isLoading = useMemo(() => loading || tableLoading, [loading, tableLoading]);
+
+  // Optimized search handler
+  const handleSearchChange = useCallback((e) => {
+    setSearchText(e.target.value);
+  }, []);
+
+  if (isLoading) return <Skeleton active />;
 
   return (
     <div style={{
@@ -294,7 +325,7 @@ const PostsTable = () => {
           placeholder="Search by post title..."
           prefix={<SearchOutlined />}
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={handleSearchChange}
           style={{ flex: 1, minWidth: '200px' }}
           size="large"
         />
@@ -304,7 +335,7 @@ const PostsTable = () => {
           style={{ minWidth: '150px' }}
           size="large"
         >
-          {statusOptions.map(option => (
+          {STATUS_OPTIONS.map(option => (
             <Option key={option.value} value={option.value}>
               {option.label}
             </Option>
@@ -312,7 +343,7 @@ const PostsTable = () => {
         </Select>
       </div>
 
-      {/* แสดงข้อมูลสถิติ */}
+      {/* Statistics display */}
       <div style={{ marginBottom: '16px' }}>
         <Typography.Text type="secondary">
           {isAdmin()
@@ -328,13 +359,7 @@ const PostsTable = () => {
           dataSource={filteredPosts}
           loading={tableLoading}
           rowKey="id_post"
-          pagination={{
-            pageSize: 10,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total, range) =>
-              `${range[0]}-${range[1]} of ${total} items`,
-          }}
+          pagination={PAGINATION_CONFIG}
           bordered
           size="middle"
           locale={{
@@ -362,11 +387,7 @@ const PostsTable = () => {
           <Form.Item
             name="title"
             label="Post Title"
-            rules={[
-              { required: true, message: 'Please input post title!' },
-              { min: 5, message: 'Post title must be at least 5 characters!' },
-              { max: 200, message: 'Post title cannot exceed 200 characters!' }
-            ]}
+            rules={FORM_RULES.title}
           >
             <Input
               placeholder="Enter post title"
@@ -377,10 +398,7 @@ const PostsTable = () => {
           <Form.Item
             name="body"
             label="Post Body"
-            rules={[
-              { required: true, message: 'Please input post body!' },
-              { min: 10, message: 'Post body must be at least 10 characters!' }
-            ]}
+            rules={FORM_RULES.body}
           >
             <TextArea
               placeholder="Enter post content"
@@ -392,9 +410,7 @@ const PostsTable = () => {
           <Form.Item
             name="image"
             label="Image URL"
-            rules={[
-              { type: 'url', message: 'Please enter a valid URL!' }
-            ]}
+            rules={FORM_RULES.image}
           >
             <Input
               placeholder="Enter image URL"
@@ -405,16 +421,14 @@ const PostsTable = () => {
           <Form.Item
             name="status"
             label="Status"
-            rules={[
-              { required: true, message: 'Please select status!' }
-            ]}
+            rules={FORM_RULES.status}
           >
             <Select
               placeholder="Select status"
               size="large"
-              disabled={!isAdmin()} // user ทั่วไปแก้ไข status ไม่ได้
+              disabled={!isAdmin()}
             >
-              {statusOptions.filter(option => option.value !== 'all').map(option => (
+              {STATUS_OPTIONS.filter(option => option.value !== 'all').map(option => (
                 <Option key={option.value} value={option.value}>
                   {option.label}
                 </Option>
