@@ -14,7 +14,7 @@ import {
   Col,
   message as messageCtx,
   Modal,
-  InputNumber
+  InputNumber,
 } from 'antd';
 import {
   UploadOutlined,
@@ -28,12 +28,13 @@ import { placesAPI } from '../api/places';
 import { placeTypesAPI } from '../api/placeTypes';
 import { postsAPI } from '../api/posts';
 import apiClient from '../api/client';
+import { uploadAPI } from '../api/upload';
 
 const { Title } = Typography;
 const { Option } = Select;
 
 const AddPost = () => {
-    const [message, contextHolder] = messageCtx.useMessage();
+  const [message, contextHolder] = messageCtx.useMessage();
 
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
@@ -70,12 +71,12 @@ const AddPost = () => {
     // Extract address components - try multiple district types
     addressComponents.forEach(component => {
       const types = component.types;
-      
+
       // Try different district types from Google Places
-      if (types.includes('sublocality_level_1') || 
-          types.includes('administrative_area_level_2') ||
-          types.includes('locality') ||
-          types.includes('sublocality')) {
+      if (types.includes('sublocality_level_1') ||
+        types.includes('administrative_area_level_2') ||
+        types.includes('locality') ||
+        types.includes('sublocality')) {
         if (!district) { // Only set if not already found
           district = component.long_name;
         }
@@ -146,7 +147,7 @@ const AddPost = () => {
 
       const data = await response.json();
       const places = data.data || data || [];
-      
+
       // Format places for select options
       const formattedPlaces = places.map(place => {
         // Handle province - it might be an object or string
@@ -156,9 +157,9 @@ const AddPost = () => {
         } else {
           provinceName = place.province || '';
         }
-        
+
         const locationString = `${place.name_place} - ${place.district || ''}, ${provinceName}`;
-        
+
         return {
           value: locationString,
           label: locationString,
@@ -176,9 +177,9 @@ const AddPost = () => {
   // ฟังก์ชัน initMap สำหรับ Google Maps
   const initMap = useCallback(() => {
     if (!mapRef.current) return;
-    
+
     const bangkok = { lat: 13.7563, lng: 100.5018 };
-    
+
     mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
       center: bangkok,
       zoom: 13,
@@ -317,7 +318,7 @@ const AddPost = () => {
 
   const openAddPlaceModal = () => {
     setShowAddPlaceModal(true);
-    
+
     // Initialize Google Maps after modal opens
     setTimeout(() => {
       if (window.google && window.google.maps) {
@@ -330,7 +331,7 @@ const AddPost = () => {
             initMap();
           }
         }, 100);
-        
+
         // Clear interval after 10 seconds to prevent infinite loop
         setTimeout(() => clearInterval(checkGoogleMaps), 10000);
       }
@@ -341,7 +342,7 @@ const AddPost = () => {
     setShowAddPlaceModal(false);
     addPlaceForm.resetFields();
     setGgRef(''); // รีเซ็ต Google Places reference
-    
+
     // Reset map if it exists
     if (mapInstanceRef.current && markerRef.current) {
       const bangkok = { lat: 13.7563, lng: 100.5018 };
@@ -373,7 +374,7 @@ const AddPost = () => {
 
       if (duplicates) {
         // const existingPlace = duplicates[0];
-        
+
         // Check if it's an exact name match or proximity match
         // const isNameMatch = existingPlace.name_place?.toLowerCase().trim() === values.name_place.toLowerCase().trim();
         // const latDiff = Math.abs(parseFloat(existingPlace.latitude) - parseFloat(values.latitude));
@@ -388,12 +389,12 @@ const AddPost = () => {
         // } else if (isProximityMatch) {
         //   duplicateReason = 'same location';
         // }
-        
+
         // Use the existing place instead of creating a new one
         // const existingLocation = `${existingPlace.name_place} - ${existingPlace.district || ''}, ${existingPlace.province || provinceName}`;
         // setFormData(prev => ({ ...prev, location: existingLocation }));
         // form.setFieldsValue({ location: existingLocation });
-        
+
         message.error({
           content: `Place already exists with ${duplicateReason}! Using existing place`,
           duration: 5,
@@ -414,12 +415,12 @@ const AddPost = () => {
       console.log('Creating new place with values:', _data)
       // Create the place using the API if no duplicates found
       await placesAPI.create(_data);
-      
+
       // Update the location field with the new place
       const newLocation = `${values.name_place} - ${values.district || ''}, ${provinceName}`;
       setFormData(prev => ({ ...prev, location: newLocation }));
       form.setFieldsValue({ location: newLocation });
-      
+
       message.success('Place added successfully!');
       fetchAllPlaces(); // Refresh places list
       closeAddPlaceModal();
@@ -467,7 +468,7 @@ const AddPost = () => {
       console.log('Selected location:', values.location);
       console.log('Available places:', allPlaces.map(p => p.label));
       console.log('Found selected place:', selectedPlace);
-      
+
       if (!selectedPlace) {
         message.error('Please select a valid location from the list!');
         return;
@@ -478,7 +479,7 @@ const AddPost = () => {
       if (formData.coverImage) {
         console.log('Converting image to base64:', formData.coverImage);
         const imageFile = formData.coverImage.originFileObj || formData.coverImage;
-        
+
         if (imageFile instanceof File) {
           try {
             imageDataUrl = await new Promise((resolve, reject) => {
@@ -517,12 +518,22 @@ const AddPost = () => {
         image: submitData.image ? `Base64 data (${submitData.image.length} chars)` : 'No image'
       });
 
+      const uploadData = await uploadAPI.uploadImage(formData.coverImage, (progress) => {
+        console.log('Upload progress:', progress);
+      });
+      if (!uploadData.success) {
+        message.error('Failed to upload image. Please try again.');
+        return;
+      }
+      console.log('Image uploaded successfully:', uploadData.imageUrl);
+      submitData.image = uploadData.imageUrl;
+
       // Submit to API using postsAPI
       const result = await postsAPI.create(submitData);
-      
+
       message.success('Post submitted successfully!');
       console.log('Post created:', result);
-      
+
       // Reset form after successful submission
       form.resetFields();
       setFormData({
@@ -533,22 +544,22 @@ const AddPost = () => {
         visible: true,
         coverImage: null
       });
-      
+
       // Clear Quill editor content
       if (quillRef.current) {
         quillRef.current.setContents([]);
       }
-      
+
       // Clear preview
       setPreviewContent('');
-      
+
       // Optionally navigate to posts list or stay on page
       // navigate('/admin/posts');
-      
+
     } catch (error) {
       console.error('Error submitting post:', error);
       console.error('Error response data:', error.response?.data);
-      
+
       // Handle specific error cases
       if (error.response?.status === 401) {
         message.error('Please login to submit a post');
@@ -585,11 +596,11 @@ const AddPost = () => {
         message.error('Image must smaller than 2MB!');
         return Upload.LIST_IGNORE;
       }
-      
+
       // Store the file directly in formData
       setFormData(prev => ({ ...prev, coverImage: file }));
       message.success(`${file.name} selected successfully`);
-      
+
       // Return false to prevent automatic upload but keep file in list
       return false;
     },
@@ -600,17 +611,18 @@ const AddPost = () => {
     },
     onChange: (info) => {
       console.log('Upload onChange:', info);
-      const { fileList } = info;
-      
+      const fileList = info.fileList;
+      console.log(' fileList:', fileList)
+
       // Update form field with current fileList
       form.setFieldsValue({ coverImage: fileList });
-      
+
       // Handle file status
       if (fileList.length > 0) {
         const file = fileList[0];
         console.log('File in onChange:', file);
         console.log('OriginFileObj:', file.originFileObj);
-        
+
         if (file.status === 'done' || file.status === 'uploading' || !file.status) {
           // Ensure we store the actual file object, not the Ant Design wrapper
           const actualFile = file.originFileObj || file;
@@ -627,7 +639,7 @@ const AddPost = () => {
       }
     },
     showUploadList: {
-      showPreviewIcon: true,
+      showPreviewIcon: false,
       showRemoveIcon: true,
       showDownloadIcon: false,
     }
@@ -780,7 +792,7 @@ const AddPost = () => {
                 return e && e.fileList;
               }}
             >
-              <Upload {...uploadProps}>
+              <Upload {...uploadProps} fileList={[]}>
                 <Button icon={<UploadOutlined />} size="large" style={{ width: '100%' }}>
                   Click to Upload Cover Image
                 </Button>
@@ -829,7 +841,7 @@ const AddPost = () => {
             )}
 
             <Divider />
-            
+
             <Row justify="center">
               <Button
                 type="primary"
@@ -943,7 +955,7 @@ const AddPost = () => {
                   { type: 'number', min: -90, max: 90, message: 'Latitude must be between -90 and 90!' }
                 ]}
               >
-                <InputNumber 
+                <InputNumber
                   placeholder="Enter latitude"
                   size="large"
                   style={{ width: '100%' }}
@@ -962,7 +974,7 @@ const AddPost = () => {
                   { type: 'number', min: -180, max: 180, message: 'Longitude must be between -180 and 180!' }
                 ]}
               >
-                <InputNumber 
+                <InputNumber
                   placeholder="Enter longitude"
                   size="large"
                   style={{ width: '100%' }}

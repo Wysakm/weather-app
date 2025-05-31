@@ -1,21 +1,22 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { 
-  Table, 
-  Button, 
-  Modal, 
-  Form, 
-  Input, 
-  Space, 
-  Popconfirm, 
+import React, { useState, useEffect } from "react";
+import {
+  Table,
+  Button,
+  Modal,
+  Form,
+  Input,
+  Space,
+  Popconfirm,
   message,
   Typography,
   Select,
   Tag,
+  Skeleton,
 } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { postsAPI } from '../../api/posts';
+import apiClient from '../../api/client';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -31,34 +32,20 @@ const PostsTable = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [posts, setPosts] = useState([]);
   const navigate = useNavigate();
-  const { isAdmin, user, token } = useAuth();
-
-  const API_BASE_URL = 'http://localhost:3030/api';
-
-  // สร้าง headers ด้วย useMemo เพื่อ optimize performance
-  const headers = useMemo(() => ({
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
-  }), [token]);
+  const { isAdmin, user, isAuthenticated } = useAuth();
 
   // Fetch posts from API
   useEffect(() => {
-    if (!token) return;
+    console.log(' token:', user, isAuthenticated)
+
+    if (isAuthenticated) return;
 
     const fetchPosts = async () => {
       setTableLoading(true);
       try {
-        const response = await fetch(`${API_BASE_URL}/posts/`, {
-          method: 'GET',
-          headers,
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setPosts(data);
-        } else {
-          message.error('Failed to fetch posts');
-        }
+        const data = (await apiClient.get('/posts/')).data.data || [];
+        console.log(' data:', data)
+        setPosts(data);
       } catch (error) {
         console.error('Error fetching posts:', error);
         message.error('Error fetching posts');
@@ -68,25 +55,16 @@ const PostsTable = () => {
     };
 
     fetchPosts();
-  }, [token, headers]); // ใส่ headers ใน dependency
+  }, [user, isAuthenticated]);
 
   // สร้างฟังก์ชัน fetchPosts แยกสำหรับใช้ใน handlers อื่นๆ
   const refetchPosts = async () => {
-    if (!token) return;
-    
+    if (isAuthenticated) return;
+
     setTableLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/posts/`, {
-        method: 'GET',
-        headers,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setPosts(data);
-      } else {
-        message.error('Failed to fetch posts');
-      }
+      const data = await apiClient.get('/posts/');
+      setPosts(data);
     } catch (error) {
       console.error('Error fetching posts:', error);
       message.error('Error fetching posts');
@@ -113,7 +91,7 @@ const PostsTable = () => {
 
     // Apply search filter
     if (searchText) {
-      filtered = filtered.filter(post => 
+      filtered = filtered.filter(post =>
         post.title.toLowerCase().includes(searchText.toLowerCase())
       );
     }
@@ -152,14 +130,14 @@ const PostsTable = () => {
         ellipsis: true,
         sorter: (a, b) => a.title.localeCompare(b.title),
       },
-      {
-        title: 'Body',
-        dataIndex: 'body',
-        key: 'body',
-        width: '25%',
-        ellipsis: true,
-        render: (text) => text?.substring(0, 100) + (text?.length > 100 ? '...' : ''),
-      }
+      // {
+      //   title: 'Body',
+      //   dataIndex: 'body',
+      //   key: 'body',
+      //   width: '25%',
+      //   ellipsis: true,
+      //   render: (text) => text?.substring(0, 100) + (text?.length > 100 ? '...' : ''),
+      // }
     ];
 
     // เพิ่มคอลัมน์ Author เฉพาะ admin
@@ -190,8 +168,8 @@ const PostsTable = () => {
         key: 'actions',
         width: '15%',
         render: (_, record) => (
-          <Space 
-            size="small" 
+          <Space
+            size="small"
             direction={window.innerWidth < 768 ? "vertical" : "horizontal"}
             style={{ display: 'flex', flexWrap: 'wrap' }}
           >
@@ -200,7 +178,7 @@ const PostsTable = () => {
               icon={<EditOutlined />}
               size={window.innerWidth < 768 ? "small" : "small"}
               onClick={() => handleEdit(record)}
-              style={{ 
+              style={{
                 fontSize: window.innerWidth < 768 ? '10px' : '12px',
                 padding: window.innerWidth < 768 ? '2px 6px' : '4px 8px',
                 minWidth: window.innerWidth < 768 ? '40px' : 'auto'
@@ -219,7 +197,7 @@ const PostsTable = () => {
                 danger
                 icon={<DeleteOutlined />}
                 size={window.innerWidth < 768 ? "small" : "small"}
-                style={{ 
+                style={{
                   fontSize: window.innerWidth < 768 ? '10px' : '12px',
                   padding: window.innerWidth < 768 ? '2px 6px' : '4px 8px',
                   minWidth: window.innerWidth < 768 ? '40px' : 'auto'
@@ -259,7 +237,7 @@ const PostsTable = () => {
 
   const handleDelete = async (id_post) => {
     const post = posts.find(p => p.id_post === id_post);
-    
+
     if (!isAdmin() && post?.id_user !== user?.id_user) {
       message.error('You can only delete your own posts');
       return;
@@ -267,17 +245,9 @@ const PostsTable = () => {
 
     try {
       setTableLoading(true);
-      const response = await fetch(`${API_BASE_URL}/posts/${id_post}`, {
-        method: 'DELETE',
-        headers, // ใช้ headers แทน getHeaders()
-      });
-
-      if (response.ok) {
-        message.success('Post deleted successfully');
-        refetchPosts();
-      } else {
-        message.error('Failed to delete post');
-      }
+      await apiClient.delete(`/posts/${id_post}`);
+      message.success('Post deleted successfully');
+      refetchPosts();
     } catch (error) {
       console.error('Error deleting post:', error);
       message.error('Error deleting post');
@@ -288,28 +258,20 @@ const PostsTable = () => {
 
   const handleSubmit = async (values) => {
     setLoading(true);
-    
+
     try {
-      const response = await fetch(`${API_BASE_URL}/posts/${editingPost.id_post}`, {
-        method: 'PUT',
-        headers, // ใช้ headers แทน getHeaders()
-        body: JSON.stringify({
-          title: values.title,
-          body: values.body,
-          status: values.status,
-          image: values.image,
-          id_place: editingPost.id_place
-        }),
+      await apiClient.put(`/posts/${editingPost.id_post}`, {
+        title: values.title,
+        body: values.body,
+        status: values.status,
+        image: values.image,
+        id_place: editingPost.id_place
       });
 
-      if (response.ok) {
-        message.success('Post updated successfully');
-        setIsModalVisible(false);
-        form.resetFields();
-        refetchPosts();
-      } else {
-        message.error('Failed to update post');
-      }
+      message.success('Post updated successfully');
+      setIsModalVisible(false);
+      form.resetFields();
+      refetchPosts();
     } catch (error) {
       console.error('Error updating post:', error);
       message.error('Error updating post');
@@ -328,18 +290,20 @@ const PostsTable = () => {
     return isAdmin() ? 'Posts Manage' : 'My Posts';
   };
 
+  if (!isAuthenticated || tableLoading) return <Skeleton active />;
+
   return (
-    <div style={{ 
-      padding: '24px', 
+    <div style={{
+      padding: '24px',
       width: '80%',
-      display: 'flex', 
+      display: 'flex',
       flexDirection: 'column',
       minHeight: '100vh'
     }}>
-      
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
+
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: '24px'
       }}>
@@ -352,7 +316,7 @@ const PostsTable = () => {
           onClick={handleAdd}
           size="large"
           style={{
-            backgroundColor: 'var(--color-primary)', 
+            backgroundColor: 'var(--color-primary)',
             fontWeight: 'bold',
           }}
         >
@@ -360,9 +324,9 @@ const PostsTable = () => {
         </Button>
       </div>
 
-      <div style={{ 
-        display: 'flex', 
-        gap: '16px', 
+      <div style={{
+        display: 'flex',
+        gap: '16px',
         marginBottom: '24px',
         flexWrap: 'wrap'
       }}>
@@ -391,7 +355,7 @@ const PostsTable = () => {
       {/* แสดงข้อมูลสถิติ */}
       <div style={{ marginBottom: '16px' }}>
         <Typography.Text type="secondary">
-          {isAdmin() 
+          {isAdmin()
             ? `Showing ${filteredPosts.length} of ${posts.length} total posts`
             : `You have ${filteredPosts.length} post${filteredPosts.length !== 1 ? 's' : ''}`
           }
@@ -414,8 +378,8 @@ const PostsTable = () => {
           bordered
           size="middle"
           locale={{
-            emptyText: isAdmin() 
-              ? 'No posts found' 
+            emptyText: isAdmin()
+              ? 'No posts found'
               : 'You haven\'t created any posts yet'
           }}
         />
@@ -445,7 +409,7 @@ const PostsTable = () => {
               { max: 200, message: 'Post title cannot exceed 200 characters!' }
             ]}
           >
-            <Input 
+            <Input
               placeholder="Enter post title"
               size="large"
             />
@@ -459,7 +423,7 @@ const PostsTable = () => {
               { min: 10, message: 'Post body must be at least 10 characters!' }
             ]}
           >
-            <TextArea 
+            <TextArea
               placeholder="Enter post content"
               rows={4}
               size="large"
@@ -473,7 +437,7 @@ const PostsTable = () => {
               { type: 'url', message: 'Please enter a valid URL!' }
             ]}
           >
-            <Input 
+            <Input
               placeholder="Enter image URL"
               size="large"
             />
@@ -486,7 +450,7 @@ const PostsTable = () => {
               { required: true, message: 'Please select status!' }
             ]}
           >
-            <Select 
+            <Select
               placeholder="Select status"
               size="large"
               disabled={!isAdmin()} // user ทั่วไปแก้ไข status ไม่ได้
@@ -501,14 +465,14 @@ const PostsTable = () => {
 
           <Form.Item style={{ marginBottom: 0, marginTop: '24px' }}>
             <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
-              <Button 
+              <Button
                 onClick={handleCancel}
                 size="large"
               >
                 Cancel
               </Button>
-              <Button 
-                type="primary" 
+              <Button
+                type="primary"
                 htmlType="submit"
                 loading={loading}
                 size="large"

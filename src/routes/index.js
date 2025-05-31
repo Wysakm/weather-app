@@ -11,7 +11,7 @@ import AddPlace from '../pages/admin/addPlace';
 import AddPost from '../pages/addPost';
 import Terms from '../pages/terms';
 import PrivacyPolicy from '../pages/privacy';
-import Register from '../pages/register'; // เปลี่ยนกลับมาเป็น register.jsx
+import Register from '../pages/register';
 
 export const routes = [
   {
