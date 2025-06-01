@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Table, 
   Button, 
@@ -12,27 +12,41 @@ import {
   Select
 } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { usersAPI } from '../../api/users';
 
 const { Title } = Typography;
 
 
 const UserTable = () => {
-  const [users, setUsers] = useState([
-    { id: 1, username: 'admin', email: 'admin@example.com', role: 'Admin' },
-    { id: 2, username: 'travelthai', email: 'travelthai@example.com', role: 'User' },
-    { id: 3, username: 'northernguide', email: 'northernguide@example.com', role: 'User' },
-    { id: 4, username: 'seathai', email: 'seathai@example.com', role: 'User' },
-    { id: 5, username: 'moderator1', email: 'moderator1@example.com', role: 'Moderator' },
-  ]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [form] = Form.useForm();
 
+  // Load users on component mount
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await usersAPI.getAll();
+      console.log(' response:', response)
+      setUsers(response.data || []);
+    } catch (error) {
+      console.error('Failed to fetch users:', error);
+      message.error('Failed to load users');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const roleOptions = [
-    { value: 'Admin', label: 'Admin' },
-    { value: 'Moderator', label: 'Moderator' },
-    { value: 'User', label: 'User' },
+    { value: 'ADMIN', label: 'ADMIN' },
+    { value: 'MODERATOR', label: 'MODERATOR' },
+    { value: 'USER', label: 'USER' },
   ];
 
   const columns = [
@@ -51,54 +65,65 @@ const UserTable = () => {
     {
       title: 'Role',
       dataIndex: 'role',
+      render: (role) => role?.role_name || '-', 
       key: 'role',
       width: '20%',
     },
-    {
-      title: 'Actions',
-      key: 'actions',
-      width: '20%',
-      align: 'center',
-      render: (_, record) => (
-        <Space size="small">
-          <Button
-            type="primary"
-            icon={<EditOutlined />}
-            size="small"
-            onClick={() => handleEdit(record)}
-          >
-            Edit
-          </Button>
-          <Popconfirm
-            title="Are you sure to delete this user?"
-            onConfirm={() => handleDelete(record.id)}
-            okText="Yes"
-            cancelText="No"
-            placement="topRight"
-          >
-            <Button
-              danger
-              icon={<DeleteOutlined />}
-              size="small"
-            >
-              Delete
-            </Button>
-          </Popconfirm>
-        </Space>
-      ),
-    },
+    // {
+    //   title: 'Actions',
+    //   key: 'actions',
+    //   width: '20%',
+    //   align: 'center',
+    //   render: (_, record) => (
+    //     <Space size="small">
+    //       <Button
+    //         type="primary"
+    //         icon={<EditOutlined />}
+    //         size="small"
+    //         onClick={() => handleEdit(record)}
+    //       >
+    //         Edit
+    //       </Button>
+    //       <Popconfirm
+    //         title="Are you sure to delete this user?"
+    //         onConfirm={() => handleDelete(record.id || record.id_user)}
+    //         okText="Yes"
+    //         cancelText="No"
+    //         placement="topRight"
+    //       >
+    //         <Button
+    //           danger
+    //           icon={<DeleteOutlined />}
+    //           size="small"
+    //         >
+    //           Delete
+    //         </Button>
+    //       </Popconfirm>
+    //     </Space>
+    //   ),
+    // },
   ];
 
-  const handleEdit = (user) => {
-    setEditingUser(user);
-    form.setFieldsValue(user);
-    setIsModalVisible(true);
-  };
+  // const handleEdit = (user) => {
+  //   console.log(' user:', user)
+  //   setEditingUser(user);
+  //   form.setFieldsValue({...user, role: user.role?.role_name || ''});
+  //   setIsModalVisible(true);
+  // };
 
-  const handleDelete = (id) => {
-    setUsers(prevUsers => prevUsers.filter(user => user.id !== id));
-    message.success('User deleted successfully');
-  };
+  // const handleDelete = async (userId) => {
+  //   setLoading(true);
+  //   try {
+  //     await usersAPI.delete(userId);
+  //     setUsers(prevUsers => prevUsers.filter(user => (user.id || user.id_user) !== userId));
+  //     message.success('User deleted successfully');
+  //   } catch (error) {
+  //     console.error('Failed to delete user:', error);
+  //     message.error('Failed to delete user');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleAdd = () => {
     setEditingUser(null);
@@ -112,9 +137,11 @@ const UserTable = () => {
     try {
       if (editingUser) {
         // Update existing user
+        const userId = editingUser.id || editingUser.id_user;
+        await usersAPI.update(userId, values);
         setUsers(prevUsers => 
           prevUsers.map(user => 
-            user.id === editingUser.id 
+            (user.id || user.id_user) === userId 
               ? { ...user, ...values }
               : user
           )
@@ -122,17 +149,18 @@ const UserTable = () => {
         message.success('User updated successfully');
       } else {
         // Add new user
-        const newUser = {
-          id: Math.max(...users.map(u => u.id)) + 1,
-          ...values
-        };
-        setUsers(prevUsers => [...prevUsers, newUser]);
+        await usersAPI.create(values);
+        // const newUser = response.data;
+        fetchUsers()
+        // console.log(' newUser:', newUser)
+        // setUsers(prevUsers => [...prevUsers, newUser]);
         message.success('User created successfully');
       }
       
       setIsModalVisible(false);
       form.resetFields();
     } catch (error) {
+      console.error('Failed to save user:', error);
       message.error('Operation failed');
     } finally {
       setLoading(false);
@@ -182,7 +210,7 @@ const UserTable = () => {
           columns={columns}
           dataSource={users}
           loading={loading}
-          rowKey="id"
+          rowKey={(record) => record.id || record.id_user}
           pagination={{
             pageSize: 10,
             showSizeChanger: true,
@@ -236,6 +264,22 @@ const UserTable = () => {
               size="large"
             />
           </Form.Item>
+
+          {!editingUser && (
+            <Form.Item
+              name="password"
+              label="Password"
+              rules={[
+                { required: true, message: 'Please input password!' },
+                { min: 6, message: 'Password must be at least 6 characters!' }
+              ]}
+            >
+              <Input.Password 
+                placeholder="Enter password"
+                size="large"
+              />
+            </Form.Item>
+          )}
 
           <Form.Item
             name="role"
