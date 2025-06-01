@@ -474,21 +474,45 @@ const AddPost = () => {
 
       // Handle image upload if a new image is provided
       if (formData.coverImage) {
-        // Upload image via API
-        const uploadData = await uploadAPI.uploadImage(formData.coverImage);
-        if (!uploadData.success) {
-          message.error('Failed to upload image. Please try again.');
-          return;
+        // Check if it's a new file (File object) or existing image (object with url)
+        if (formData.coverImage instanceof File) {
+          // Upload new image via API
+          const uploadData = await uploadAPI.uploadImage(formData.coverImage);
+          if (!uploadData.success) {
+            message.error('Failed to upload image. Please try again.');
+            return;
+          }
+          submitData.image = uploadData.imageUrl;
+          
+          // If editing and there was an old image, send the old image URL to delete it
+          if (isEditMode && editingPost?.image && editingPost.image !== uploadData.imageUrl) {
+            submitData.oldImageUrl = editingPost.image;
+            console.log('Old image URL added for deletion:', editingPost.image);
+          }
+        } else if (formData.coverImage.url) {
+          // Keep existing image URL
+          submitData.image = formData.coverImage.url;
         }
-        submitData.image = uploadData.imageUrl;
       } else if (isEditMode && editingPost?.image) {
-        // Keep existing image for edit mode
+        // Keep existing image for edit mode if no new image selected
         submitData.image = editingPost.image;
       }
 
       // Submit post (create or update)
       if (isEditMode) {
         await postsAPI.update(id, submitData);
+        
+        // If we have an old image URL and it's different from the new one, try to delete it
+        if (submitData.oldImageUrl && submitData.oldImageUrl !== submitData.image) {
+          try {
+            await uploadAPI.deleteImage(submitData.oldImageUrl);
+            console.log('Old image deleted successfully:', submitData.oldImageUrl);
+          } catch (deleteError) {
+            console.warn('Failed to delete old image:', deleteError);
+            // Don't fail the whole operation if image deletion fails
+          }
+        }
+        
         message.success('Post updated successfully!');
       } else {
         await postsAPI.create(submitData);
@@ -530,8 +554,17 @@ const AddPost = () => {
         return Upload.LIST_IGNORE;
       }
 
+      // Check if replacing an existing image in edit mode
+      const isReplacingImage = isEditMode && editingPost?.image && formData.coverImage?.url;
+      
       setFormData(prev => ({ ...prev, coverImage: file }));
-      message.success(`${file.name} selected successfully`);
+      
+      if (isReplacingImage) {
+        message.success(`${file.name} selected. Previous image will be replaced.`);
+      } else {
+        message.success(`${file.name} selected successfully`);
+      }
+      
       return false;
     },
     onRemove: () => {
@@ -557,7 +590,7 @@ const AddPost = () => {
         setFormData(prev => ({ ...prev, coverImage: null }));
       }
     },
-  }), [form, message]);
+  }), [form, message, isEditMode, editingPost?.image, formData.coverImage?.url]);
 
   // Memoized handlers
   const goBack = useCallback(() => {
