@@ -22,7 +22,6 @@ const { Option } = Select;
 // Constants
 const BANGKOK_CENTER = { lat: 13.7563, lng: 100.5018 };
 const GOOGLE_MAPS_CHECK_INTERVAL = 100;
-const COORDINATE_PRECISION = 0.001;
 const MAP_CONFIG = {
   zoom: 13,
   disableDefaultUI: true,

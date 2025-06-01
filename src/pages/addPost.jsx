@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
   Form,
   Input,
@@ -29,6 +29,27 @@ import { placeTypesAPI } from '../api/placeTypes';
 import { postsAPI } from '../api/posts';
 import apiClient from '../api/client';
 import { uploadAPI } from '../api/upload';
+import {
+  INITIAL_FORM_DATA,
+  VALIDATION_RULES,
+  UPLOAD_CONFIG,
+  GOOGLE_MAPS_CONFIG,
+  BANGKOK_CENTER,
+  STATUS_OPTIONS,
+  GOOGLE_MAPS_CHECK_INTERVAL,
+  MAP_INIT_DELAY
+} from '../constants/addPostConstants';
+import {
+  normalizeApiResponse,
+  extractDistrictFromPlace,
+  formatPlacesForSelect,
+  formatProvincesForSelect,
+  validateImageFile,
+  fileToBase64,
+  getStatusColor,
+  getStatusText,
+  validateQuillContent
+} from '../utils/addPostUtils';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -40,14 +61,7 @@ const AddPost = () => {
   const { isAdmin } = useAuth();
   const [form] = Form.useForm();
   const [addPlaceForm] = Form.useForm();
-  const [formData, setFormData] = useState({
-    title: '',
-    location: '',
-    coverImage: null,
-    content: '',
-    status: 'pending',
-    visible: true
-  });
+  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
   const [previewContent, setPreviewContent] = useState('');
   const [showAddPlaceModal, setShowAddPlaceModal] = useState(false);
   const [addPlaceLoading, setAddPlaceLoading] = useState(false);
@@ -62,34 +76,16 @@ const AddPost = () => {
   const markerRef = useRef(null);
   const autocompleteRef = useRef(null);
 
-  // ฟังก์ชัน fillFormFields สำหรับเติมข้อมูลจาก Google Places
+  // Fill form fields from Google Places data
   const fillFormFields = useCallback((place) => {
-    const addressComponents = place.address_components || [];
-    let district = '';
-    setGgRef(place.reference || ''); // เก็บ Google Places reference
+    const district = extractDistrictFromPlace(place.address_components);
+    setGgRef(place.reference || '');
 
-    // Extract address components - try multiple district types
-    addressComponents.forEach(component => {
-      const types = component.types;
-
-      // Try different district types from Google Places
-      if (types.includes('sublocality_level_1') ||
-        types.includes('administrative_area_level_2') ||
-        types.includes('locality') ||
-        types.includes('sublocality')) {
-        if (!district) { // Only set if not already found
-          district = component.long_name;
-        }
-      }
-    });
-
-    // Fill form fields with Google Places data
     addPlaceForm.setFieldsValue({
       name_place: place.name || '',
-      district: district, // Auto-fill district from Google Places or leave empty
+      district: district,
       latitude: place.geometry ? place.geometry.location.lat() : '',
       longitude: place.geometry ? place.geometry.location.lng() : ''
-      // ไม่เติม province - ให้ผู้ใช้เลือกเองจาก dropdown
     });
   }, [addPlaceForm]);
 
@@ -97,16 +93,7 @@ const AddPost = () => {
   const fetchPlaceTypes = useCallback(async () => {
     try {
       const response = await placeTypesAPI.getAll();
-      let data = response.data;
-      if (response.data && Array.isArray(response.data.data)) {
-        data = response.data.data;
-      } else if (response.data && Array.isArray(response.data)) {
-        data = response.data;
-      } else if (Array.isArray(response)) {
-        data = response;
-      } else {
-        data = [];
-      }
+      const data = normalizeApiResponse(response);
       setPlaceTypes(data);
     } catch (error) {
       console.error('Error fetching place types:', error);
@@ -118,11 +105,8 @@ const AddPost = () => {
   // Fetch provinces from API
   const fetchProvinces = useCallback(async () => {
     try {
-      const response = (await apiClient.get('/provinces')).data;
-      const provinceOptions = response.data.map(province => ({
-        value: province.id_province,
-        label: province.name,
-      }));
+      const response = await apiClient.get('/provinces');
+      const provinceOptions = formatProvincesForSelect(response.data?.data || []);
       setProvinces(provinceOptions);
     } catch (error) {
       console.error('Error fetching provinces:', error);
@@ -134,73 +118,25 @@ const AddPost = () => {
   // Fetch all places from API
   const fetchAllPlaces = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:3030/api/places/', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch places');
-      }
-
-      const data = await response.json();
-      const places = data.data || data || [];
-
-      // Format places for select options
-      const formattedPlaces = places.map(place => {
-        // Handle province - it might be an object or string
-        let provinceName = '';
-        if (typeof place.province === 'object' && place.province !== null) {
-          provinceName = place.province.name || place.province.province_name || '';
-        } else {
-          provinceName = place.province || '';
-        }
-
-        const locationString = `${place.name_place} - ${place.district || ''}, ${provinceName}`;
-
-        return {
-          value: locationString,
-          label: locationString,
-          place: place
-        };
-      });
-
+      const response = await apiClient.get('/places/');
+      const places = response.data?.data || response.data || [];
+      const formattedPlaces = formatPlacesForSelect(places);
       setAllPlaces(formattedPlaces);
     } catch (error) {
       console.error('Error fetching places:', error);
+      message.error('Failed to load places');
       setAllPlaces([]);
     }
-  }, []);
+  }, [message]);
 
-  // ฟังก์ชัน initMap สำหรับ Google Maps
+  // Initialize Google Maps
   const initMap = useCallback(() => {
     if (!mapRef.current) return;
 
-    const bangkok = { lat: 13.7563, lng: 100.5018 };
-
-    mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
-      center: bangkok,
-      zoom: 13,
-      draggable: false,
-      zoomControl: false,
-      scrollwheel: false,
-      disableDoubleClickZoom: true,
-      mapTypeControl: false,
-      scaleControl: false,
-      streetViewControl: false,
-      rotateControl: false,
-      fullscreenControl: false,
-      panControl: false,
-      keyboardShortcuts: false,
-      clickableIcons: false,
-      gestureHandling: 'none',
-      disableDefaultUI: true,
-    });
+    mapInstanceRef.current = new window.google.maps.Map(mapRef.current, GOOGLE_MAPS_CONFIG);
 
     markerRef.current = new window.google.maps.Marker({
-      position: bangkok,
+      position: BANGKOK_CENTER,
       map: mapInstanceRef.current,
       draggable: true
     });
@@ -316,44 +252,38 @@ const AddPost = () => {
     fetchAllPlaces();
   }, [fetchPlaceTypes, fetchProvinces, fetchAllPlaces]);
 
-  const openAddPlaceModal = () => {
+  const openAddPlaceModal = useCallback(() => {
     setShowAddPlaceModal(true);
 
-    // Initialize Google Maps after modal opens
     setTimeout(() => {
       if (window.google && window.google.maps) {
         initMap();
       } else {
-        // Wait for Google Maps to load if not already loaded
         const checkGoogleMaps = setInterval(() => {
           if (window.google && window.google.maps) {
             clearInterval(checkGoogleMaps);
             initMap();
           }
-        }, 100);
+        }, GOOGLE_MAPS_CHECK_INTERVAL);
 
-        // Clear interval after 10 seconds to prevent infinite loop
         setTimeout(() => clearInterval(checkGoogleMaps), 10000);
       }
-    }, 300);
-  };
+    }, MAP_INIT_DELAY);
+  }, [initMap]);
 
-  const closeAddPlaceModal = () => {
+  const closeAddPlaceModal = useCallback(() => {
     setShowAddPlaceModal(false);
     addPlaceForm.resetFields();
-    setGgRef(''); // รีเซ็ต Google Places reference
+    setGgRef('');
 
-    // Reset map if it exists
     if (mapInstanceRef.current && markerRef.current) {
-      const bangkok = { lat: 13.7563, lng: 100.5018 };
-      mapInstanceRef.current.setCenter(bangkok);
+      mapInstanceRef.current.setCenter(BANGKOK_CENTER);
       mapInstanceRef.current.setZoom(13);
-      markerRef.current.setPosition(bangkok);
+      markerRef.current.setPosition(BANGKOK_CENTER);
     }
-  };
+  }, [addPlaceForm]);
 
   const handleAddPlace = async (values) => {
-    console.log(' values:', values)
     setAddPlaceLoading(true);
     try {
       // Get province name from provinces array if it's an ID
@@ -363,66 +293,42 @@ const AddPost = () => {
         provinceName = selectedProvince ? selectedProvince.label : values.province;
       }
 
-      // Check for duplicate places before creating (including Google reference)
+      // Check for duplicates
       const duplicates = await placesAPI.checkDuplicate(
         values.name_place,
         values.latitude,
         values.longitude,
-        ggRef // เพิ่ม Google Places reference ในการตรวจสอบ
+        ggRef
       );
-      console.log(' duplicates:', duplicates)
 
       if (duplicates) {
-        // const existingPlace = duplicates[0];
-
-        // Check if it's an exact name match or proximity match
-        // const isNameMatch = existingPlace.name_place?.toLowerCase().trim() === values.name_place.toLowerCase().trim();
-        // const latDiff = Math.abs(parseFloat(existingPlace.latitude) - parseFloat(values.latitude));
-        // const lngDiff = Math.abs(parseFloat(existingPlace.longitude) - parseFloat(values.longitude));
-        // const isProximityMatch = latDiff < 0.001 && lngDiff < 0.001;
-
-        let duplicateReason = 'Duplicate place';
-        // if (isNameMatch && isProximityMatch) {
-        //   duplicateReason = 'same name and location';
-        // } else if (isNameMatch) {
-        //   duplicateReason = 'same name';
-        // } else if (isProximityMatch) {
-        //   duplicateReason = 'same location';
-        // }
-
-        // Use the existing place instead of creating a new one
-        // const existingLocation = `${existingPlace.name_place} - ${existingPlace.district || ''}, ${existingPlace.province || provinceName}`;
-        // setFormData(prev => ({ ...prev, location: existingLocation }));
-        // form.setFieldsValue({ location: existingLocation });
-
         message.error({
-          content: `Place already exists with ${duplicateReason}! Using existing place`,
+          content: 'Place already exists with duplicate place! Using existing place',
           duration: 5,
         });
-        // closeAddPlaceModal();
         return;
       }
 
-      const _data = {
+      // Create new place
+      const placeData = {
         name_place: values.name_place,
         province: provinceName,
         district: values.district || '',
-        reference: ggRef, // เพิ่ม Google Places reference
+        reference: ggRef,
         latitude: values.latitude,
         longitude: values.longitude,
         place_type_id: values.place_type_id
-      }
-      console.log('Creating new place with values:', _data)
-      // Create the place using the API if no duplicates found
-      await placesAPI.create(_data);
+      };
 
-      // Update the location field with the new place
+      await placesAPI.create(placeData);
+
+      // Update location field
       const newLocation = `${values.name_place} - ${values.district || ''}, ${provinceName}`;
       setFormData(prev => ({ ...prev, location: newLocation }));
       form.setFieldsValue({ location: newLocation });
 
       message.success('Place added successfully!');
-      fetchAllPlaces(); // Refresh places list
+      fetchAllPlaces();
       closeAddPlaceModal();
     } catch (error) {
       console.error('Error adding place:', error);
@@ -450,117 +356,76 @@ const AddPost = () => {
 
   const handleSubmit = async (values) => {
     try {
-      // Validate that cover image is selected
+      // Validate cover image
       if (!formData.coverImage) {
         message.error('Please select a cover image!');
         return;
       }
 
-      // Validate that content is not empty or contains only empty HTML
-      const cleanContent = formData.content?.replace(/<p><br\s*\/?><\/p>/g, '').replace(/<p><\/p>/g, '').trim();
-      if (!formData.content || !cleanContent || cleanContent === '' || cleanContent === '<p></p>') {
+      // Validate content using utility function
+      if (!validateQuillContent(formData.content)) {
         message.error('Please add some content to your post!');
         return;
       }
 
-      // Find the selected place to get its ID
+      // Find selected place
       const selectedPlace = allPlaces.find(place => place.label === values.location);
-      console.log('Selected location:', values.location);
-      console.log('Available places:', allPlaces.map(p => p.label));
-      console.log('Found selected place:', selectedPlace);
-
       if (!selectedPlace) {
         message.error('Please select a valid location from the list!');
         return;
       }
 
-      // Convert image to base64 data URL
+      // Convert image to base64 or upload
       let imageDataUrl = '';
       if (formData.coverImage) {
-        console.log('Converting image to base64:', formData.coverImage);
         const imageFile = formData.coverImage.originFileObj || formData.coverImage;
 
         if (imageFile instanceof File) {
           try {
-            imageDataUrl = await new Promise((resolve, reject) => {
-              const reader = new FileReader();
-              reader.onload = (e) => resolve(e.target.result);
-              reader.onerror = reject;
-              reader.readAsDataURL(imageFile);
-            });
-            console.log('Image converted to base64, length:', imageDataUrl.length);
+            imageDataUrl = await fileToBase64(imageFile);
           } catch (error) {
-            console.error('Error converting image to base64:', error);
             message.error('Failed to process image. Please try again.');
             return;
           }
         } else {
-          console.error('Invalid image file object:', imageFile);
           message.error('Invalid image file. Please select a valid image.');
           return;
         }
       }
 
-      // Create JSON data object matching backend expectations
+      // Prepare submission data
       const submitData = {
         title: values.title.trim(),
         body: formData.content.trim(),
-        status: 'pending', // Always send 'pending' status
-        image: imageDataUrl, // Send base64 data URL
+        status: 'pending',
+        image: imageDataUrl,
         id_place: selectedPlace.place.id_place || selectedPlace.place.id
       };
 
-      console.log('Form submitted with data:', {
-        title: submitData.title,
-        body: submitData.body ? 'Content provided' : 'No content',
-        status: submitData.status,
-        id_place: submitData.id_place,
-        image: submitData.image ? `Base64 data (${submitData.image.length} chars)` : 'No image'
-      });
-
-      const uploadData = await uploadAPI.uploadImage(formData.coverImage, (progress) => {
-        console.log('Upload progress:', progress);
-      });
+      // Upload image via API
+      const uploadData = await uploadAPI.uploadImage(formData.coverImage);
       if (!uploadData.success) {
         message.error('Failed to upload image. Please try again.');
         return;
       }
-      console.log('Image uploaded successfully:', uploadData.imageUrl);
       submitData.image = uploadData.imageUrl;
 
-      // Submit to API using postsAPI
-      const result = await postsAPI.create(submitData);
-
+      // Submit post
+      await postsAPI.create(submitData);
       message.success('Post submitted successfully!');
-      console.log('Post created:', result);
 
-      // Reset form after successful submission
+      // Reset form
       form.resetFields();
-      setFormData({
-        title: '',
-        location: '',
-        content: '',
-        status: 'pending',
-        visible: true,
-        coverImage: null
-      });
+      setFormData(INITIAL_FORM_DATA);
 
-      // Clear Quill editor content
       if (quillRef.current) {
         quillRef.current.setContents([]);
       }
-
-      // Clear preview
       setPreviewContent('');
-
-      // Optionally navigate to posts list or stay on page
-      // navigate('/admin/posts');
 
     } catch (error) {
       console.error('Error submitting post:', error);
-      console.error('Error response data:', error.response?.data);
 
-      // Handle specific error cases
       if (error.response?.status === 401) {
         message.error('Please login to submit a post');
       } else if (error.response?.status === 403) {
@@ -572,65 +437,42 @@ const AddPost = () => {
       } else if (error.response?.status === 500) {
         const errorMsg = error.response?.data?.message || error.response?.data?.error || 'Internal server error';
         message.error(`Server error: ${errorMsg}`);
-        console.error('Server error details:', error.response?.data);
       } else {
         message.error('Failed to submit post. Please try again.');
       }
     }
   };
 
-  const uploadProps = {
-    name: 'file',
-    multiple: false,
-    maxCount: 1,
-    accept: '.jpg,.jpeg,.png',
-    listType: 'picture',
+  // Memoized upload configuration
+  const uploadProps = useMemo(() => ({
+    ...UPLOAD_CONFIG,
     beforeUpload: (file) => {
-      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-      if (!isJpgOrPng) {
-        message.error('You can only upload JPG/PNG file!');
-        return Upload.LIST_IGNORE;
-      }
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        message.error('Image must smaller than 2MB!');
+      const validation = validateImageFile(file);
+      if (!validation.isValid) {
+        message.error(validation.error);
         return Upload.LIST_IGNORE;
       }
 
-      // Store the file directly in formData
       setFormData(prev => ({ ...prev, coverImage: file }));
       message.success(`${file.name} selected successfully`);
-
-      // Return false to prevent automatic upload but keep file in list
       return false;
     },
-    onRemove: (file) => {
+    onRemove: () => {
       setFormData(prev => ({ ...prev, coverImage: null }));
       message.info('Image removed');
       return true;
     },
     onChange: (info) => {
-      console.log('Upload onChange:', info);
       const fileList = info.fileList;
-      console.log(' fileList:', fileList)
-
-      // Update form field with current fileList
       form.setFieldsValue({ coverImage: fileList });
 
-      // Handle file status
       if (fileList.length > 0) {
         const file = fileList[0];
-        console.log('File in onChange:', file);
-        console.log('OriginFileObj:', file.originFileObj);
-
         if (file.status === 'done' || file.status === 'uploading' || !file.status) {
-          // Ensure we store the actual file object, not the Ant Design wrapper
           const actualFile = file.originFileObj || file;
           if (actualFile instanceof File) {
             setFormData(prev => ({ ...prev, coverImage: actualFile }));
-            console.log('Stored file in formData:', actualFile.name);
           } else {
-            console.warn('Not a File object:', actualFile);
             setFormData(prev => ({ ...prev, coverImage: file }));
           }
         }
@@ -638,32 +480,12 @@ const AddPost = () => {
         setFormData(prev => ({ ...prev, coverImage: null }));
       }
     },
-    showUploadList: {
-      showPreviewIcon: false,
-      showRemoveIcon: true,
-      showDownloadIcon: false,
-    }
-  };
+  }), [form, message]);
 
-  const getStatusColor = () => {
-    switch (formData.status) {
-      case 'approved': return 'success';
-      case 'rejected': return 'error';
-      default: return 'warning';
-    }
-  };
-
-  const getStatusText = () => {
-    switch (formData.status) {
-      case 'approved': return 'Approved';
-      case 'rejected': return 'Rejected';
-      default: return 'Pending';
-    }
-  };
-
-  const goBack = () => {
+  // Memoized handlers
+  const goBack = useCallback(() => {
     navigate(-1);
-  };
+  }, [navigate]);
 
   return (
     <div style={{ padding: '24px', width: '100%', display: 'flex', justifyContent: 'center' }}>
@@ -710,8 +532,8 @@ const AddPost = () => {
             </Col>
             <Col>
               <Badge
-                status={getStatusColor()}
-                text={getStatusText()}
+                status={getStatusColor(formData.status)}
+                text={getStatusText(formData.status)}
                 style={{ fontSize: '16px', fontWeight: 'bold' }}
               />
             </Col>
@@ -731,7 +553,7 @@ const AddPost = () => {
             <Form.Item
               label="Title"
               name="title"
-              rules={[{ required: true, message: 'Please enter post title!' }]}
+              rules={VALIDATION_RULES.title}
             >
               <Input
                 placeholder="Enter post title"
@@ -742,7 +564,7 @@ const AddPost = () => {
             <Form.Item
               label="Location"
               name="location"
-              rules={[{ required: true, message: 'Please select a location!' }]}
+              rules={VALIDATION_RULES.location}
             >
               <Input.Group compact style={{ display: 'flex' }}>
                 <Select
@@ -782,10 +604,9 @@ const AddPost = () => {
             <Form.Item
               label="Cover Image"
               name="coverImage"
-              rules={[{ required: true, message: 'Please upload a cover image!' }]}
+              rules={VALIDATION_RULES.coverImage}
               valuePropName="fileList"
               getValueFromEvent={(e) => {
-                console.log('getValueFromEvent:', e);
                 if (Array.isArray(e)) {
                   return e;
                 }
@@ -833,9 +654,11 @@ const AddPost = () => {
                   onChange={updatePostStatus}
                   style={{ width: '200px' }}
                 >
-                  <Option value="pending">Pending</Option>
-                  <Option value="approved">Approved</Option>
-                  <Option value="rejected">Rejected</Option>
+                  {STATUS_OPTIONS.map(option => (
+                    <Option key={option.value} value={option.value}>
+                      {option.label}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
             )}
@@ -885,11 +708,7 @@ const AddPost = () => {
               <Form.Item
                 name="name_place"
                 label="Place Name"
-                rules={[
-                  { required: true, message: 'Please enter place name!' },
-                  { min: 2, message: 'Place name must be at least 2 characters!' },
-                  { max: 100, message: 'Place name cannot exceed 100 characters!' }
-                ]}
+                rules={VALIDATION_RULES.placeName}
               >
                 <Input size="large" placeholder="Enter place name" />
               </Form.Item>
@@ -899,9 +718,7 @@ const AddPost = () => {
               <Form.Item
                 name="place_type_id"
                 label="Place Type"
-                rules={[
-                  { required: true, message: 'Please select place type!' }
-                ]}
+                rules={VALIDATION_RULES.placeType}
               >
                 <Select placeholder="Select place type" size="large">
                   {placeTypes.map(type => (
@@ -917,9 +734,7 @@ const AddPost = () => {
               <Form.Item
                 name="province"
                 label="Province"
-                rules={[
-                  { required: true, message: 'Please enter province!' }
-                ]}
+                rules={VALIDATION_RULES.province}
               >
                 <Select
                   showSearch
@@ -938,9 +753,7 @@ const AddPost = () => {
               <Form.Item
                 name="district"
                 label="District (Optional)"
-                rules={[
-                  { required: false }
-                ]}
+                rules={[{ required: false }]}
               >
                 <Input size="large" placeholder="Enter district (optional)" />
               </Form.Item>
@@ -950,10 +763,7 @@ const AddPost = () => {
               <Form.Item
                 name="latitude"
                 label="Latitude"
-                rules={[
-                  { required: true, message: 'Please enter latitude!' },
-                  { type: 'number', min: -90, max: 90, message: 'Latitude must be between -90 and 90!' }
-                ]}
+                rules={VALIDATION_RULES.latitude}
               >
                 <InputNumber
                   placeholder="Enter latitude"
@@ -969,10 +779,7 @@ const AddPost = () => {
               <Form.Item
                 name="longitude"
                 label="Longitude"
-                rules={[
-                  { required: true, message: 'Please enter longitude!' },
-                  { type: 'number', min: -180, max: 180, message: 'Longitude must be between -180 and 180!' }
-                ]}
+                rules={VALIDATION_RULES.longitude}
               >
                 <InputNumber
                   placeholder="Enter longitude"
