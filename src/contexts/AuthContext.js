@@ -62,6 +62,34 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateUser = (updatedUserData) => {
+    setUser(prevUser => {
+      const newUser = {
+        ...prevUser,
+        ...updatedUserData
+      };
+      // อัพเดทข้อมูลใน localStorage
+      localStorage.setItem('userInfo', JSON.stringify(newUser));
+      console.log('User updated in context:', newUser);
+      return newUser;
+    });
+  };
+
+  const updateUserProfile = async (profileData) => {
+    try {
+      // เรียก API เพื่อบันทึกข้อมูลในฐานข้อมูล
+      const response = await authAPI.updateProfile(profileData);
+      
+      // อัพเดท context หลังจากบันทึกสำเร็จ
+      updateUser(profileData);
+      
+      return response;
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+      throw error;
+    }
+  };
+
   const hasRole = (requiredRole) => {
     return role === requiredRole;
   };
@@ -81,6 +109,8 @@ export const AuthProvider = ({ children }) => {
     loading,
     login,
     logout,
+    updateUser,
+    updateUserProfile,
     hasRole,
     hasAnyRole,
     isAdmin

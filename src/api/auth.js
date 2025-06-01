@@ -39,5 +39,16 @@ export const authAPI = {
       removeToken();
       throw error;
     }
-  }
+  },
+
+  // อัปเดตโปรไฟล์
+  updateProfile: async (profileData) => {
+    try {
+      const response = await apiClient.put('/auth/profile', profileData);
+      return response.data;
+    } catch (error) {
+      console.error('Update profile error:', error);
+      throw error;
+    }
+  },
 };

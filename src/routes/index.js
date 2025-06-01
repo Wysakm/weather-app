@@ -12,6 +12,7 @@ import AddPost from '../pages/addPost';
 import Terms from '../pages/terms';
 import PrivacyPolicy from '../pages/privacy';
 import Register from '../pages/register';
+import Account from '../pages/admin/account';
 
 export const routes = [
   {
@@ -89,5 +90,8 @@ export const routes = [
   {
     path: '/register',
     element: Register
-  }
+  },
+{  path : '/account',
+  element : Account // Assuming this is the MyAccount component
+}
 ];
