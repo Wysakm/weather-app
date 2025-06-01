@@ -443,6 +443,7 @@ const AddPost = () => {
   };
 
   const handleSubmit = async (values) => {
+    console.log(' values:', values)
     setLoading(true);
     try {
       // Validate cover image (only required for new posts)
@@ -468,9 +469,11 @@ const AddPost = () => {
       const submitData = {
         title: values.title.trim(),
         body: formData.content.trim(),
-        status: isEditMode ? (editingPost?.status || 'pending') : 'pending',
+        status: isEditMode ? (values.status || 'pending') : 'pending',
+        // status: isEditMode ? (editingPost?.status || 'pending') : 'pending',
         id_place: selectedPlace.place.id_place || selectedPlace.place.id
       };
+        console.log(' submitData:', submitData)
 
       // Handle image upload if a new image is provided
       if (formData.coverImage) {
@@ -763,7 +766,7 @@ const AddPost = () => {
             </Form.Item>
 
             {isAdmin() && (
-              <Form.Item label="Status">
+              <Form.Item label="Status" name={'status'}>
                 <Select
                   value={formData.status}
                   onChange={updatePostStatus}
