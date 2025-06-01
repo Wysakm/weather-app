@@ -261,10 +261,9 @@ const AddPost = () => {
       if (isEditMode && id) {
         setLoading(true);
         try {
-          console.log(`Loading post data for ID: ${id}`);
-          debugger
           const response = await postsAPI.getById(id);
           const post = response.data || response;
+          console.log('Loaded post data:', post);
           setEditingPost(post);
           
           // Set form values
@@ -289,7 +288,6 @@ const AddPost = () => {
             updatePreview();
           }
         } catch (error) {
-          debugger
           console.error('Error loading post data:', error);
           message.error('Failed to load post data');
           navigate('/posts');

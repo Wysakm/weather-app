@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   Table, 
   Button, 
@@ -9,10 +9,12 @@ import {
   Typography,
   Select,
   Tag,
+  Spin,
 } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, PlusOutlined, SearchOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { postsAPI } from '../../api/posts';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -20,53 +22,49 @@ const { Option } = Select;
 const PostsTable = () => {
   const [searchText, setSearchText] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { isAdmin, user } = useAuth();
 
-  // Sample data
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      title: 'Thi Lo Su Waterfall, Tak - The Largest and Most Beautiful Waterfall in Asia',
-      author: 'travelthai',
-      authorId: 1,
-      status: 'Pending',
-    },
-    {
-      id: 2,
-      title: 'Phu Chi Fa, Chiang Rai - World-Class Sea of Mist Viewpoint',
-      author: 'northernguide',
-      authorId: 2,
-      status: 'Approved',
-    },
-    {
-      id: 3,
-      title: 'Koh Lipe, Satun - Paradise of the Andaman Sea',
-      author: 'seathai',
-      authorId: 1,
-      status: 'Pending',
-    },
-    {
-      id: 4,
-      title: 'Experience Old Town Atmosphere at Chiang Khan, Loei',
-      author: 'isanguide',
-      authorId: 3,
-      status: 'Approved',
-    },
-    {
-      id: 5,
-      title: 'Naka Cave, Bueng Kan - Mysterious Cave in the Forest',
-      author: 'esanguide',
-      authorId: 1,
-      status: 'Rejected',
-    },
-  ]);
+  // Load posts from API
+  const fetchPosts = async () => {
+    try {
+      setLoading(true);
+      const response = await postsAPI.getAll();
+      const postsData = response.data || response;
+      
+      // Transform API data to match our table structure
+      const transformedPosts = postsData.map(post => ({
+        id: post.id_post || post.id,
+        title: post.title,
+        author: post.user?.username || post.author || 'Unknown',
+        authorId: post.id_user || post.authorId,
+        status: (post.status || 'pending').toLowerCase(),
+        content: post.body || post.content,
+        image: post.image,
+        createdAt: post.created_at || post.createdAt,
+        updatedAt: post.updated_at || post.updatedAt,
+      }));
+      
+      setPosts(transformedPosts);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      message.error('Failed to load posts');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   const statusOptions = [
     { value: 'all', label: 'All Status' },
-    { value: 'Pending', label: 'Pending' },
-    { value: 'Approved', label: 'Approved' },
-    { value: 'Rejected', label: 'Rejected' },
+    { value: 'pending', label: 'Pending' },
+    { value: 'approved', label: 'Approved' },
+    { value: 'rejected', label: 'Rejected' },
   ];
 
   // Filter data based on user role
@@ -75,7 +73,12 @@ const PostsTable = () => {
 
     // ถ้าไม่ใช่ admin ให้แสดงเฉพาะโพสต์ของตัวเอง
     if (!isAdmin()) {
-      filtered = posts.filter(post => post.authorId === user?.id);
+      const currentUserId = user?.id_user || user?.id;
+      filtered = posts.filter(post => {
+        const postAuthorId = post.authorId;
+        return postAuthorId === currentUserId || 
+               String(postAuthorId) === String(currentUserId);
+      });
     }
 
     // Apply search filter
@@ -96,12 +99,12 @@ const PostsTable = () => {
   const filteredPosts = getFilteredPosts();
 
   const getStatusColor = (status) => {
-    switch (status) {
-      case 'Pending':
+    switch (status?.toLowerCase()) {
+      case 'pending':
         return 'orange';
-      case 'Approved':
+      case 'approved':
         return 'green';
-      case 'Rejected':
+      case 'rejected':
         return 'red';
       default:
         return 'default';
@@ -141,7 +144,9 @@ const PostsTable = () => {
         width: '15%',
         responsive: ['sm'],
         render: (status) => (
-          <Tag color={getStatusColor(status)}>{status}</Tag>
+          <Tag color={getStatusColor(status)}>
+            {status?.charAt(0).toUpperCase() + status?.slice(1) || 'Pending'}
+          </Tag>
         ),
       },
       {
@@ -196,31 +201,48 @@ const PostsTable = () => {
   };
 
   const handleAdd = () => {
-    navigate('/addPost');
+    navigate('/add-post');
   };
 
   const handleEdit = (post) => {
     // ตรวจสอบสิทธิ์ก่อนแก้ไข
-    if (!isAdmin() && post.authorId !== user?.id) {
-      message.error('You can only edit your own posts');
-      return;
+    if (!isAdmin()) {
+      const currentUserId = user?.id_user || user?.id;
+      const postAuthorId = post.authorId;
+      
+      if (postAuthorId !== currentUserId && String(postAuthorId) !== String(currentUserId)) {
+        message.error('You can only edit your own posts');
+        return;
+      }
     }
 
     // Navigate to addPost with the post ID for editing
     navigate(`/edit-post/${post.id}`);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     const post = posts.find(p => p.id === id);
     
     // ตรวจสอบสิทธิ์ก่อนลบ
-    if (!isAdmin() && post?.authorId !== user?.id) {
-      message.error('You can only delete your own posts');
-      return;
+    if (!isAdmin()) {
+      const currentUserId = user?.id_user || user?.id;
+      const postAuthorId = post?.authorId;
+      
+      if (postAuthorId !== currentUserId && String(postAuthorId) !== String(currentUserId)) {
+        message.error('You can only delete your own posts');
+        return;
+      }
     }
 
-    setPosts(posts.filter(post => post.id !== id));
-    message.success('Post deleted successfully');
+    try {
+      await postsAPI.delete(id);
+      message.success('Post deleted successfully');
+      // Refresh posts list
+      fetchPosts();
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      message.error('Failed to delete post');
+    }
   };
 
   // Get title based on user role
@@ -246,18 +268,29 @@ const PostsTable = () => {
         <Title level={2} style={{ margin: 0, fontSize: '2rem', fontWeight: 'bold' }}>
           {getPageTitle()}
         </Title>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={handleAdd}
-          size="large"
-          style={{
-            backgroundColor: 'var(--color-primary)', 
-            fontWeight: 'bold',
-          }}
-        >
-          Add Post
-        </Button>
+        <Space>
+          <Button
+            icon={<ReloadOutlined />}
+            onClick={fetchPosts}
+            size="large"
+            loading={loading}
+            title="Refresh posts"
+          >
+            Refresh
+          </Button>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleAdd}
+            size="large"
+            style={{
+              backgroundColor: 'var(--color-primary)', 
+              fontWeight: 'bold',
+            }}
+          >
+            Add Post
+          </Button>
+        </Space>
       </div>
 
       <div style={{ 
@@ -299,25 +332,27 @@ const PostsTable = () => {
       </div>
 
       <div style={{ flex: 1 }}>
-        <Table
-          columns={getColumns()}
-          dataSource={filteredPosts}
-          rowKey="id"
-          pagination={{
-            pageSize: 10,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total, range) =>
-              `${range[0]}-${range[1]} of ${total} items`,
-          }}
-          bordered
-          size="middle"
-          locale={{
-            emptyText: isAdmin() 
-              ? 'No posts found' 
-              : 'You haven\'t created any posts yet'
-          }}
-        />
+        <Spin spinning={loading} tip="Loading posts...">
+          <Table
+            columns={getColumns()}
+            dataSource={filteredPosts}
+            rowKey="id"
+            pagination={{
+              pageSize: 10,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total, range) =>
+                `${range[0]}-${range[1]} of ${total} items`,
+            }}
+            bordered
+            size="middle"
+            locale={{
+              emptyText: isAdmin() 
+                ? 'No posts found' 
+                : 'You haven\'t created any posts yet'
+            }}
+          />
+        </Spin>
       </div>
 
     </div>
