@@ -56,7 +56,11 @@ export const routes = [
   },
 
   {
-    path: '/addPost',
+    path: '/add-post',
+    element: AddPost
+  },
+  {
+    path: '/edit-post/:id',
     element: AddPost
   },
 

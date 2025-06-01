@@ -22,7 +22,7 @@ import {
   ArrowLeftOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { placesAPI } from '../api/places';
 import { placeTypesAPI } from '../api/placeTypes';
@@ -45,7 +45,6 @@ import {
   formatPlacesForSelect,
   formatProvincesForSelect,
   validateImageFile,
-  fileToBase64,
   getStatusColor,
   getStatusText,
   validateQuillContent
@@ -58,10 +57,14 @@ const AddPost = () => {
   const [message, contextHolder] = messageCtx.useMessage();
 
   const navigate = useNavigate();
+  const { id } = useParams(); // Get post ID from URL params
+  const isEditMode = Boolean(id); // Determine if we're in edit mode
   const { isAdmin } = useAuth();
   const [form] = Form.useForm();
   const [addPlaceForm] = Form.useForm();
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
+  const [loading, setLoading] = useState(false);
+  const [editingPost, setEditingPost] = useState(null);
   const [previewContent, setPreviewContent] = useState('');
   const [showAddPlaceModal, setShowAddPlaceModal] = useState(false);
   const [addPlaceLoading, setAddPlaceLoading] = useState(false);
@@ -252,6 +255,53 @@ const AddPost = () => {
     fetchAllPlaces();
   }, [fetchPlaceTypes, fetchProvinces, fetchAllPlaces]);
 
+  // Load post data when in edit mode
+  useEffect(() => {
+    const loadPostData = async () => {
+      if (isEditMode && id) {
+        setLoading(true);
+        try {
+          console.log(`Loading post data for ID: ${id}`);
+          debugger
+          const response = await postsAPI.getById(id);
+          const post = response.data || response;
+          setEditingPost(post);
+          
+          // Set form values
+          const initialValues = {
+            title: post.title,
+            content: post.content,
+            placeId: post.placeId,
+            status: post.status,
+            tags: post.tags || [],
+          };
+          
+          form.setFieldsValue(initialValues);
+          setFormData(prev => ({
+            ...prev,
+            ...initialValues,
+            images: post.images || []
+          }));
+
+          // Set content in Quill editor if available
+          if (editorRef.current && post.content) {
+            editorRef.current.root.innerHTML = post.content;
+            updatePreview();
+          }
+        } catch (error) {
+          debugger
+          console.error('Error loading post data:', error);
+          message.error('Failed to load post data');
+          navigate('/posts');
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadPostData();
+  }, [isEditMode, id, form, message, navigate, updatePreview]);
+
   const openAddPlaceModal = useCallback(() => {
     setShowAddPlaceModal(true);
 
@@ -355,9 +405,10 @@ const AddPost = () => {
   };
 
   const handleSubmit = async (values) => {
+    setLoading(true);
     try {
-      // Validate cover image
-      if (!formData.coverImage) {
+      // Validate cover image (only required for new posts)
+      if (!isEditMode && !formData.coverImage) {
         message.error('Please select a cover image!');
         return;
       }
@@ -375,53 +426,39 @@ const AddPost = () => {
         return;
       }
 
-      // Convert image to base64 or upload
-      let imageDataUrl = '';
-      if (formData.coverImage) {
-        const imageFile = formData.coverImage.originFileObj || formData.coverImage;
-
-        if (imageFile instanceof File) {
-          try {
-            imageDataUrl = await fileToBase64(imageFile);
-          } catch (error) {
-            message.error('Failed to process image. Please try again.');
-            return;
-          }
-        } else {
-          message.error('Invalid image file. Please select a valid image.');
-          return;
-        }
-      }
-
       // Prepare submission data
       const submitData = {
         title: values.title.trim(),
         body: formData.content.trim(),
-        status: 'pending',
-        image: imageDataUrl,
+        status: isEditMode ? (editingPost?.status || 'pending') : 'pending',
         id_place: selectedPlace.place.id_place || selectedPlace.place.id
       };
 
-      // Upload image via API
-      const uploadData = await uploadAPI.uploadImage(formData.coverImage);
-      if (!uploadData.success) {
-        message.error('Failed to upload image. Please try again.');
-        return;
+      // Handle image upload if a new image is provided
+      if (formData.coverImage) {
+        // Upload image via API
+        const uploadData = await uploadAPI.uploadImage(formData.coverImage);
+        if (!uploadData.success) {
+          message.error('Failed to upload image. Please try again.');
+          return;
+        }
+        submitData.image = uploadData.imageUrl;
+      } else if (isEditMode && editingPost?.image) {
+        // Keep existing image for edit mode
+        submitData.image = editingPost.image;
       }
-      submitData.image = uploadData.imageUrl;
 
-      // Submit post
-      await postsAPI.create(submitData);
-      message.success('Post submitted successfully!');
-
-      // Reset form
-      form.resetFields();
-      setFormData(INITIAL_FORM_DATA);
-
-      if (quillRef.current) {
-        quillRef.current.setContents([]);
+      // Submit post (create or update)
+      if (isEditMode) {
+        await postsAPI.update(id, submitData);
+        message.success('Post updated successfully!');
+      } else {
+        await postsAPI.create(submitData);
+        message.success('Post submitted successfully!');
       }
-      setPreviewContent('');
+
+      // Navigate back to posts list
+      navigate('/posts');
 
     } catch (error) {
       console.error('Error submitting post:', error);
@@ -438,8 +475,10 @@ const AddPost = () => {
         const errorMsg = error.response?.data?.message || error.response?.data?.error || 'Internal server error';
         message.error(`Server error: ${errorMsg}`);
       } else {
-        message.error('Failed to submit post. Please try again.');
+        message.error(`Failed to ${isEditMode ? 'update' : 'submit'} post. Please try again.`);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -540,7 +579,7 @@ const AddPost = () => {
           </Row>
 
           <Title level={2} style={{ textAlign: 'center', margin: 0 }}>
-            Create Post
+            {isEditMode ? 'Edit Post' : 'Create Post'}
           </Title>
 
           <Form
@@ -549,6 +588,7 @@ const AddPost = () => {
             onFinish={handleSubmit}
             onValuesChange={handleValuesChange}
             initialValues={formData}
+            disabled={loading}
           >
             <Form.Item
               label="Title"
@@ -672,8 +712,9 @@ const AddPost = () => {
                 size="large"
                 icon={<SendOutlined />}
                 style={{ width: '200px' }}
+                loading={loading}
               >
-                Submit Post
+                {isEditMode ? 'Update Post' : 'Submit Post'}
               </Button>
             </Row>
           </Form>

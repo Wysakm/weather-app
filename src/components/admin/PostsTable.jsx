@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { 
   Table, 
   Button, 
-  Modal, 
-  Form, 
   Input, 
   Space, 
   Popconfirm, 
@@ -20,10 +18,6 @@ const { Title } = Typography;
 const { Option } = Select;
 
 const PostsTable = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [editingPost, setEditingPost] = useState(null);
-  const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const navigate = useNavigate();
@@ -212,9 +206,8 @@ const PostsTable = () => {
       return;
     }
 
-    setEditingPost(post);
-    form.setFieldsValue(post);
-    setIsModalVisible(true);
+    // Navigate to addPost with the post ID for editing
+    navigate(`/edit-post/${post.id}`);
   };
 
   const handleDelete = (id) => {
@@ -228,26 +221,6 @@ const PostsTable = () => {
 
     setPosts(posts.filter(post => post.id !== id));
     message.success('Post deleted successfully');
-  };
-
-  const handleSubmit = (values) => {
-    setLoading(true);
-    
-    setTimeout(() => {
-      // Update existing post
-      setPosts(posts.map(post => 
-        post.id === editingPost.id ? { ...post, ...values } : post
-      ));
-      message.success('Post updated successfully');
-      setIsModalVisible(false);
-      form.resetFields();
-      setLoading(false);
-    }, 1000);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    form.resetFields();
   };
 
   // Get title based on user role
@@ -329,7 +302,6 @@ const PostsTable = () => {
         <Table
           columns={getColumns()}
           dataSource={filteredPosts}
-          loading={loading}
           rowKey="id"
           pagination={{
             pageSize: 10,
@@ -347,95 +319,6 @@ const PostsTable = () => {
           }}
         />
       </div>
-
-      {/* Edit Modal */}
-      <Modal
-        title="Edit Post"
-        open={isModalVisible}
-        onCancel={handleCancel}
-        footer={null}
-        width={600}
-        destroyOnClose
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-          autoComplete="off"
-        >
-          <Form.Item
-            name="title"
-            label="Post Title"
-            rules={[
-              { required: true, message: 'Please input post title!' },
-              { min: 5, message: 'Post title must be at least 5 characters!' },
-              { max: 200, message: 'Post title cannot exceed 200 characters!' }
-            ]}
-          >
-            <Input 
-              placeholder="Enter post title"
-              size="large"
-            />
-          </Form.Item>
-
-          {/* แสดง Author field เฉพาะ admin */}
-          {isAdmin() && (
-            <Form.Item
-              name="author"
-              label="Author"
-              rules={[
-                { required: true, message: 'Please input author!' },
-                { min: 2, message: 'Author must be at least 2 characters!' },
-                { max: 50, message: 'Author cannot exceed 50 characters!' }
-              ]}
-            >
-              <Input 
-                placeholder="Enter author name"
-                size="large"
-              />
-            </Form.Item>
-          )}
-
-          <Form.Item
-            name="status"
-            label="Status"
-            rules={[
-              { required: true, message: 'Please select status!' }
-            ]}
-          >
-            <Select 
-              placeholder="Select status"
-              size="large"
-              disabled={!isAdmin()} // user ทั่วไปแก้ไข status ไม่ได้
-            >
-              {statusOptions.filter(option => option.value !== 'all').map(option => (
-                <Option key={option.value} value={option.value}>
-                  {option.label}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-
-          <Form.Item style={{ marginBottom: 0, marginTop: '24px' }}>
-            <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
-              <Button 
-                onClick={handleCancel}
-                size="large"
-              >
-                Cancel
-              </Button>
-              <Button 
-                type="primary" 
-                htmlType="submit"
-                loading={loading}
-                size="large"
-              >
-                Update
-              </Button>
-            </Space>
-          </Form.Item>
-        </Form>
-      </Modal>
 
     </div>
   );
