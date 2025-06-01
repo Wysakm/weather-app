@@ -258,7 +258,7 @@ const AddPost = () => {
   // Load post data when in edit mode
   useEffect(() => {
     const loadPostData = async () => {
-      if (isEditMode && id) {
+      if (isEditMode && id && allPlaces.length > 0) {
         setLoading(true);
         try {
           const response = await postsAPI.getById(id);
@@ -266,26 +266,63 @@ const AddPost = () => {
           console.log('Loaded post data:', post);
           setEditingPost(post);
           
+          // Construct location string from place data
+          let locationValue = '';
+          if (post.place) {
+            // Create location string matching the format used in allPlaces
+            const placeName = post.place.name_place;
+            const district = post.place.district || '';
+            const provinceName = post.place.province?.name || '';
+            locationValue = `${placeName} - ${district}, ${provinceName}`;
+          } else if (post.id_place) {
+            // Fallback: find from allPlaces if place object is not included
+            const foundPlace = allPlaces.find(place => 
+              place.place.id_place === post.id_place || place.place.id === post.id_place
+            );
+            if (foundPlace) {
+              locationValue = foundPlace.label;
+            }
+          }
+          
+          // Prepare cover image data for form
+          let coverImageData = null;
+          if (post.image) {
+            coverImageData = {
+              uid: '-1',
+              name: 'cover.jpg',
+              status: 'done',
+              url: post.image
+            };
+          }
+          
           // Set form values
           const initialValues = {
             title: post.title,
-            content: post.content,
-            placeId: post.placeId,
+            location: locationValue,
             status: post.status,
-            tags: post.tags || [],
+            coverImage: coverImageData ? [coverImageData] : []
           };
           
           form.setFieldsValue(initialValues);
           setFormData(prev => ({
             ...prev,
-            ...initialValues,
-            images: post.images || []
+            content: post.body || post.content || '',
+            coverImage: coverImageData,
+            ...initialValues
           }));
 
-          // Set content in Quill editor if available
-          if (editorRef.current && post.content) {
-            editorRef.current.root.innerHTML = post.content;
-            updatePreview();
+          // Set content in Quill editor if available (with delay to ensure editor is initialized)
+          const contentToSet = post.body || post.content;
+          if (contentToSet) {
+            const setEditorContent = () => {
+              if (quillRef.current) {
+                quillRef.current.root.innerHTML = contentToSet;
+                updatePreview();
+              } else {
+                setTimeout(setEditorContent, 100);
+              }
+            };
+            setEditorContent();
           }
         } catch (error) {
           console.error('Error loading post data:', error);
@@ -297,8 +334,11 @@ const AddPost = () => {
       }
     };
 
-    loadPostData();
-  }, [isEditMode, id, form, message, navigate, updatePreview]);
+    // Only load post data when allPlaces is populated (to ensure location matching works)
+    if (isEditMode && allPlaces.length > 0) {
+      loadPostData();
+    }
+  }, [isEditMode, id, form, message, navigate, updatePreview, allPlaces]);
 
   const openAddPlaceModal = useCallback(() => {
     setShowAddPlaceModal(true);
@@ -614,12 +654,12 @@ const AddPost = () => {
                   filterOption={(input, option) =>
                     (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                   }
+                  value={formData.location}
                   onChange={(value) => {
                     setFormData(prev => ({ ...prev, location: value }));
                     form.setFieldsValue({ location: value });
                   }}
                   options={allPlaces}
-                  value={formData.location}
                   loading={allPlaces.length === 0}
                   notFoundContent={allPlaces.length === 0 ? "Loading places..." : "No places found"}
                 />
@@ -651,7 +691,11 @@ const AddPost = () => {
                 return e && e.fileList;
               }}
             >
-              <Upload {...uploadProps} fileList={[]}>
+              <Upload 
+                {...uploadProps} 
+                fileList={formData.coverImage && formData.coverImage.url ? [formData.coverImage] : 
+                         (form.getFieldValue('coverImage') || [])}
+              >
                 <Button icon={<UploadOutlined />} size="large" style={{ width: '100%' }}>
                   Click to Upload Cover Image
                 </Button>
