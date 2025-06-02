@@ -6,7 +6,7 @@ const CardProvince = () => {
   return (
     <div className="card">
       <div className='card-img'>
-
+        <img src="./image/province.webp" alt="province-image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       </div>
 
       <div className='card-body'>
@@ -18,9 +18,9 @@ const CardProvince = () => {
         </div>
         <div className='card-container-II'>
           <div className='aqi-condition'>
-          Good
+            Good
           </div>
-          </div>
+        </div>
       </div>
       <div className='card-info'>
         <p>Info more</p>
