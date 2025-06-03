@@ -1,51 +1,91 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './styles-pages/articles.css';
 import TravelerContainer from '../components/TravelerContainer';
 import WeatherArticle from '../components/WeatherArticle';
 import WeeklyArticle from '../components/WeeklyArticle';
 import AirQualityArticle from '../components/AirQualityArticle';
+import { useParams } from 'react-router-dom';
+import { postsAPI } from '../api/posts';
 
 const Article = () => {
+  const { id: postId } = useParams();
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        setLoading(true);
+        const data = (await postsAPI.getById(postId)).data;
+        console.log(' data:', data)
+        setPost(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (postId) {
+      fetchPost();
+    }
+  }, [postId]);
+
+  if (loading) {
+    return <div className="article-container">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="article-container">Error: {error}</div>;
+  }
+
   return (
     <div className="article-container">
       <div className="article-box">
-        <h1>Railay Beach</h1> 
+        <h1>{post?.title || 'Loading...'}</h1>
         <div className='district-province'>
-          <h3>District, </h3>
-          <h3> Province</h3>
+          <h3>{post?.place?.district?.name || 'District'}, </h3>
+          <h3> {post?.place?.province?.name || 'Province'}</h3>
         </div>
 
         <div className='tag-container'>
-          <div className='tag'>Nation Park</div>
-          <div className='tag'>Beach</div>
-          <div className='tag'>Climbing</div>
+          <div className='tag'>{post.place.place_type.type_name}</div>
         </div>
       </div>
 
       <div className='article-box-I'>
         <div className='article-box-I-left'>
-          image 
+          {post?.image ? (
+            <img style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '1rem' }} src={post.image} alt={post.title} />
+          ) : (
+            'image'
+          )}
         </div>
         <div className='article-box-I-right'>
-       <WeatherArticle />
-       <WeeklyArticle />
-       <AirQualityArticle />
+          <WeatherArticle />
+          <WeeklyArticle />
+          <AirQualityArticle />
         </div>
-        </div>
+      </div>
 
+      <div className='content-container'>
+        {/* <p>{post?.body || 'Loading content...'}</p> */}
+        <div
+          style={{
+            border: '1px solid #d9d9d9',
+            borderRadius: '6px',
+            padding: '12px',
+            backgroundColor: '#fafafa',
+            minHeight: '100px',
+            width: '100%',
+          }}
+          dangerouslySetInnerHTML={{ __html: post?.body }}
+        />
+      </div>
 
-        <div className='content-container'>
-        
-        </div>
-
-        <TravelerContainer />
-       
-        
-
-      
+      <TravelerContainer id_place={post?.id_place} id_post={postId} />
     </div>
-    
-    
   );
 };
 export default Article;

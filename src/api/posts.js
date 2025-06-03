@@ -2,9 +2,10 @@ import apiClient from './client';
 
 export const postsAPI = {
   // Get all posts
-  getAll: async () => {
+  getAll: async (placeId = null) => {
     try {
-      const response = await apiClient.get('/posts');
+      const endpoint = placeId ? `/posts?id_place=${placeId}` : '/posts';
+      const response = await apiClient.get(endpoint);
       return response.data;
     } catch (error) {
       throw error;
