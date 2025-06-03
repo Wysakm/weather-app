@@ -6,7 +6,7 @@ const CardStayContainer = () => {
   const _c = [
     {
       province: "Hà Nội",
-      name: "Hồ Gươm",
+      name: "Hồ Gươm dfghj",
       imgUrl: "https://example.com/image1.jpg",
     },
     {

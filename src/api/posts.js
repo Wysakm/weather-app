@@ -72,9 +72,10 @@ export const postsAPI = {
   },
 
   // Get posts by province ID
-  getByProvinceId: async (provinceId) => {
+  getByProvinceId: async (provinceId, placeType) => {
     try {
-      const response = await apiClient.get(`/posts/province/${provinceId}`);
+      const endpoint = placeType ? `/posts/province/${provinceId}?place_type=${placeType}` : `/posts/province/${provinceId}`;
+      const response = await apiClient.get(endpoint);
       return response.data;
     } catch (error) {
       throw error;

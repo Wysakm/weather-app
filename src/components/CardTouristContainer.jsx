@@ -17,7 +17,7 @@ const CardTouristContainer = ({ selectedProvince }) => {
         let response;
         if (selectedProvince && selectedProvince.province_id) {
           // Use province filter API
-          response = await postsAPI.getByProvinceId(selectedProvince.province_id);
+          response = await postsAPI.getByProvinceId(selectedProvince.province_id, 'recommended');
         } else {
           // Get all posts if no province selected
           response = await postsAPI.getAll();
