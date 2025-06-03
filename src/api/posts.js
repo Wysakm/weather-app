@@ -69,5 +69,15 @@ export const postsAPI = {
     } catch (error) {
       throw error;
     }
+  },
+
+  // Get posts by province ID
+  getByProvinceId: async (provinceId) => {
+    try {
+      const response = await apiClient.get(`/posts/province/${provinceId}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   }
 };
