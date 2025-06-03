@@ -41,6 +41,24 @@ export const authAPI = {
     }
   },
 
+  // สมัครสมาชิก
+  register: async (userData) => {
+    try {
+      const response = await apiClient.post('/auth/register', {
+        email: userData.email,
+        password: userData.password,
+        username: userData.username,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        phoneNumber: userData.phoneNumber
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Register error:', error);
+      throw error;
+    }
+  },
+
   // อัปเดตโปรไฟล์
   updateProfile: async (profileData) => {
     try {

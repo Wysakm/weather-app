@@ -4,12 +4,13 @@ import { UserOutlined, LockOutlined, MailOutlined, GoogleOutlined, PhoneOutlined
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { GOOGLE_CLIENT_ID } from '../config/googleAuth';
+import { authAPI } from '../api/auth';
 import Login from './Login';
 
 const { Title } = Typography;
 
 const Register = ({ handleCancel }) => {
-  const { register, loginWithGoogle, googleLoaded } = useAuth();
+  const { loginWithGoogle, googleLoaded } = useAuth();
   const navigate = useNavigate();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
@@ -51,16 +52,21 @@ const Register = ({ handleCancel }) => {
     }
 
     try {
-      const registerSuccess = await register(values);
-      if (!registerSuccess) {
+      const response = await authAPI.register(values);
+      if (response.success) {
+        message.success('Registration successful!');
+        if (handleCancel) handleCancel();
+        else navigate('/');
+      } else {
         message.error('Registration failed! Please try again.');
-        return;
       }
-      if (handleCancel) handleCancel();
-      else navigate('/');
-      message.success('Registration successful!');
     } catch (error) {
-      message.error('An error occurred. Please try again.');
+      console.error('Registration error:', error);
+      if (error.response?.data?.message) {
+        message.error(error.response.data.message);
+      } else {
+        message.error('An error occurred. Please try again.');
+      }
     }
   };
 
