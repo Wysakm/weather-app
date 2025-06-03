@@ -17,9 +17,8 @@ function CampStay() {
       <>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '2rem' }}>
           <SearchCampStay />
-          <h1 style={{ margin: '2rem' }}>{t('CampStay.CampHeader')}</h1>
-          <TabProvinces />
         </div>
+       
         <Weather />
         <RecommendedCamp />
         <RecommendedStay />
