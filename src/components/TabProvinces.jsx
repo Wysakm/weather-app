@@ -7,7 +7,7 @@ const TabProvinces = ({ onProvinceSelect, selectedIndex = 0 }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [activeIndex, setActiveIndex] = useState(selectedIndex);
-  const [hasInitialized, setHasInitialized] = useState(false);
+  const hasInitializedRef = useRef(false);
 
   useEffect(() => {
     const fetchProvinces = async () => {
@@ -19,11 +19,11 @@ const TabProvinces = ({ onProvinceSelect, selectedIndex = 0 }) => {
         setProvinces(provincesData);
         
         // Call parent callback with first province if available
-        if (provincesData.length > 0 && onProvinceSelect && !hasInitialized) {
+        if (provincesData.length > 0 && onProvinceSelect && !hasInitializedRef.current) {
           const initialProvince = provincesData[selectedIndex] || provincesData[0];
           onProvinceSelect(initialProvince, selectedIndex);
           setActiveIndex(selectedIndex);
-          setHasInitialized(true);
+          hasInitializedRef.current = true;
         }
       } catch (err) {
         console.error('Error fetching provinces:', err);
@@ -34,7 +34,7 @@ const TabProvinces = ({ onProvinceSelect, selectedIndex = 0 }) => {
     };
 
     fetchProvinces();
-  }, [onProvinceSelect, selectedIndex, hasInitialized]);
+  }, [onProvinceSelect, selectedIndex]);
 
   const handleProvinceClick = (province, index) => {
     setActiveIndex(index);
