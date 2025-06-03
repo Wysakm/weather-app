@@ -48,9 +48,10 @@ export const authAPI = {
         email: userData.email,
         password: userData.password,
         username: userData.username,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        phoneNumber: userData.phoneNumber
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        phonenumber: userData.phonenumber,
+        display_name: userData.display_name,
       });
       return response.data;
     } catch (error) {

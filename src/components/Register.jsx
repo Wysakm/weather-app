@@ -52,14 +52,21 @@ const Register = ({ handleCancel }) => {
     }
 
     try {
-      const response = await authAPI.register(values);
-      if (response.success) {
-        message.success('Registration successful!');
-        if (handleCancel) handleCancel();
-        else navigate('/');
-      } else {
-        message.error('Registration failed! Please try again.');
-      }
+      // Prepare data to match API format
+      const requestData = {
+        email: values.email,
+        password: values.password,
+        username: values.username,
+        first_name: values.firstName,
+        last_name: values.lastName,
+        display_name: `${values.firstName} ${values.lastName}`,
+        phonenumber: values.phoneNumber
+      };
+
+      await authAPI.register(requestData);
+      message.success('Registration successful!');
+      if (handleCancel) handleCancel();
+      else navigate('/');
     } catch (error) {
       console.error('Registration error:', error);
       if (error.response?.data?.message) {
