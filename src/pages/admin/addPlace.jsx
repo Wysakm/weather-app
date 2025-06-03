@@ -240,16 +240,17 @@ const AddPlace = () => {
         return;
       }
 
-      // Create the place using the API if no duplicates found
-      await placesAPI.create({
+      const _data = {
         name_place: values.name_place,
-        province: values.province,
+        province_id: values.province,
         district: values.district,
-        reference: googleReference, // Use googleReference state variable
+        google_place_id: googleReference, // Use googleReference state variable
         latitude: values.latitude,
         longitude: values.longitude,
         place_type_id: values.place_type_id
-      });
+      }
+      // Create the place using the API if no duplicates found
+      await placesAPI.create(_data);
       
       message.success('Place added successfully!');
       navigate('/admin/places');

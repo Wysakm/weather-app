@@ -189,8 +189,6 @@ const AddPost = () => {
   const updatePreview = useCallback(() => {
     if (quillRef.current) {
       let content = quillRef.current.root.innerHTML;
-      const phoneRegex = /(\+?\d{1,3}?[-.\s]?(\d{1,4}[-.\s]?){1,4}\d{1,4})/g;
-      content = content.replace(phoneRegex, '[Blocked]');
       setPreviewContent(content);
     }
   }, []);

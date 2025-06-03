@@ -26,13 +26,13 @@ export const placesAPI = {
     try {
       const response = await apiClient.post('/places', {
         name_place: data.name_place,
-        province: data.province,
+        province_id: data.province_id,
         district: data.district,
-        reference: data.reference, // เพิ่ม Google Places reference
+        // reference: data.reference, // เพิ่ม Google Places reference
         latitude: data.latitude,
         longitude: data.longitude,
         place_type_id: data.place_type_id,
-        google_place_id: data.ggRef
+        google_place_id: data.google_place_id
       });
       return response.data;
     } catch (error) {

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { provinces } from "../configs/provinces";
 
 // Fix for default markers in react-leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -29,11 +28,11 @@ const createCustomIcon = (color) => {
     className: 'custom-marker',
     html: `<div style="
       background-color: ${color};
-      width: 16px;
-      height: 16px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;">
       </div>`,
-    iconSize: [16, 16],
+    iconSize: [12, 12],
     iconAnchor: [12, 12]
   });
 };
@@ -41,7 +40,8 @@ const createCustomIcon = (color) => {
 const MapThailand = () => {
   const [weatherData, setWeatherData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const position = provinces[0].lat && provinces[0].lon ? [provinces[0].lat, provinces[0].lon] : [13.7563, 100.5018];
+  // Center of Thailand coordinates - Phra Nakhon Si Ayutthaya
+  const position = [14.3692, 100.5877];
 
   useEffect(() => {
     const fetchWeatherData = async () => {
@@ -80,8 +80,9 @@ const MapThailand = () => {
     <div className="map-thailand">
       <MapContainer
         center={position}
-        zoom={6}
-        style={{ height: "450px", width: "100%" }}
+        zoom={5.3}
+        style={{ height: "500px", width: "100%" }}
+        bounds={thailandBounds}
         maxBounds={thailandBounds}
         maxBoundsViscosity={1.0}
         minZoom={5}
@@ -103,24 +104,23 @@ const MapThailand = () => {
                 position={[location.latitude, location.longitude]}
                 icon={customIcon}
               >
-                <Popup>
-                  <div>
-                    <h3>{location.province_name || location.province || 'Location'}</h3>
-                    {location.weather_data && (
-                      <div>
-                        <h4>Weather Details</h4>
-                        {location.weather_data.temperature_2m && <p>Temperature: {location.weather_data.temperature_2m}°C</p>}
-                        {location.weather_data.apparent_temperature && <p>Apparent Temperature: {location.weather_data.apparent_temperature}°C</p>}
-                        {location.weather_data.precipitation_probability_max && <p>Precipitation Probability: {location.weather_data.precipitation_probability_max}%</p>}
-                      </div>
-                    )}
+                <Popup
+                  maxWidth={200}
+                  minWidth={150}
+                  className="custom-popup"
+                  keepInView={false}
+                  autoPan={false}
+                >
+                  <div style={{ padding: '2px', lineHeight: '1' }}>
+                    <h3 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 'bold' }}>
+                      {location.province_name || location.province || 'Location'}
+                    </h3>
                     {location.aqi_data && (
                       <div>
-                        <h4>Air Quality</h4>
-                        {location.aqi_data.aqi && <p>AQI: {location.aqi_data.aqi}</p>}
-                        {location.aqi_data.level && <p>Level: {location.aqi_data.level}</p>}
-                        {location.aqi_data.pm25 && <p>PM2.5: {location.aqi_data.pm25} μg/m³</p>}
-                        {location.aqi_data.pm10 && <p>PM10: {location.aqi_data.pm10} μg/m³</p>}
+                        {location.aqi_data.aqi && <p style={{ margin: '2px 0', fontSize: '11px' }}>AQI: {location.aqi_data.aqi}</p>}
+                        {location.aqi_data.level && <p style={{ margin: '2px 0', fontSize: '11px' }}>Level: {location.aqi_data.level}</p>}
+                        {location.aqi_data.pm25 && <p style={{ margin: '2px 0', fontSize: '11px' }}>PM2.5: {location.aqi_data.pm25} μg/m³</p>}
+                        {location.aqi_data.pm10 && <p style={{ margin: '2px 0', fontSize: '11px' }}>PM10: {location.aqi_data.pm10} μg/m³</p>}
                       </div>
                     )}
                   </div>
