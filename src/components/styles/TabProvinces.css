@@ -20,6 +20,17 @@
   color: var(--color-primary);
   background-color: var(--color-navbar-bg);
   border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.tab-box:hover {
+  background-color: var(--color-border);
+  transform: translateY(-2px);
+}
+
+.tab-box.active {
+  background-color: var(--color-primary);
+  color: var(--color-navbar-bg);
 }
 
 
