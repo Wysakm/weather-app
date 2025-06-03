@@ -43,7 +43,6 @@ import {
   normalizeApiResponse,
   extractDistrictFromPlace,
   formatPlacesForSelect,
-  formatProvincesForSelect,
   validateImageFile,
   getStatusColor,
   getStatusText,
@@ -71,7 +70,7 @@ const AddPost = () => {
   const [placeTypes, setPlaceTypes] = useState([]);
   const [provinces, setProvinces] = useState([]);
   const [allPlaces, setAllPlaces] = useState([]);
-  const [ggRef, setGgRef] = useState(''); // เพิ่ม state สำหรับ Google Places reference
+  const [ggRef, setGgRef] = useState(''); // Google Places reference/place_id
   const quillRef = useRef(null);
   const editorRef = useRef(null);
   const mapRef = useRef(null);
@@ -79,18 +78,43 @@ const AddPost = () => {
   const markerRef = useRef(null);
   const autocompleteRef = useRef(null);
 
+  // Extract province from Google Places address components
+  const extractProvinceFromPlace = useCallback((addressComponents) => {
+    if (!addressComponents?.length) return null;
+    
+    const provinceTypes = [
+      'administrative_area_level_1',
+      'locality'
+    ];
+    
+    for (const component of addressComponents) {
+      const hasProvinceType = provinceTypes.some(type => component.types.includes(type));
+      if (hasProvinceType) {
+        // Find matching province from provinces array
+        const matchingProvince = provinces.find(province => 
+          province.label.toLowerCase().includes(component.long_name.toLowerCase()) ||
+          component.long_name.toLowerCase().includes(province.label.toLowerCase())
+        );
+        return matchingProvince ? matchingProvince.value : null;
+      }
+    }
+    return null;
+  }, [provinces]);
+
   // Fill form fields from Google Places data
   const fillFormFields = useCallback((place) => {
     const district = extractDistrictFromPlace(place.address_components);
-    setGgRef(place.reference || '');
+    const provinceId = extractProvinceFromPlace(place.address_components);
+    setGgRef(place.reference || place.place_id || '');
 
     addPlaceForm.setFieldsValue({
       name_place: place.name || '',
       district: district,
+      province: provinceId,
       latitude: place.geometry ? place.geometry.location.lat() : '',
       longitude: place.geometry ? place.geometry.location.lng() : ''
     });
-  }, [addPlaceForm]);
+  }, [addPlaceForm, extractProvinceFromPlace]);
 
   // Fetch place types from API
   const fetchPlaceTypes = useCallback(async () => {
@@ -109,7 +133,14 @@ const AddPost = () => {
   const fetchProvinces = useCallback(async () => {
     try {
       const response = await apiClient.get('/provinces');
-      const provinceOptions = formatProvincesForSelect(response.data?.data || []);
+      const rawProvinces = response.data?.data || [];
+      
+      // Transform provinces to match the standalone version format
+      const provinceOptions = rawProvinces.map(province => ({
+        value: province.id_province,
+        label: province.name,
+      }));
+      
       setProvinces(provinceOptions);
     } catch (error) {
       console.error('Error fetching provinces:', error);
@@ -372,7 +403,7 @@ const AddPost = () => {
   const handleAddPlace = async (values) => {
     setAddPlaceLoading(true);
     try {
-      // Get province name from provinces array if it's an ID
+      // Get province name from provinces array using ID
       let provinceName = values.province;
       if (typeof values.province === 'number' || !isNaN(values.province)) {
         const selectedProvince = provinces.find(p => p.value === values.province);
@@ -388,19 +419,20 @@ const AddPost = () => {
       );
 
       if (duplicates) {
-        message.error({
-          content: 'Place already exists with duplicate place! Using existing place',
-          duration: 5,
+        message.warning({
+          content: 'Duplicate place! Please check if this is the place you want to add.',
+          duration: 8,
         });
+        setAddPlaceLoading(false);
         return;
       }
 
-      // Create new place
+      // Create new place with consistent data structure like standalone version
       const placeData = {
         name_place: values.name_place,
-        province: provinceName,
+        province_id: values.province, // Send province ID instead of name
         district: values.district || '',
-        reference: ggRef,
+        google_place_id: ggRef, // Use google_place_id field name
         latitude: values.latitude,
         longitude: values.longitude,
         place_type_id: values.place_type_id
@@ -855,13 +887,13 @@ const AddPost = () => {
               >
                 <Select
                   showSearch
-                  style={{ width: 200 }}
                   placeholder="Search to Select"
                   optionFilterProp="label"
                   filterSort={(optionA, optionB) =>
                     (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
                   }
                   options={provinces}
+                  size="large"
                 />
               </Form.Item>
             </Col>
