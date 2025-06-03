@@ -1,5 +1,5 @@
 .app-container {
-  background-color: #f7f6f4;
+  background-color: var(--color-articles-bg)  ;
   max-width: 1280px;
   margin: 0 auto;
   /* border: 1px solid #000000; */

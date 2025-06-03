@@ -43,4 +43,6 @@ h1, h2, h3, h4, h5, h6 {
   --color-hazardous-gg: #f4bccc;
 
   --color-aticles-bg: #F5FFFE;
+  --color-background: #fbfbfb; /* พื้นหลัง */
+  --color-map-bg: #f5f8f7; /* พื้นหลังแผนที่ */
 }

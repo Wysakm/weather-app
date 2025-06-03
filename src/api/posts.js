@@ -73,8 +73,9 @@ export const postsAPI = {
 
   // Get posts by province ID
   getByProvinceId: async (provinceId, placeType) => {
+    console.log(' provinceId, placeType:', {provinceId, placeType})
     try {
-      const endpoint = placeType ? `/posts/province/${provinceId}?place_type=${placeType}` : `/posts/province/${provinceId}`;
+      const endpoint = placeType ? `/posts/province/${provinceId}?placeType=${placeType}` : `/posts/province/${provinceId}`;
       const response = await apiClient.get(endpoint);
       return response.data;
     } catch (error) {

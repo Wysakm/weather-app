@@ -1,35 +1,69 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./styles/CardCampContainer.css";
 import CardTourist from "./CardTourist";
+import { postsAPI } from "../api/posts";
 
-const CardStayContainer = () => {
-  const _c = [
-    {
-      province: "Hà Nội",
-      name: "Hồ Gươm",
-      imgUrl: "https://example.com/image1.jpg",
-    },
-    {
-      province: "Hà Giang",
-      name: "Cao Nguyên Đá Đồng Văn",
-      imgUrl: "https://example.com/image2.jpg",
-    },
-    {
-      province: "Đà Nẵng",
-      name: "Bà Nà Hills",
-      imgUrl: "https://example.com/image3.jpg",
-    }
-  ];
+const CardCampContainer = ({ selectedProvince }) => {
+  const [campData, setCampData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchCampData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        let response;
+        if (selectedProvince && selectedProvince.province_id) {
+          // Use province filter API for camp places
+          response = await postsAPI.getByProvinceId(selectedProvince.province_id, 'camp');
+        } else {
+          // Get all posts if no province selected
+          // response = await postsAPI.getAll();
+        }
+        
+        const data = response.data.posts || response.data || [];
+        setCampData(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCampData();
+  }, [selectedProvince]);
+
+  // Since we're using server-side filtering, limit to 3 items for display
+  const filteredData = campData.slice(0, 3);
+
+  if (loading) {
+    return <div className="loading">Loading camping sites...</div>;
+  }
+
+  if (error) {
+    return <div className="error">Error: {error}</div>;
+  }
   return (
     <div className="CardCamp-container">
-      {_c.map((item, index) => (
-        <CardTourist key={index}
-          province={item.province}
-          name={item.name}
-          imgUrl={item.imgUrl}
-        />
-      ))}
+      {filteredData.length > 0 ? (
+        filteredData.map((item, index) => (
+          <CardTourist
+            key={index}
+            province={item.place.province.name}
+            name={item.title}
+            imgUrl={item.image}
+          />
+        ))
+      ) : (
+        <div className="no-data">
+          {selectedProvince
+            ? `No camping sites found for ${selectedProvince.province_name || selectedProvince}`
+            : "No camping sites available"}
+        </div>
+      )}
     </div>
   );
 }
-export default CardStayContainer;
+export default CardCampContainer;

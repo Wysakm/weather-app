@@ -1,34 +1,68 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./styles/CardStayContainer.css";
 import CardTourist from "./CardTourist";
+import { postsAPI } from "../api/posts";
 
-const CardStayContainer = () => {
-  const _c = [
-    {
-      province: "Hà Nội",
-      name: "Hồ Gươm dfghj",
-      imgUrl: "https://example.com/image1.jpg",
-    },
-    {
-      province: "Hà Giang",
-      name: "Cao Nguyên Đá Đồng Văn",
-      imgUrl: "https://example.com/image2.jpg",
-    },
-    {
-      province: "Đà Nẵng",
-      name: "Bà Nà Hills",
-      imgUrl: "https://example.com/image3.jpg",
-    }
-  ];
+const CardStayContainer = ({ selectedProvince }) => {
+  const [stayData, setStayData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchStayData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        let response;
+        if (selectedProvince && selectedProvince.province_id) {
+          // Use province filter API for stay places
+          response = await postsAPI.getByProvinceId(selectedProvince.province_id, 'stay');
+        } else {
+          // Get all posts if no province selected
+          response = await postsAPI.getAll();
+        }
+        
+        const data = response.data.posts || response.data;
+        setStayData(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStayData();
+  }, [selectedProvince]);
+
+  // Since we're using server-side filtering, limit to 3 items for display
+  const filteredData = stayData.slice(0, 3);
+
+  if (loading) {
+    return <div className="loading">Loading accommodations...</div>;
+  }
+
+  if (error) {
+    return <div className="error">Error: {error}</div>;
+  }
   return (
     <div className="CardStay-container">
-      {_c.map((item, index) => (
-        <CardTourist key={index}
-          province={item.province}
-          name={item.name}
-          imgUrl={item.imgUrl}
-        />
-      ))}
+      {filteredData.length > 0 ? (
+        filteredData.map((item, index) => (
+          <CardTourist
+            key={index}
+            province={item.place.province.name}
+            name={item.title}
+            imgUrl={item.image}
+          />
+        ))
+      ) : (
+        <div className="no-data">
+          {selectedProvince
+            ? `No accommodations found for ${selectedProvince.province_name || selectedProvince}`
+            : "No accommodations available"}
+        </div>
+      )}
     </div>
   );
 }

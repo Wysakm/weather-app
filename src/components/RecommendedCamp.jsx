@@ -1,10 +1,12 @@
-import React from "react"; 
+import React, { useState } from "react"; 
 import { useTranslation } from "react-i18next"; 
 import "./styles/RecommendedCamp.css";
+import TabProvinces from "./TabProvinces";
 import CardCampContainer from "./CardCampcontainer"; // Assuming this is the correct path
  
 const RecommendedCamp = () => {
   const { t } = useTranslation();
+  const [selectedProvince, setSelectedProvince] = useState("");
 
   return (
     <div className="camp-container">
@@ -14,7 +16,8 @@ const RecommendedCamp = () => {
       </h1>
       </div>
        <div className="camp-box">
-        <CardCampContainer />
+        <TabProvinces onProvinceSelect={setSelectedProvince} />
+        <CardCampContainer selectedProvince={selectedProvince} />
       </div>
     
 

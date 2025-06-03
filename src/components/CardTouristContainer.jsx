@@ -62,7 +62,7 @@ const CardTouristContainer = ({ selectedProvince }) => {
       ) : (
         <div className="no-data">
           {selectedProvince
-            ? `No tourist attractions found for ${selectedProvince}`
+            ? `No tourist attractions found for ${selectedProvince.province_name}`
             : "No tourist attractions available"}
         </div>
       )}
