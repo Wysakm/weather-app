@@ -21,7 +21,7 @@
   align-items: center;
   width: 75%;
   height: auto;
-  /* border: 1px solid red; */
+
 }
 
 .container-lacationDate {
@@ -35,7 +35,7 @@
 .container-blank {
   width: 25%;
   height: 100%;
-  /* border: 1px solid blue; */
+
 }
 
 .container-location {
@@ -44,7 +44,7 @@
   align-items: center;
   width: 50%;
   height: 100%;
-  /* border: 1px solid red; */
+
 
 }
 
@@ -63,7 +63,6 @@
   width: 100%;
   height: 260px;
   gap:1rem;
-  /* border: 1px solid green; */
 }
 
 .container-forecast {
@@ -119,7 +118,6 @@
   display: flex;
   width: 70%;
   height: 40%;
-  /* border: 1px solid red; */
 }
 
 .weather-icon {
@@ -140,7 +138,6 @@
   align-items: flex-start;
   width: 50%;
   height: 100%;
-  /* border: 1px solid blue; */
   font-size: 54px;
   font-weight: bold;
   padding-left: 10px;
@@ -157,7 +154,6 @@
   font-weight: bold;
   font-size: 20px;
 
-  /* border: 1px solid blue; */
 }
 
 .temp-HL {
@@ -168,7 +164,7 @@
   height: 10%;
   font-size: 14px;
   gap: 10px;
-  /* border: 1px solid red; */
+
 }
 
 .feels-like {
@@ -179,7 +175,7 @@
   height: 10%;
   margin-top: 5px;
 font-size: 14px;
-  /* border: 1px solid blue; */
+
 }
 
 

@@ -15,7 +15,6 @@
 .map-container-I { 
     width: 100%;
     height: 500px;
-    /* border: 1px solid red; */
 }
 
 .scale-container {
@@ -90,6 +89,5 @@
   align-items: center;
   width: 5%;
   height: 100%;
-  /* border: 1px solid black; */
 
 }

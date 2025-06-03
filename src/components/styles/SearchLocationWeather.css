@@ -4,7 +4,6 @@
   align-items: center;
   flex-direction: column;
   background-size: auto;
-  /* background-color: #f0f0f0; fallback */
   background-position: center;
   width: 100%;
   height: 420px;
@@ -20,7 +19,7 @@
   height: 90%;
   width: 80%;
   position: relative;
-  /* Context for absolutely positioned children */
+
 }
 
 .searchText-I {
@@ -61,7 +60,7 @@
   height: 45px;
   margin-top: 20px;
   position: absolute;
-  /* Absolute position for overlap */
+
   top: 38%;
   /* Adjust this value for vertical positioning */
   left: 50%;

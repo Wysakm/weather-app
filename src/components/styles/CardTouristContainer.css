@@ -3,7 +3,5 @@
   flex-wrap: wrap;
   justify-content: space-between;
   width: 75%;
-  /* height: 600px; */
-  border: 1px solid blue;
   padding: 32px 0;
 } 
