@@ -15,7 +15,7 @@ const RecommendedStay = () => {
         {t("Recommend.Stay")}
       </h1>
       </div>
-       <div className="stay-box-B">
+       <div className="stay-box">
         <TabProvinces onProvinceSelect={setSelectedProvince} />
         <CardStayContainer selectedProvince={selectedProvince} />
       </div>

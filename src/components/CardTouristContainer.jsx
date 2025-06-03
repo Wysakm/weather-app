@@ -24,7 +24,6 @@ const CardTouristContainer = ({ selectedProvince }) => {
         }
         const data = response.data.posts || response.data
         // console.log(' response:', { data, selectedProvince });
-        debugger
 
         setTouristData(data);
       } catch (err) {
