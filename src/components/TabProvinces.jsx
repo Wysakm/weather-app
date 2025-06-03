@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./styles/TabProvinces.css";
 import { getWeatherRankings } from "../api/weather";
 
 const TabProvinces = ({ onProvinceSelect, selectedIndex = 0 }) => {
   const [provinces, setProvinces] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [activeIndex, setActiveIndex] = useState(selectedIndex);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   useEffect(() => {
     const fetchProvinces = async () => {
@@ -18,8 +19,11 @@ const TabProvinces = ({ onProvinceSelect, selectedIndex = 0 }) => {
         setProvinces(provincesData);
         
         // Call parent callback with first province if available
-        if (provincesData.length > 0 && onProvinceSelect) {
-          onProvinceSelect(provincesData[selectedIndex] || provincesData[0], selectedIndex);
+        if (provincesData.length > 0 && onProvinceSelect && !hasInitialized) {
+          const initialProvince = provincesData[selectedIndex] || provincesData[0];
+          onProvinceSelect(initialProvince, selectedIndex);
+          setActiveIndex(selectedIndex);
+          setHasInitialized(true);
         }
       } catch (err) {
         console.error('Error fetching provinces:', err);
@@ -30,7 +34,7 @@ const TabProvinces = ({ onProvinceSelect, selectedIndex = 0 }) => {
     };
 
     fetchProvinces();
-  }, [onProvinceSelect, selectedIndex]);
+  }, [onProvinceSelect, selectedIndex, hasInitialized]);
 
   const handleProvinceClick = (province, index) => {
     setActiveIndex(index);

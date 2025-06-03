@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocationStore } from '../stores/useLocationStore.js';
+import { provinces } from '../configs/provinces.js';
 import './styles/Weather.css';
 import { getFormattedDate } from '../utils/dateUtils.js';
 import { WeatherForecast } from './WeatherForecast.jsx';
@@ -27,6 +28,23 @@ function Weather({ option }) {
     setLocation(option?.province)
   }, [option?.province, setLocation])
 
+  // Handle province selection from TabProvinces
+  const handleProvinceSelect = useCallback((provinceFromApi) => {
+    console.log('Selected province from tab:', provinceFromApi);
+    
+    // Find matching province from the provinces config based on province name
+    const matchingProvince = provinces.find(p => 
+      p.names.en.toLowerCase() === provinceFromApi.province_name?.toLowerCase() ||
+      p.names.th === provinceFromApi.province_name
+    );
+    
+    if (matchingProvince) {
+      setLocation({ province: matchingProvince });
+    } else {
+      console.warn('No matching province found for:', provinceFromApi.province_name);
+    }
+  }, [setLocation]);
+
   if (locationLoading || !selectedProvince) return <div className="loading-spinner">Loading...</div>;
   // console.log(' selectedProvince:', selectedProvince, locationLoading)
 
@@ -36,7 +54,7 @@ function Weather({ option }) {
         <h1 style={{ margin: '2rem' }}>{t('CampStay.CampHeader')}</h1>
       </div>
       <div style={{ justifyContent: 'center', display: 'flex' }}>
-        <TabProvinces />
+        <TabProvinces onProvinceSelect={handleProvinceSelect} />
       </div>
       <div className='weather-container'>
         <div className='container'>
@@ -53,15 +71,21 @@ function Weather({ option }) {
 
           <div className='container-forecastAql'>
             <WeatherForecast
-              // latitude={selectedProvince.lat}
-              // longitude={selectedProvince.lon}
+              key={`weather-${selectedProvince?.lat}-${selectedProvince?.lon}`}
+              latitude={selectedProvince.lat}
+              longitude={selectedProvince.lon}
               t={t}
               i18n={i18n}
             />
-            <AirQuality t={t} aqiData={mockAqiData} />
+            <AirQuality 
+              key={`aqi-${selectedProvince?.lat}-${selectedProvince?.lon}`}
+              t={t} 
+              aqiData={mockAqiData} 
+            />
           </div>
           <div className='container-weeklyForecast'>
             <Weekly
+              key={`weekly-${selectedProvince?.lat}-${selectedProvince?.lon}`}
               latitude={selectedProvince.lat}
               longitude={selectedProvince.lon}
               t={t}
