@@ -51,6 +51,7 @@ const CardCampContainer = ({ selectedProvince }) => {
         filteredData.map((item, index) => (
           <CardTourist
             key={index}
+            id={item.id_post}
             province={item.place.province.name}
             name={item.title}
             imgUrl={item.image}

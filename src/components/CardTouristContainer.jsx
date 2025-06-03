@@ -38,6 +38,7 @@ const CardTouristContainer = ({ selectedProvince }) => {
 
   // Since we're using server-side filtering, limit to 3 items for display
   const filteredData = touristData.slice(0, 3);
+  console.log(' filteredData:', filteredData)
 
   if (loading) {
     return <div className="loading">Loading tourist attractions...</div>;
@@ -53,6 +54,7 @@ const CardTouristContainer = ({ selectedProvince }) => {
         filteredData.map((item, index) => (
           <CardTourist
             key={index}
+            id={item.id_post}
             province={item.place.province.name}
             name={item.title}
             imgUrl={item.image}

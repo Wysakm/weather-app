@@ -4,7 +4,7 @@ import CampStay from '../pages/campStay';
 import Contact from '../pages/contact';
 import Article from '../pages/articles';
 import Types from '../pages/admin/types';
-import Places from '../pages/admin/places'; 
+import Places from '../pages/admin/places';
 import Posts from '../pages/admin/posts';
 import Users from '../pages/admin/users';
 import AddPlace from '../pages/admin/addPlace';
@@ -23,22 +23,32 @@ export const routes = [
   {
     path: '/recommend',
     element: Recommend,
-    children: [
-      {
-        path: ':id',
-        element: Article
-      }
-    ]
+    // children: [
+    //   {
+    //     path: ':id',
+    //     element: Article
+    //   }
+    // ]
   },
   {
     path: '/campStay',
     element: CampStay,
-    children: [
-      {
-        path: ':id',
-        element: Article
-      },
-    ]
+    // children: [
+    //   {
+    //     path: ':id',
+    //     element: Article
+    //   },
+    // ]
+  },
+  {
+    path: '/article/:id',
+    element: Article,
+    // children: [
+    //   {
+    //     path: ':id',
+    //     element: Article
+    //   }
+    // ]
   },
   {
     path: '/contact',
@@ -50,8 +60,8 @@ export const routes = [
     path: '/admin/users',
     element: Users
   },
-  
-  { 
+
+  {
     path: '/posts',
     element: Posts
   },
@@ -68,7 +78,7 @@ export const routes = [
   {
     path: '/admin/places',
     element: Places
-  }, 
+  },
   {
     path: '/admin/addPlace',
     element: AddPlace
@@ -82,16 +92,24 @@ export const routes = [
   {
     path: '/terms',
     element: Terms
-  }, 
+  },
   {
     path: '/privacy',
     element: PrivacyPolicy
-  }, 
+  },
   {
     path: '/register',
     element: Register
   },
-{  path : '/account',
-  element : Account // Assuming this is the MyAccount component
-}
+  {
+    path: '/account',
+    element: Account // Assuming this is the MyAccount component
+  },
+  {
+    path: '*',
+    element: () => {
+      window.location.href = '/';
+      return null;
+    }
+  }
 ];
