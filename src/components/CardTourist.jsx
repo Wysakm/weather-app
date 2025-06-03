@@ -6,7 +6,7 @@ const CardTourist = ({ id, province, name, imgUrl }) => {
 
   return (
 
-    <div className="card-tourist">
+    <div className="card-tourist" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2), 0 12px 40px rgba(0, 0, 0, 0.15)' }}>
       <div className="card-tourist-image">
         <img src={imgUrl || "./image/camp.webp"} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '16px 16px 0 0' }} />
       </div>

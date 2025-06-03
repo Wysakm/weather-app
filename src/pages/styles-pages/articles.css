@@ -6,28 +6,25 @@
   width: 100%;
   height: auto;
   background-color: var(--color-aticles-bg);
-  /* border: 1px solid red; */
 
 }
 
-.article-box { 
+.article-box {
   width: 80%;
   height: auto;
-  border: 1px solid blue;
   margin: 32px 16px;
 
-  h1 { 
+  h1 {
     margin: 16px;
   }
 }
 
-.district-province { 
+.district-province {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   width: auto;
-  margin: 16px ;
-  border: 1px solid red;
+  margin: 16px;
   gap: 16px;
 }
 
@@ -36,33 +33,36 @@
   justify-content: flex-start;
   align-items: center;
   width: auto;
-  margin: 16px ;
+  margin: 16px;
   gap: 16px;
+
 }
 
-.tag { 
+.tag {
   width: auto;
-  border: 1px solid black;
-  padding: 0 16px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: var(--color-navbar-bg);
+  background-color: var(--color-primary);
 }
 
-.article-box-I { 
+.article-box-I {
   display: flex;
   justify-content: space-between;
   width: 80%;
-  height: 450px; 
-  border: 1px solid blue; 
+  height: 450px;
+
   margin: 16px;
 }
-.article-box-I-left { 
+
+.article-box-I-left {
   width: 575px;
   height: 100%;
-  border: 1px solid red;
 }
-.article-box-I-right { 
+
+.article-box-I-right {
   width: 420px;
   height: 100%;
-  border: 1px solid red;
   border-radius: 16px;
 }
 
@@ -70,33 +70,26 @@
   display: flex;
   width: 80%;
   height: auto;
-  border: 1px solid blue;
   margin-top: 3rem;
 }
-.traveler-container { 
+
+.traveler-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
   width: 80%;
   height: auto;
-  border: 1px solid blue;
 
 }
 
 .article-box-II {
-    display: flex;
+  display: flex;
   justify-content: center;
-
   width: 100%;
-  height: auto; 
-  border: 1px solid blue; 
+  height: auto;
   margin: 16px;
-
 }
-
-
-
 
 
 

@@ -73,10 +73,9 @@ const Article = () => {
         {/* <p>{post?.body || 'Loading content...'}</p> */}
         <div
           style={{
-            border: '1px solid #d9d9d9',
             borderRadius: '6px',
-            padding: '12px',
-            backgroundColor: '#fafafa',
+            padding: '16px',
+            backgroundColor: 'var(--color-navbar-bg)',
             minHeight: '100px',
             width: '100%',
           }}
