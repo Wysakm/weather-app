@@ -35,7 +35,7 @@ const CardProvince = ({ locationData }) => {
   const aqiLevel = getAqiLevel(aqi);
 
   return (
-    <div className="card">
+    <div className="card" style={{ boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2), 0 12px 40px rgba(0, 0, 0, 0.15)' }}>
       <div className='card-img'>
         <img src="./image/province.webp" alt="province-image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       </div>
