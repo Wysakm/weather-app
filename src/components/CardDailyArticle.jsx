@@ -1,29 +1,45 @@
 import React from 'react';
 import './styles/cardDailyArticle.css';
+import { useWeatherIcon } from '../hooks/useWeatherIcon';
 
-const CardDailyArticle = () => {
+const CardDailyArticle = ({ date, tempMax, tempMin, weatherCode, rainProb }) => {
+  const { weatherIconUrl } = useWeatherIcon({
+    weatherCode: weatherCode,
+    isDay: 1
+  });
+
+  // Format date to show day/month
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return `${date.getDate()}/${date.getMonth() + 1}`;
+  };
+
   return (
     <div className="cardDaily-article">
       <div className='daily'>
-        25/5
+        {formatDate(date)}
       </div>
 
       <div className='temperature-max-min'>
         <div className='maximum'>
-          H:25°C /
+          H:{Math.round(tempMax)}°C /
         </div>
         <div className='minimum'>
-          L:15°C
+          L:{Math.round(tempMin)}°C
         </div>
-
       </div>
 
-         <div className='icon-daily'> 
-          🌤️
-        </div>
-        <div className='rain'>
-          Rain : 80% 
-        </div>
+      <div className='icon-daily'> 
+        {weatherIconUrl ? (
+          <img src={weatherIconUrl} alt="weather" style={{ width: '30px', height: '30px' }} />
+        ) : (
+          '🌤️'
+        )}
+      </div>
+      
+      <div className='rain'>
+        Rain: {rainProb || 0}% 
+      </div>
     </div>
   );
 };

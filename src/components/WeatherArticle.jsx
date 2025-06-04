@@ -1,58 +1,78 @@
 import React from "react";
 import './styles/WeatherArticle.css'
+import { useWeatherByCoords } from '../hooks/useWeatherByCoords';
+import { useWeatherIcon } from '../hooks/useWeatherIcon';
+import { getFormattedDate, formatTime } from '../utils/dateUtils';
+import { weatherCodeToDescription } from '../utils/weather';
 
-const WeatherArticle = () => {
+const WeatherArticle = ({ latitude, longitude, provinceName }) => {
+  const { weatherData, loading, error } = useWeatherByCoords(latitude, longitude);
+  const { weatherIconUrl } = useWeatherIcon({
+    weatherCode: weatherData?.current?.weather_code,
+    isDay: weatherData?.current?.is_day
+  });
+
+  if (loading) return <div className="weatherArticle-container">Loading weather...</div>;
+  if (error) return <div className="weatherArticle-container">Error loading weather</div>;
+  if (!weatherData) return <div className="weatherArticle-container">No weather data</div>;
+
+  const current = weatherData.current;
+  const daily = weatherData.daily;
+  const todayFormatted = getFormattedDate('en');
+
   return (
     <div className="weatherArticle-container">
       <div className="DMY-province">
         <div className="date">
-          date
+          {todayFormatted}
         </div>
         <div className="province">
-          Province
+          {provinceName || 'Loading...'}
         </div>
       </div>
 
       <div className="temp-condition">
-        <div className="image-condition">image</div>
-        <div className="temperature">30 C</div>
+        <div className="image-condition">
+          {weatherIconUrl ? (
+            <img src={weatherIconUrl} alt="weather" style={{ width: '50px', height: '50px' }} />
+          ) : (
+            '🌤️'
+          )}
+        </div>
+        <div className="temperature">{Math.round(current.temperature_2m)}°C</div>
       </div>
 
 
    
        
         <div className="condition">
-          Cloudy
+          {weatherCodeToDescription(current.weather_code, 'en')}
         </div>
-      
-     
 
        <div className="HL-box">
-          H : 34 C / L : 28 C 
+          H: {Math.round(daily.temperature_2m_max[0])}°C / L: {Math.round(daily.temperature_2m_min[0])}°C 
           </div>
 
             <div className="feelsLike-box">
-          Feels like : 33 C 
+          Feels like: {Math.round(current.apparent_temperature)}°C 
         </div>
 
-
       <div className="etc-forecast">
-
         <div className="etc-left">
           <div>
-            Sun rise : 05.56 น.
+            Sun rise: {formatTime(daily.sunrise[0], 'th')}
           </div>
           <div>
-            Sun set : 18.09 น. 
+            Sun set: {formatTime(daily.sunset[0], 'th')} 
           </div>
         </div>
 
         <div className="etc-right">
           <div>
-            Rain : 80%
+            Rain: {daily.precipitation_probability_max[0] || 0}%
           </div>
           <div>
-            UV Index : 6 
+            UV Index: {Math.round(daily.uv_index_max[0]) || 0} 
           </div>
         </div>
       </div>
