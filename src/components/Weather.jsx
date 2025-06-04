@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import { useLocationStore } from '../stores/useLocationStore.js';
 import { provinces } from '../configs/provinces.js';
 import './styles/Weather.css';
@@ -22,7 +23,11 @@ const mockAqiData = {
 function Weather({ option }) {
   console.log(' option:', option)
   const { t, i18n } = useTranslation();
+  const location = useLocation();
   const { selectedProvince, loading: locationLoading, setLocation } = useLocationStore();
+
+  // Check if we're on the home page
+  const isHomePage = location.pathname === '/';
 
   useEffect(() => {
     setLocation(option?.province)
@@ -50,12 +55,16 @@ function Weather({ option }) {
 
   return (
     <>
-      <div style={{ justifyContent: 'center', display: 'flex' }}>
-        <h1 style={{ margin: '2rem' }}>{t('CampStay.CampHeader')}</h1>
-      </div>
-      <div style={{ justifyContent: 'center', display: 'flex' }}>
-        <TabProvinces onProvinceSelect={handleProvinceSelect} />
-      </div>
+      {!isHomePage && (
+        <div style={{ justifyContent: 'center', display: 'flex' }}>
+          <h1 style={{ margin: '2rem' }}>{t('CampStay.CampHeader')}</h1>
+        </div>
+      )}
+      {!isHomePage && (
+        <div style={{ justifyContent: 'center', display: 'flex' }}>
+          <TabProvinces onProvinceSelect={handleProvinceSelect} />
+        </div>
+      )}
       <div className='weather-container'>
         <div className='container'>
           <div className='container-lacationDate'>
