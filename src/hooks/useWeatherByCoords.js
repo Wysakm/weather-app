@@ -6,7 +6,11 @@ export const useWeatherByCoords = (latitude, longitude) => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        if (!latitude || !longitude) return;
+        console.log('useWeatherByCoords - Received coordinates:', { latitude, longitude });
+        if (!latitude || !longitude) {
+            console.log('useWeatherByCoords - Missing coordinates, skipping fetch');
+            return;
+        }
 
         setLoading(true);
         const fetchWeather = async () => {
@@ -45,6 +49,8 @@ export const useWeatherByCoords = (latitude, longitude) => {
                     url.searchParams.append(key, value);
                 });
 
+                console.log('useWeatherByCoords - Fetching URL:', url.toString());
+
                 // Fetch weather data from the constructed URL
                 const response = await fetch(url);
                 if (!response.ok) {
@@ -52,9 +58,11 @@ export const useWeatherByCoords = (latitude, longitude) => {
                 }
 
                 const data = await response.json();
+                console.log('useWeatherByCoords - Received data:', data);
                 setWeatherData(data);
                 setLoading(false);
             } catch (e) {
+                console.error('useWeatherByCoords - Error:', e);
                 setError(e.message);
                 setLoading(false);
             }

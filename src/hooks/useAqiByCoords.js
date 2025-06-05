@@ -45,16 +45,22 @@ export const useAqiByCoords = (latitude, longitude) => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        if (!latitude || !longitude) return;
+        console.log('useAqiByCoords - Received coordinates:', { latitude, longitude });
+        if (!latitude || !longitude) {
+            console.log('useAqiByCoords - Missing coordinates, skipping fetch');
+            return;
+        }
 
         setLoading(true);
         const fetchAqi = async () => {
             try {
                 if (!token) {
+                    console.error('useAqiByCoords - AQI token is not configured');
                     throw new Error('AQI token is not configured');
                 }
                 
                 const url = `https://api.waqi.info/feed/geo:${latitude};${longitude}/?token=${token}`;
+                console.log('useAqiByCoords - Fetching URL:', url);
                 const response = await fetch(url);
                 
                 if (!response.ok) {
@@ -62,6 +68,7 @@ export const useAqiByCoords = (latitude, longitude) => {
                 }
 
                 const data = await response.json();
+                console.log('useAqiByCoords - Received data:', data);
 
                 if (data.status === 'ok') {
                     const iaqi = data.data.iaqi;
@@ -78,12 +85,15 @@ export const useAqiByCoords = (latitude, longitude) => {
                         o3: iaqi.o3?.v || null,
                         co: iaqi.co?.v || null
                     };
+                    console.log('useAqiByCoords - Processed AQI data:', newAqiData);
                     setAqiData(newAqiData);
                 } else {
+                    console.error('useAqiByCoords - API returned error status:', data);
                     throw new Error('Failed to fetch AQI data');
                 }
                 setLoading(false);
             } catch (e) {
+                console.error('useAqiByCoords - Error:', e);
                 setError(e.message);
                 setLoading(false);
             }

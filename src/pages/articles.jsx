@@ -18,7 +18,11 @@ const Article = () => {
       try {
         setLoading(true);
         const data = (await postsAPI.getById(postId)).data;
-        console.log(' data:', data)
+        console.log('Post data:', data);
+        console.log('Place coordinates:', {
+          latitude: data?.place?.latitude,
+          longitude: data?.place?.longitude
+        });
         setPost(data);
       } catch (err) {
         setError(err.message);
@@ -63,9 +67,19 @@ const Article = () => {
           )}
         </div>
         <div className='article-box-I-right'>
-          <WeatherArticle />
-          <WeeklyArticle />
-          <AirQualityArticle />
+          <WeatherArticle 
+            latitude={post?.place?.latitude}
+            longitude={post?.place?.longitude}
+            provinceName={post?.place?.province?.name}
+          />
+          <WeeklyArticle 
+            latitude={post?.place?.latitude}
+            longitude={post?.place?.longitude}
+          />
+          <AirQualityArticle 
+            latitude={post?.place?.latitude}
+            longitude={post?.place?.longitude}
+          />
         </div>
       </div>
 
