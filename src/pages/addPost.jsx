@@ -405,11 +405,11 @@ const AddPost = () => {
     try {
       // Get province name from provinces array using ID
       let provinceName = values.province;
-      if (typeof values.province === 'number' || !isNaN(values.province)) {
+      if (values.province) {
         const selectedProvince = provinces.find(p => p.value === values.province);
         provinceName = selectedProvince ? selectedProvince.label : values.province;
       }
-
+      // debugger
       // Check for duplicates
       const duplicates = await placesAPI.checkDuplicate(
         values.name_place,
@@ -442,6 +442,7 @@ const AddPost = () => {
 
       // Update location field
       const newLocation = `${values.name_place} - ${values.district || ''}, ${provinceName}`;
+      // debugger
       setFormData(prev => ({ ...prev, location: newLocation }));
       form.setFieldsValue({ location: newLocation });
 
