@@ -20,7 +20,7 @@ const CardCampContainer = ({ selectedProvince }) => {
           response = await postsAPI.getByProvinceId(selectedProvince.province_id, 'camp');
         } else {
           // Get all posts if no province selected
-          // response = await postsAPI.getAll();
+          response = { data: { posts: [] } }; // Fallback to empty array if no province selected
         }
         
         const data = response.data.posts || response.data || [];

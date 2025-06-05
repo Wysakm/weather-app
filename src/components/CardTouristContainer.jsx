@@ -20,7 +20,8 @@ const CardTouristContainer = ({ selectedProvince }) => {
           response = await postsAPI.getByProvinceId(selectedProvince.province_id, 'recommended');
         } else {
           // Get all posts if no province selected
-          response = await postsAPI.getAll();
+          // response = await postsAPI.getAll();
+          response = { data: { posts: [] } } // Fallback to empty array if no province selected
         }
         const data = response.data.posts || response.data
         // console.log(' response:', { data, selectedProvince });
