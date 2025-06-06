@@ -14,8 +14,9 @@
  justify-content: space-between;
  align-items: flex-end;
   width: 100%;
+  margin-top: 8px;
   height: 12%;
-  padding-top: 5px ;
+
 }
 
 .date { 
@@ -32,16 +33,23 @@
   align-items: center;
   width: auto;
   height: 23%;
-  gap: 10px;
+  gap: 15px;
 }
 
 .image-condition { 
   width: 36px;
   height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .temperature { 
 font-size: 36px;
+display: flex;
+justify-content: center;
+align-items: center ;
+margin-top: 15px;
 }
 
 .condition-box { 
@@ -50,6 +58,7 @@ font-size: 36px;
   align-items: center;
   width: 100%;
   height: 10%; 
+
 }
 
 .HL-box { 
@@ -67,6 +76,7 @@ font-size: 36px;
 .condition { 
   font-size: 18px;
   font-weight: bold;
+  margin-top: 16px;
  
 }
 
