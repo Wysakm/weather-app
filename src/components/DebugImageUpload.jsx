@@ -90,6 +90,15 @@ const DebugImageUpload = ({
       sizeInMB: (file.size / 1024 / 1024).toFixed(2)
     });
 
+    // Check filename format (only allow a-z, A-Z, 0-9, -, and _)
+    const fileNameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.'));
+    const validNameRegex = /^[a-zA-Z0-9_-]+$/;
+    if (!validNameRegex.test(fileNameWithoutExt)) {
+      addDebugLog('Invalid filename', file.name);
+      message.error('Filename can only contain letters (a-z, A-Z), numbers (0-9), hyphens (-), and underscores (_)!', 10);
+      return false;
+    }
+
     // Check file type
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
     if (!isJpgOrPng) {

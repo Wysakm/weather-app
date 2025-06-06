@@ -76,6 +76,13 @@ export const formatProvincesForSelect = (provinces) => {
  * Validate uploaded image file
  */
 export const validateImageFile = (file) => {
+  // Check filename format (only allow a-z, A-Z, 0-9, -, and _)
+  const fileNameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.'));
+  const validNameRegex = /^[a-zA-Z0-9_-]+$/;
+  if (!validNameRegex.test(fileNameWithoutExt)) {
+    return { isValid: false, error: IMAGE_VALIDATION.FILENAME_ERROR };
+  }
+
   const isValidType = IMAGE_VALIDATION.ALLOWED_TYPES.includes(file.type);
   if (!isValidType) {
     return { isValid: false, error: IMAGE_VALIDATION.TYPE_ERROR };

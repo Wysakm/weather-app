@@ -64,7 +64,8 @@ export const IMAGE_VALIDATION = {
   MAX_SIZE_MB: 2,
   ALLOWED_TYPES: ['image/jpeg', 'image/png'],
   TYPE_ERROR: 'You can only upload JPG/PNG file!',
-  SIZE_ERROR: 'Image must smaller than 2MB!'
+  SIZE_ERROR: 'Image must smaller than 2MB!',
+  FILENAME_ERROR: 'Filename can only contain letters (a-z, A-Z), numbers (0-9), hyphens (-), and underscores (_)!'
 };
 
 export const INITIAL_FORM_DATA = {
