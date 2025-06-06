@@ -579,52 +579,90 @@ const AddPost = () => {
   };
 
   // Memoized upload configuration
-  const uploadProps = useMemo(() => ({
-    ...UPLOAD_CONFIG,
-    beforeUpload: (file) => {
-      const validation = validateImageFile(file);
-      if (!validation.isValid) {
-        message.error(validation.error);
-        return Upload.LIST_IGNORE;
-      }
+  const uploadProps = useMemo(() => {
+    const config = {
+      ...UPLOAD_CONFIG,
+      beforeUpload: (file) => {
+        const validation = validateImageFile(file);
+        if (!validation.isValid) {
+          message.error(validation.error);
+          return Upload.LIST_IGNORE;
+        }
 
-      // Check if replacing an existing image in edit mode
-      const isReplacingImage = isEditMode && editingPost?.image && formData.coverImage?.url;
-      
-      setFormData(prev => ({ ...prev, coverImage: file }));
-      
-      if (isReplacingImage) {
-        message.success(`${file.name} selected. Previous image will be replaced.`);
-      } else {
-        message.success(`${file.name} selected successfully`);
+        // Check if replacing an existing image in edit mode
+        const isReplacingImage = isEditMode && editingPost?.image;
+        
+        setFormData(prev => ({ ...prev, coverImage: file }));
+        
+        if (isReplacingImage) {
+          message.success(`${file.name} selected. Previous image will be replaced.`);
+        } else {
+          message.success(`${file.name} selected successfully`);
+        }
+        
+        return false;
+      },
+      onRemove: () => {
+        console.log('🗑️ onRemove triggered');
+        setFormData(prev => ({ ...prev, coverImage: null }));
+        form.setFieldsValue({ coverImage: [] });
+        message.info('Image removed');
+        return true;
       }
-      
-      return false;
-    },
-    onRemove: () => {
-      setFormData(prev => ({ ...prev, coverImage: null }));
-      message.info('Image removed');
-      return true;
-    },
-    onChange: (info) => {
+    };
+    
+    // Add onChange as a separate function to avoid capturing formData in closure
+    config.onChange = (info) => {
       const fileList = info.fileList;
-      form.setFieldsValue({ coverImage: fileList });
-
+      console.log('📤 Upload onChange triggered:', {
+        fileListLength: fileList.length,
+        files: fileList.map(f => ({ name: f.name, status: f.status, hasUrl: !!f.url }))
+      });
+      
+      // Prevent unnecessary state updates that could cause race conditions
       if (fileList.length > 0) {
         const file = fileList[0];
+        console.log('📤 Processing file:', {
+          name: file.name,
+          status: file.status,
+          hasOriginFileObj: !!file.originFileObj,
+          hasUrl: !!file.url
+        });
+        
+        // Only update if file status indicates it's ready or being processed
         if (file.status === 'done' || file.status === 'uploading' || !file.status) {
           const actualFile = file.originFileObj || file;
           if (actualFile instanceof File) {
+            console.log('📤 Setting new File object');
             setFormData(prev => ({ ...prev, coverImage: actualFile }));
+            form.setFieldsValue({ coverImage: fileList });
           } else {
+            console.log('📤 Setting file object with URL');
             setFormData(prev => ({ ...prev, coverImage: file }));
+            form.setFieldsValue({ coverImage: fileList });
           }
         }
       } else {
+        console.log('📤 FileList is empty - clearing image');
+        // Only clear if user explicitly removed the image
         setFormData(prev => ({ ...prev, coverImage: null }));
+        form.setFieldsValue({ coverImage: [] });
       }
-    },
-  }), [form, message, isEditMode, editingPost?.image, formData.coverImage?.url]);
+    };
+    
+    return config;
+  }, [form, message, isEditMode, editingPost?.image]);
+
+  // Debug: Monitor formData.coverImage changes
+  useEffect(() => {
+    console.log('🖼️ FormData.coverImage changed:', {
+      coverImage: formData.coverImage,
+      type: typeof formData.coverImage,
+      isFile: formData.coverImage instanceof File,
+      hasUrl: formData.coverImage?.url,
+      timestamp: new Date().toISOString()
+    });
+  }, [formData.coverImage]);
 
   // Memoized handlers
   const goBack = useCallback(() => {
@@ -760,8 +798,41 @@ const AddPost = () => {
             >
               <Upload 
                 {...uploadProps} 
-                fileList={formData.coverImage && formData.coverImage.url ? [formData.coverImage] : 
-                         (form.getFieldValue('coverImage') || [])}
+                fileList={(() => {
+                  console.log('🔄 Calculating fileList:', {
+                    formDataCoverImage: formData.coverImage,
+                    formFieldValue: form.getFieldValue('coverImage')
+                  });
+                  
+                  if (formData.coverImage) {
+                    if (formData.coverImage.url) {
+                      // Existing image with URL - keep it stable
+                      const fileListItem = {
+                        uid: formData.coverImage.uid || '-1',
+                        name: formData.coverImage.name || 'cover.jpg',
+                        status: 'done',
+                        url: formData.coverImage.url,
+                        thumbUrl: formData.coverImage.url
+                      };
+                      console.log('📸 Using existing image:', fileListItem);
+                      return [fileListItem];
+                    } else if (formData.coverImage instanceof File) {
+                      // New file being uploaded
+                      const fileListItem = {
+                        uid: '-1',
+                        name: formData.coverImage.name,
+                        status: 'done',
+                        originFileObj: formData.coverImage
+                      };
+                      console.log('📸 Using new file:', fileListItem);
+                      return [fileListItem];
+                    }
+                  }
+                  
+                  const formValue = form.getFieldValue('coverImage') || [];
+                  console.log('📸 Using form value:', formValue);
+                  return formValue;
+                })()}
               >
                 <Button icon={<UploadOutlined />} size="large" style={{ width: '100%' }}>
                   Click to Upload Cover Image
