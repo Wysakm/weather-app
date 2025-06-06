@@ -27,6 +27,7 @@ const CardStayBox = () => {
           province={item.province}
           name={item.name}
           imgUrl={item.imgUrl}
+          type="stay"
         />
       ))}
     </div>

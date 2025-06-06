@@ -55,6 +55,7 @@ const CardStayContainer = ({ selectedProvince }) => {
             province={item.place.province.name}
             name={item.title}
             imgUrl={item.image}
+            type="stay"
           />
         ))
       ) : (

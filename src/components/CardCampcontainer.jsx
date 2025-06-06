@@ -55,6 +55,7 @@ const CardCampContainer = ({ selectedProvince }) => {
             province={item.place.province.name}
             name={item.title}
             imgUrl={item.image}
+            type="camp"
           />
         ))
       ) : (

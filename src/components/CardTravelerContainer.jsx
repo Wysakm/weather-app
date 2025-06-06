@@ -45,6 +45,7 @@ const CardTravelerContainer = ({ id_place, id_post }) => {
             province={item.place.province.name}
             name={item.title}
             imgUrl={item.image}
+            type={item.place?.place_types?.name || "tourist"}
           />
         ))
       ) : (

@@ -27,6 +27,7 @@ const CardCampBox = () => {
           province={item.province}
           name={item.name}
           imgUrl={item.imgUrl}
+          type="camp"
         />
       ))}
     </div>
