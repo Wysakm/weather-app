@@ -18,6 +18,23 @@ export const authAPI = {
     }
   },
 
+  // Google OAuth Login
+  googleLogin: async (credential) => {
+    try {
+      const response = await apiClient.post('/auth/google', { credential });
+      const { token, user } = response.data.data;
+
+      setToken(token);
+      setUserRole(JSON.stringify(user.role));
+      setUserInfo(user);
+      
+      return response.data;
+    } catch (error) {
+      console.error('Google login error:', error);
+      throw error;
+    }
+  },
+
   // ออกจากระบบ
   logout: async () => {
     try {

@@ -1,15 +1,18 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { Form, Input, Button, Typography, Space, message, Divider } from 'antd';
 import { UserOutlined, LockOutlined, GoogleOutlined } from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { GOOGLE_CLIENT_ID } from '../config/googleAuth';
+import GoogleSignInButton from './GoogleSignInButton';
+import GoogleDebugInfo from './GoogleDebugInfo';
 
 const { Title } = Typography;
 
 const Login = ({ handleCancel }) => {
   const { login, loginWithGoogle, googleLoaded } = useAuth();
   const navigate = useNavigate();
+  const googleButtonRef = useRef(null);
 
   const handleGoogleResponse = useCallback(async (response) => {
     try {
@@ -28,13 +31,30 @@ const Login = ({ handleCancel }) => {
 
   useEffect(() => {
     // Initialize Google Sign-In when script is loaded
-    if (googleLoaded && window.google) {
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleGoogleResponse,
-        auto_select: false,
-        cancel_on_tap_outside: true
-      });
+    if (googleLoaded && window.google?.accounts) {
+      try {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleGoogleResponse,
+          auto_select: false,
+          cancel_on_tap_outside: true,
+          use_fedcm_for_prompt: false
+        });
+
+        // Also render a hidden Google button as backup
+        if (googleButtonRef.current) {
+          window.google.accounts.id.renderButton(googleButtonRef.current, {
+            theme: 'outline',
+            size: 'large',
+            width: 250,
+            type: 'standard',
+            shape: 'rectangular',
+            logo_alignment: 'left'
+          });
+        }
+      } catch (error) {
+        console.error('Google Sign-In initialization error:', error);
+      }
     }
   }, [googleLoaded, handleGoogleResponse]);
 
@@ -55,19 +75,34 @@ const Login = ({ handleCancel }) => {
   };
 
   const handleGoogleLogin = () => {
+    console.log('Attempting Google Sign-In...', { gg: window.google });
     if (!googleLoaded) {
       message.warning('Please wait, Google Sign-In is loading...');
       return;
     }
 
-    if (window.google && window.google.accounts) {
+    if (!window.google?.accounts) {
+      message.error('Google Sign-In is not available. Please refresh the page and try again.');
+      return;
+    }
+
+    try {
+      // First, try the prompt method
       window.google.accounts.id.prompt((notification) => {
         if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          console.log('One-tap sign-in not displayed');
+          console.log('One-tap not available, reason:', notification.getNotDisplayedReason());
+          // If prompt fails, try to trigger the hidden button
+          if (googleButtonRef.current) {
+            const hiddenButton = googleButtonRef.current.querySelector('div[role="button"]');
+            if (hiddenButton) {
+              hiddenButton.click();
+            }
+          }
         }
       });
-    } else {
-      message.error('Google Sign-In is not available, please try again');
+    } catch (error) {
+      console.error('Google Sign-In error:', error);
+      message.error('Google Sign-In encountered an error. Please try again.');
     }
   };
 
@@ -90,6 +125,16 @@ const Login = ({ handleCancel }) => {
           </p>
         </div>
 
+        {/* Google Sign-In Button - Primary */}
+        {/* <GoogleSignInButton onSuccess={handleCancel} /> */}
+
+        {/* <div style={{ textAlign: 'center', margin: '10px 0' }}>
+          <span style={{ color: '#999', fontSize: '12px' }}>
+            If the button above doesn't work, try the alternative below:
+          </span>
+        </div> */}
+
+        {/* Alternative: Custom Google Sign-In Button */}
         <Button
           icon={<GoogleOutlined />}
           size="large"
@@ -107,8 +152,11 @@ const Login = ({ handleCancel }) => {
             gap: '8px'
           }}
         >
-          Sign in with Google
+          Alternative Google Sign-In
         </Button>
+
+        {/* Hidden Google Button for fallback */}
+        <div ref={googleButtonRef} style={{ display: 'none' }}></div>
 
         <Divider>
           <span style={{ color: '#999', fontSize: '12px' }}>or</span>
@@ -189,6 +237,9 @@ const Login = ({ handleCancel }) => {
           </span>
         </div>
       </Space>
+
+      {/* Debug Information - Remove in production */}
+      <GoogleDebugInfo />
     </div>
   );
 };

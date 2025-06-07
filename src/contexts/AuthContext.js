@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [googleLoaded, setGoogleLoaded] = useState(false);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -38,6 +39,44 @@ export const AuthProvider = ({ children }) => {
     initAuth();
   }, []);
 
+  // Load Google Sign-In script
+  useEffect(() => {
+    const loadGoogleScript = () => {
+      if (window.google?.accounts?.id) {
+        setGoogleLoaded(true);
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      
+      script.onload = () => {
+        // Wait for Google Identity Services to fully initialize
+        const checkGoogleReady = () => {
+          if (window.google?.accounts?.id) {
+            console.log('Google Identity Services loaded successfully');
+            setGoogleLoaded(true);
+          } else {
+            console.log('Waiting for Google Identity Services to initialize...');
+            setTimeout(checkGoogleReady, 100);
+          }
+        };
+        checkGoogleReady();
+      };
+      
+      script.onerror = () => {
+        console.error('Failed to load Google Sign-In script');
+        setGoogleLoaded(false);
+      };
+      
+      document.head.appendChild(script);
+    };
+
+    loadGoogleScript();
+  }, []);
+
   const login = async (credentials) => {
     try {
       const data = await authAPI.login(credentials).then(response => response.data);
@@ -48,6 +87,20 @@ export const AuthProvider = ({ children }) => {
       return data;
     } catch (error) {
       throw error;
+    }
+  };
+
+  const loginWithGoogle = async (response) => {
+    try {
+      const data = await authAPI.googleLogin(response.credential);
+
+      setIsAuthenticated(true);
+      setUser(data.data.user);
+      setRole(data.data.user.role);
+      return true;
+    } catch (error) {
+      console.error('Google login error:', error);
+      return false;
     }
   };
 
@@ -107,7 +160,9 @@ export const AuthProvider = ({ children }) => {
     user,
     role,
     loading,
+    googleLoaded,
     login,
+    loginWithGoogle,
     logout,
     updateUser,
     updateUserProfile,
