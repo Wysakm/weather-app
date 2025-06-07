@@ -1,46 +1,15 @@
-import React, { useEffect, useCallback, useState } from 'react';
-import { Form, Input, Button, Typography, Space, message, Divider, Modal, Card } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined, GoogleOutlined, PhoneOutlined } from '@ant-design/icons';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState } from 'react';
+import { Form, Input, Button, Typography, Space, message, Modal, Card } from 'antd';
+import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { GOOGLE_CLIENT_ID } from '../config/googleAuth';
 import { authAPI } from '../api/auth';
 import Login from './Login';
 
 const { Title } = Typography;
 
 const Register = ({ handleCancel }) => {
-  const { loginWithGoogle, googleLoaded } = useAuth();
   const navigate = useNavigate();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-
-  const handleGoogleResponse = useCallback(async (response) => {
-    try {
-      const success = await loginWithGoogle(response);
-      if (success) {
-        message.success('Successfully registered with Google!');
-        if (handleCancel) handleCancel();
-        else navigate('/');
-      } else {
-        message.error('Google registration failed');
-      }
-    } catch (error) {
-      console.error('Google register error:', error);
-      message.error('An error occurred during registration');
-    }
-  }, [loginWithGoogle, handleCancel, navigate]);
-
-  useEffect(() => {
-    // Initialize Google Sign-In when script is loaded
-    if (googleLoaded && window.google) {
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleGoogleResponse,
-        auto_select: false,
-        cancel_on_tap_outside: true
-      });
-    }
-  }, [googleLoaded, handleGoogleResponse]);
 
   const onFinish = async (values) => {
     console.log('Register values:', values);
@@ -82,23 +51,6 @@ const Register = ({ handleCancel }) => {
     message.error('Please fill in all required fields');
   };
 
-  const handleGoogleRegister = () => {
-    if (!googleLoaded) {
-      message.warning('Please wait, Google Sign-In is loading...');
-      return;
-    }
-
-    if (window.google && window.google.accounts) {
-      window.google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          console.log('One-tap sign-in not displayed');
-        }
-      });
-    } else {
-      message.error('Google Sign-In is not available. Please try again.');
-    }
-  };
-
   const handleLoginClick = () => {
     setIsLoginModalOpen(true);
   };
@@ -126,31 +78,6 @@ const Register = ({ handleCancel }) => {
               Please fill in your information to create a new account
             </p>
           </div>
-
-          {/* Google Register Button */}
-          <Button
-            icon={<GoogleOutlined />}
-            size="large"
-            onClick={handleGoogleRegister}
-            loading={!googleLoaded}
-            style={{
-              width: '100%',
-              borderRadius: '6px',
-              border: '1px solid #d9d9d9',
-              background: '#fff',
-              color: '#666',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px'
-            }}
-          >
-            Sign up with Google
-          </Button>
-
-          <Divider>
-            <span style={{ color: '#999', fontSize: '12px' }}>or</span>
-          </Divider>
 
           <Form
             name="register"

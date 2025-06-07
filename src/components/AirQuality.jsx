@@ -17,7 +17,7 @@ export const AirQuality = ({ t }) => {
   const getAqiStatus = (aqi) => {
     if (aqi <= 50) return 'aqi.Good';
     if (aqi <= 100) return 'aqi.Moderate';
-    if (aqi <= 150) return 'aqi.UnhealthyForSensitive';
+    if (aqi <= 150) return 'aqi.UnhealthyForSensitiveGroups';
     if (aqi <= 200) return 'aqi.Unhealthy';
     if (aqi <= 300) return 'aqi.VeryUnhealthy';
     return 'aqi.Hazardous';
