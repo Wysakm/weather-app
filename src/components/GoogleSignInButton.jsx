@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { message } from 'antd';
 import { useAuth } from '../contexts/AuthContext';
 import { GOOGLE_CLIENT_ID } from '../config/googleAuth';
@@ -7,7 +7,7 @@ const GoogleSignInButton = ({ onSuccess, onError }) => {
   const { loginWithGoogle, googleLoaded } = useAuth();
   const googleButtonRef = useRef(null);
 
-  const handleGoogleResponse = async (response) => {
+  const handleGoogleResponse = useCallback(async (response) => {
     try {
       console.log('Google response received:', response);
       const success = await loginWithGoogle(response);
@@ -23,7 +23,7 @@ const GoogleSignInButton = ({ onSuccess, onError }) => {
       message.error('An error occurred during login');
       if (onError) onError();
     }
-  };
+  }, [loginWithGoogle, onSuccess, onError]);
 
   useEffect(() => {
     const initializeGoogleButton = () => {
@@ -75,7 +75,7 @@ const GoogleSignInButton = ({ onSuccess, onError }) => {
     if (googleLoaded) {
       setTimeout(initializeGoogleButton, 100);
     }
-  }, [googleLoaded]);
+  }, [googleLoaded, handleGoogleResponse]);
 
   if (!googleLoaded) {
     return <div>Loading Google Sign-In...</div>;

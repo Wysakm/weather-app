@@ -4,8 +4,8 @@ import { UserOutlined, LockOutlined, GoogleOutlined } from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { GOOGLE_CLIENT_ID } from '../config/googleAuth';
-import GoogleSignInButton from './GoogleSignInButton';
-import GoogleDebugInfo from './GoogleDebugInfo';
+// import GoogleSignInButton from './GoogleSignInButton';
+
 
 const { Title } = Typography;
 
@@ -238,8 +238,6 @@ const Login = ({ handleCancel }) => {
         </div>
       </Space>
 
-      {/* Debug Information - Remove in production */}
-      <GoogleDebugInfo />
     </div>
   );
 };
