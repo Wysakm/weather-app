@@ -87,4 +87,40 @@ export const authAPI = {
       throw error;
     }
   },
+
+  // ส่ง email reset password
+  forgotPassword: async (email) => {
+    try {
+      const response = await apiClient.post('/auth/forgot-password', { email });
+      return response.data;
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      throw error;
+    }
+  },
+
+  // ตรวจสอบ reset token
+  verifyResetToken: async (token) => {
+    try {
+      const response = await apiClient.post('/auth/verify-reset-token', { token });
+      return response.data;
+    } catch (error) {
+      console.error('Verify reset token error:', error);
+      throw error;
+    }
+  },
+
+  // รีเซ็ตรหัสผ่าน
+  resetPassword: async (token, newPassword) => {
+    try {
+      const response = await apiClient.post('/auth/reset-password', { 
+        token, 
+        newPassword 
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Reset password error:', error);
+      throw error;
+    }
+  },
 };

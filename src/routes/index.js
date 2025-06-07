@@ -12,6 +12,7 @@ import AddPost from '../pages/addPost';
 import Terms from '../pages/terms';
 import PrivacyPolicy from '../pages/privacy';
 import Register from '../pages/register';
+import ResetPassword from '../pages/resetPassword';
 import Account from '../pages/admin/account';
 
 export const routes = [
@@ -100,6 +101,10 @@ export const routes = [
   {
     path: '/register',
     element: Register
+  },
+  {
+    path: '/reset-password',
+    element: ResetPassword
   },
   {
     path: '/account',

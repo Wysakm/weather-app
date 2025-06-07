@@ -113,6 +113,13 @@ const Login = ({ handleCancel }) => {
     }
   };
 
+  const handleForgotPasswordClick = () => {
+    navigate('/reset-password');
+    if (handleCancel) {
+      handleCancel();
+    }
+  };
+
   return (
     <div style={{ width: '100%' }}>
       <Space className='login-container' direction="vertical" size="small" style={{ width: '100%' }}>
@@ -225,7 +232,11 @@ const Login = ({ handleCancel }) => {
         </Form>
 
         <div style={{ textAlign: 'center' }}>
-          <Button type="link" style={{ padding: 0 }}>
+          <Button 
+            type="link" 
+            style={{ padding: 0 }}
+            onClick={handleForgotPasswordClick}
+          >
             Forgot password?
           </Button>
           <br />
