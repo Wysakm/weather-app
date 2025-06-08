@@ -14,6 +14,7 @@ import PrivacyPolicy from '../pages/privacy';
 import Register from '../pages/register';
 import ResetPassword from '../pages/resetPassword';
 import Account from '../pages/admin/account';
+import SearchResults from '../components/SearchResults';
 
 export const routes = [
   {
@@ -54,6 +55,10 @@ export const routes = [
   {
     path: '/contact',
     element: Contact
+  },
+  {
+    path: '/search-results',
+    element: SearchResults
   },
 
   //admin routes
