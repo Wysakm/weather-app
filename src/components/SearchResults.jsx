@@ -7,7 +7,6 @@ import './styles/SearchResults.css';
 function SearchResults() {
   const { t } = useTranslation();
   const location = useLocation();
-  console.log(' location:', location)
   const navigate = useNavigate();
   const { results, searchType, query, filters } = location.state || {};
 
@@ -33,14 +32,14 @@ function SearchResults() {
       );
     }
 
-    console.log(results.data.places)
 
     return (
       <div className="card-tourist-container">
         {results.data.places.map((place) => (
+          place.posts && place.posts.length > 0 &&
           <CardTourist
             key={place.id_place}
-            id={place.id_place}
+            id={place.posts[0].id_post}
             province={place.province?.name}
             name={place.name_place}
             imgUrl={place.posts && place.posts.length > 0 ? place.posts[0].image : null}
@@ -68,14 +67,14 @@ function SearchResults() {
           allPlaces.push({
             ...place,
             provinceName: province.name,
-            weatherScore: province.weather_scores && province.weather_scores[0] 
-              ? Number(province.weather_scores[0].score) 
+            weatherScore: province.weather_scores && province.weather_scores[0]
+              ? Number(province.weather_scores[0].score)
               : null,
-            currentWeather: province.weather_data && province.weather_data[0] 
-              ? province.weather_data[0] 
+            currentWeather: province.weather_data && province.weather_data[0]
+              ? province.weather_data[0]
               : null,
-            aqiData: province.aqi_data && province.aqi_data[0] 
-              ? province.aqi_data[0] 
+            aqiData: province.aqi_data && province.aqi_data[0]
+              ? province.aqi_data[0]
               : null
           });
         });
@@ -135,14 +134,14 @@ function SearchResults() {
         <button onClick={() => navigate('/')} className="back-button">
           ← {t('search.backToSearch')}
         </button>
-        
+
         <div className="search-info">
           {searchType === 'location' ? (
             <h1>{t('search.searchResultsFor')} "{query}"</h1>
           ) : (
             <h1>{t('search.weatherSearchResults')}</h1>
           )}
-          
+
           {filters && (
             <div className="applied-filters">
               <span>{t('search.filters')}: </span>
@@ -158,7 +157,7 @@ function SearchResults() {
               )}
             </div>
           )}
-          
+
           <p className="results-count">
             {results.data?.total || 0} {t('search.resultsFound')}
           </p>
