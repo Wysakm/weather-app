@@ -2,7 +2,7 @@
 .search-results-container {
   min-height: 100vh;
   background-color: #f8f9fa;
-  padding: 20px;
+  padding: 20px 0px;
 }
 
 .search-header {
@@ -58,7 +58,9 @@
 }
 
 .search-results-content {
-  max-width: 1200px;
+  display: flex;
+  justify-content: center;
+  /* max-width: 1200px; */
   margin: 0 auto;
 }
 
@@ -369,4 +371,47 @@
   .search-info h1 {
     font-size: 24px;
   }
+}
+
+/* Weather Search Specific Styles */
+.weather-search-summary {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+}
+
+.weather-search-summary h3 {
+  margin: 0 0 5px;
+  color: #333;
+  font-size: 18px;
+}
+
+.weather-search-summary p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.weather-card-wrapper {
+  position: relative;
+}
+
+.weather-card-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+}
+
+.weather-score-badge {
+  background: linear-gradient(135deg, #ffd700, #ffb347);
+  color: #333;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid #e6b800;
 }

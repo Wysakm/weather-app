@@ -48,7 +48,10 @@
     "viewPlace": "ดูสถานที่",
     "topPlaces": "สถานที่ยอดนิยม",
     "viewProvince": "ดูจังหวัด",
-    "score": "คะแนนสภาพอากาศ"
+    "score": "คะแนนสภาพอากาศ",
+    "foundPlacesInProvinces": "พบสถานที่ใน",
+    "provinces": "จังหวัด",
+    "showingTopPlaces": "แสดงสถานที่ยอดนิยมเรียงตามคะแนนสภาพอากาศ"
   },
   "weather": {
     "ClearSky": "ท้องฟ้าโปร่ง",

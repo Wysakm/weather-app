@@ -1,11 +1,13 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import CardTourist from './CardTourist';
 import './styles/SearchResults.css';
 
 function SearchResults() {
   const { t } = useTranslation();
   const location = useLocation();
+  console.log(' location:', location)
   const navigate = useNavigate();
   const { results, searchType, query, filters } = location.state || {};
 
@@ -31,45 +33,19 @@ function SearchResults() {
       );
     }
 
+    console.log(results.data.places)
+
     return (
-      <div className="results-grid">
+      <div className="card-tourist-container">
         {results.data.places.map((place) => (
-          <div key={place.id_place} className="result-card">
-            <div className="place-info">
-              <h3>{place.name_place}</h3>
-              <p className="location">{place.district}, {place.province?.name}</p>
-              <p className="place-type">{place.place_type?.name}</p>
-              
-              {place._count?.posts > 0 && (
-                <p className="posts-count">
-                  {place._count.posts} {t('search.posts')}
-                </p>
-              )}
-            </div>
-            
-            {place.posts && place.posts.length > 0 && (
-              <div className="place-posts">
-                <h4>{t('search.recentPosts')}</h4>
-                <div className="posts-preview">
-                  {place.posts.slice(0, 2).map((post) => (
-                    <div key={post.id_post} className="post-preview">
-                      {post.image && (
-                        <img src={post.image} alt={post.title} className="post-thumbnail" />
-                      )}
-                      <span className="post-title">{post.title}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            <button 
-              className="view-place-btn"
-              onClick={() => navigate(`/places/${place.id_place}`)}
-            >
-              {t('search.viewPlace')}
-            </button>
-          </div>
+          <CardTourist
+            key={place.id_place}
+            id={place.id_place}
+            province={place.province?.name}
+            name={place.name_place}
+            imgUrl={place.posts && place.posts.length > 0 ? place.posts[0].image : null}
+            type={place.place_type?.name || "tourist"}
+          />
         ))}
       </div>
     );
@@ -84,77 +60,74 @@ function SearchResults() {
       );
     }
 
+    // Collect all places from all provinces that match weather criteria
+    const allPlaces = [];
+    results.data.provinces.forEach((province) => {
+      if (province.places && province.places.length > 0) {
+        province.places.forEach((place) => {
+          allPlaces.push({
+            ...place,
+            provinceName: province.name,
+            weatherScore: province.weather_scores && province.weather_scores[0] 
+              ? Number(province.weather_scores[0].score) 
+              : null,
+            currentWeather: province.weather_data && province.weather_data[0] 
+              ? province.weather_data[0] 
+              : null,
+            aqiData: province.aqi_data && province.aqi_data[0] 
+              ? province.aqi_data[0] 
+              : null
+          });
+        });
+      }
+    });
+
+    // Sort places by weather score (highest first)
+    const sortedPlaces = allPlaces.sort((a, b) => {
+      const scoreA = a.weatherScore || 0;
+      const scoreB = b.weatherScore || 0;
+      return scoreB - scoreA;
+    });
+
+    if (sortedPlaces.length === 0) {
+      return (
+        <div className="no-results">
+          <h3>{t('search.noPlacesFound')}</h3>
+        </div>
+      );
+    }
+
     return (
-      <div className="results-grid">
-        {results.data.provinces.map((province) => (
-          <div key={province.id} className="result-card province-card">
-            <div className="province-info">
-              <h3>{province.name}</h3>
-              
-              {province.weather_scores && province.weather_scores[0] && (
-                <div className="weather-score">
-                  <span className="score-label">{t('weather.score')}: </span>
-                  <span className="score-value">
-                    {Number(province.weather_scores[0].score).toFixed(1)}/5
-                  </span>
-                </div>
-              )}
-              
-              {province.weather_data && province.weather_data[0] && (
-                <div className="current-weather">
-                  <span className="weather-condition">
-                    {t(`weather.code_${province.weather_data[0].weather_code}`)}
-                  </span>
-                  <span className="temperature">
-                    {province.weather_data[0].temperature}°C
-                  </span>
-                </div>
-              )}
-              
-              {province.aqi_data && province.aqi_data[0] && (
-                <div className="aqi-info">
-                  <span className="aqi-label">AQI: </span>
-                  <span className={`aqi-value aqi-${getAQILevel(province.aqi_data[0].aqi)}`}>
-                    {province.aqi_data[0].aqi}
+      <div>
+        <div className="weather-search-summary">
+          <h3>{t('search.foundPlacesInProvinces')}: {results.data.provinces.length} {t('search.provinces')}</h3>
+          <p>{t('search.showingTopPlaces')}</p>
+        </div>
+        <div className="card-tourist-container">
+          {sortedPlaces.slice(0, 12).map((place, index) => (
+            <div key={`${place.id_place}-${index}`} className="weather-card-wrapper">
+              <CardTourist
+                id={place.id_place}
+                province={place.provinceName}
+                name={place.name_place}
+                imgUrl={null} // We'll rely on CardTourist's fallback image handling
+                type={place.place_type?.name || "tourist"}
+              />
+              {place.weatherScore && (
+                <div className="weather-card-badge">
+                  <span className="weather-score-badge">
+                    ⭐ {place.weatherScore.toFixed(1)}
                   </span>
                 </div>
               )}
             </div>
-            
-            {province.places && province.places.length > 0 && (
-              <div className="province-places">
-                <h4>{t('search.topPlaces')} ({province.places.length})</h4>
-                <div className="places-list">
-                  {province.places.slice(0, 3).map((place) => (
-                    <div key={place.id_place} className="place-item">
-                      <span className="place-name">{place.name_place}</span>
-                      <span className="place-posts">
-                        {place._count?.posts || 0} {t('search.posts')}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            <button 
-              className="view-province-btn"
-              onClick={() => navigate(`/provinces/${province.id}`)}
-            >
-              {t('search.viewProvince')}
-            </button>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     );
   };
 
-  const getAQILevel = (aqi) => {
-    if (aqi <= 50) return 'good';
-    if (aqi <= 100) return 'moderate';
-    if (aqi <= 150) return 'unhealthy-sensitive';
-    return 'unhealthy';
-  };
+
 
   return (
     <div className="search-results-container">

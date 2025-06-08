@@ -50,7 +50,10 @@
     "viewPlace": "View Place",
     "topPlaces": "Top Places",
     "viewProvince": "View Province",
-    "score": "Weather Score"
+    "score": "Weather Score",
+    "foundPlacesInProvinces": "Found places in",
+    "provinces": "provinces",
+    "showingTopPlaces": "Showing top places sorted by weather score"
   },
 
   "weather": {
