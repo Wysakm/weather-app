@@ -58,10 +58,10 @@ function SearchResults() {
 
   if (!results) {
     return (
-      <div className="search-results-container">
-        <div className="no-results">
+      <div className="search-results-main-container">
+        <div className="search-results-no-results">
           <h2>{t('search.noResultsFound')}</h2>
-          <button onClick={() => navigate('/')} className="back-button">
+          <button onClick={() => navigate('/')} className="search-results-back-button">
             {t('search.backToSearch')}
           </button>
         </div>
@@ -72,7 +72,7 @@ function SearchResults() {
   const renderLocationResults = () => {
     if (!results.data?.places || results.data.places.length === 0) {
       return (
-        <div className="no-results">
+        <div className="search-results-no-results">
           <h3>{t('search.noPlacesFound')}</h3>
         </div>
       );
@@ -92,7 +92,7 @@ function SearchResults() {
 
     if (sortedProvinceGroups.length === 0) {
       return (
-        <div className="no-results">
+        <div className="search-results-no-results">
           <h3>{t('search.noPlacesFound')}</h3>
         </div>
       );
@@ -108,7 +108,7 @@ function SearchResults() {
             <div key={`province-${index}`} className="province-group">
               <div className="province-header">
                 <div className="province-info">
-                  <h3 className="province-name">{provinceGroup.provinceName}</h3>
+                  <h3 className="province-name-I">{provinceGroup.provinceName}</h3>
                   {provinceGroup.region && (
                     <span className="region-badge">
                       {provinceGroup.region.name.th}
@@ -151,7 +151,7 @@ function SearchResults() {
   const renderWeatherResults = () => {
     if (!results.data?.provinces || results.data.provinces.length === 0) {
       return (
-        <div className="no-results">
+        <div className="search-results-no-results">
           <h3>{t('search.noProvincesFound')}</h3>
         </div>
       );
@@ -193,7 +193,7 @@ function SearchResults() {
             return (
               <div key={`weather-province-${provinceIndex}`} className="province-group weather-province-group">
                 <div className="province-header">
-                  <h3 className="province-name">{province.name}</h3>
+                  <h3 className="province-name-I">{province.name}</h3>
                   <div className="province-weather-info">
                     {province.weather_scores && province.weather_scores[0] && (
                       <span className="weather-score-badge">
@@ -236,13 +236,13 @@ function SearchResults() {
 
 
   return (
-    <div className="search-results-container">
-      <div className="search-header">
-        <button onClick={() => navigate('/')} className="back-button">
+    <div className="search-results-main-container">
+      <div className="search-results-header">
+        <button onClick={() => navigate('/')} className="search-results-back-button">
           ← {t('search.backToSearch')}
         </button>
 
-        <div className="search-info">
+        <div className="search-results-info">
           {searchType === 'location' ? (
             <h1>{t('search.searchResultsFor')} "{query}"</h1>
           ) : (
@@ -250,22 +250,22 @@ function SearchResults() {
           )}
 
           {filters && (
-            <div className="applied-filters">
+            <div className="search-results-applied-filters">
               <span>{t('search.filters')}: </span>
               {filters.weatherCondition && (
-                <span className="filter-tag">
+                <span className="search-results-filter-tag">
                   {t(`weather.code_${filters.weatherCondition}`)}
                 </span>
               )}
               {filters.aqiRange && (
-                <span className="filter-tag">
+                <span className="search-results-filter-tag">
                   AQI: {filters.aqiRange}
                 </span>
               )}
             </div>
           )}
 
-          <p className="results-count">
+          <p className="search-results-count">
             {results.data?.total || 0} {t('search.resultsFound')}
           </p>
         </div>

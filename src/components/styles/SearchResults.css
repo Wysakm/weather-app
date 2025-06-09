@@ -1,19 +1,27 @@
 /* Search Results Styles */
-.search-results-container {
+.search-results-main-container {
   min-height: 100vh;
   background-color: #f8f9fa;
   padding: 20px 0px;
 }
 
-.search-header {
-  max-width: 1200px;
-  margin: 0 auto 30px;
+.search-results-no-results {
   display: flex;
-  align-items: flex-start;
-  gap: 20px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
 }
 
-.back-button {
+.search-results-no-results h2,
+.search-results-no-results h3 {
+  margin: 0 0 20px;
+  color: #666;
+  font-size: 24px;
+}
+
+.search-results-back-button {
   background: #007bff;
   color: white;
   border: none;
@@ -24,17 +32,46 @@
   transition: background-color 0.3s;
 }
 
-.back-button:hover {
+.search-results-back-button:hover {
   background: #0056b3;
 }
 
-.search-info h1 {
+.search-results-info h1 {
   margin: 0 0 10px;
   color: #333;
   font-size: 28px;
 }
 
-.applied-filters {
+.search-results-header {
+  max-width: 1200px;
+  margin: 0 auto 30px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.search-results-back-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+    font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.search-results-back-button:hover {
+  background: #0056b3;
+}
+
+.search-results-info h1 {
+  margin: 0 0 10px;
+  color: #333;
+  font-size: 28px;
+}
+
+.search-results-applied-filters {
   margin: 10px 0;
   display: flex;
   align-items: center;
@@ -42,7 +79,7 @@
   flex-wrap: wrap;
 }
 
-.filter-tag {
+.search-results-filter-tag {
   background: #e7f3ff;
   color: #0056b3;
   padding: 4px 12px;
@@ -51,7 +88,7 @@
   border: 1px solid #b3d9ff;
 }
 
-.results-count {
+.search-results-count {
   color: #666;
   font-size: 14px;
   margin: 5px 0 0;
@@ -218,12 +255,12 @@
   margin: 10px 0;
 }
 
-.weather-condition {
+.weather-condition-I {
   font-size: 14px;
   color: #555;
 }
 
-.temperature {
+.temperature-I {
   font-weight: bold;
   color: #333;
   font-size: 16px;
@@ -236,7 +273,7 @@
   margin: 10px 0;
 }
 
-.aqi-label {
+.aqi-label-I {
   color: #666;
   font-size: 14px;
 }
@@ -463,7 +500,7 @@
   z-index: 1;
 }
 
-.province-name {
+.province-name-I {
   margin: 0;
   font-size: 22px;
   font-weight: 600;
@@ -608,10 +645,10 @@
 
 /* Summary Header */
 .summary-header {
-  /* text-align: center;
+  text-align: center;
   margin-bottom: 25px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #e9ecef; */
+  border-bottom: 1px solid #e9ecef;
 }
 
 .summary-title {
@@ -784,7 +821,7 @@
     text-align: center;
   }
 
-  .province-name {
+  .province-name-I {
     font-size: 20px;
   }
 
