@@ -89,9 +89,8 @@ function SearchResults() {
       getSortedProvinceGroups(groupedPlaces), 
       sortBy
     );
-    const finalSortedProvinceGroups = sortProvinceGroups(sortedProvinceGroups, sortBy);
 
-    if (finalSortedProvinceGroups.length === 0) {
+    if (sortedProvinceGroups.length === 0) {
       return (
         <div className="no-results">
           <h3>{t('search.noPlacesFound')}</h3>
@@ -101,7 +100,7 @@ function SearchResults() {
 
     return (
       <div className="province-grouped-results">
-        {finalSortedProvinceGroups.map((provinceGroup, index) => {
+        {sortedProvinceGroups.map((provinceGroup, index) => {
           const isExpanded = expandedProvinces.has(provinceGroup.provinceName);
           const displayPlaces = isExpanded ? provinceGroup.places : provinceGroup.places.slice(0, 3);
           
@@ -276,6 +275,13 @@ function SearchResults() {
         {/* Results Summary */}
         {searchType === 'location' && results.data?.places && (
           <div className="results-summary">
+            <div className="summary-header">
+              <h2 className="summary-title">{t('search.searchSummary')}</h2>
+              <p className="summary-description">
+                {t('search.foundResultsIn')} {Object.keys(groupPlacesByProvince(results.data.places.filter(place => place.posts && place.posts.length > 0))).length} {t('search.provinces')}
+              </p>
+            </div>
+            
             <div className="summary-stats">
               <div className="stat-item">
                 <span className="stat-number">{Object.keys(groupPlacesByProvince(results.data.places.filter(place => place.posts && place.posts.length > 0))).length}</span>
@@ -284,6 +290,13 @@ function SearchResults() {
               <div className="stat-item">
                 <span className="stat-number">{results.data.places.filter(place => place.posts && place.posts.length > 0).length}</span>
                 <span className="stat-label">{t('search.places')}</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-number">
+                  {results.data.places.filter(place => place.posts && place.posts.length > 0)
+                    .reduce((total, place) => total + (place.posts ? place.posts.length : 0), 0)}
+                </span>
+                <span className="stat-label">{t('search.posts')}</span>
               </div>
             </div>
             
@@ -307,6 +320,9 @@ function SearchResults() {
                 className="expand-all-button"
               >
                 {showAllExpanded ? t('search.collapseAll') : t('search.expandAll')}
+                <span className="expansion-indicator">
+                  ({expandedProvinces.size}/{Object.keys(groupPlacesByProvince(results.data.places.filter(place => place.posts && place.posts.length > 0))).length})
+                </span>
               </button>
             </div>
           </div>

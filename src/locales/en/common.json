@@ -54,6 +54,8 @@
     "byPlaceCount": "Place Count",
     "expandAll": "Expand All",
     "collapseAll": "Collapse All",
+    "searchSummary": "Search Summary",
+    "foundResultsIn": "Found results in",
     "posts": "posts",
     "recentPosts": "Recent Posts",
     "viewPlace": "View Place",

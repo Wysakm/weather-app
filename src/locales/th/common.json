@@ -52,6 +52,8 @@
     "byPlaceCount": "จำนวนสถานที่",
     "expandAll": "ขยายทั้งหมด",
     "collapseAll": "ย่อทั้งหมด",
+    "searchSummary": "สรุปผลการค้นหา",
+    "foundResultsIn": "พบผลการค้นหาใน",
     "posts": "โพสต์",
     "recentPosts": "โพสต์ล่าสุด",
     "viewPlace": "ดูสถานที่",
