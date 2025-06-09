@@ -348,7 +348,244 @@
   margin-left: 8px;
 }
 
-/* Responsive design */
+/* Province Grouping Styles */
+.province-grouped-results {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.province-group {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.province-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.province-name {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.place-count {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Weather Province Group Specific Styles */
+.weather-province-group .province-header {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.province-weather-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.weather-score-badge {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Card Tourist Container within Province Groups */
+.province-group .card-tourist-container {
+  padding: 25px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  background: #fafbfc;
+}
+
+/* Weather Card Wrapper */
+.weather-card-wrapper {
+  position: relative;
+}
+
+.weather-card-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+}
+
+.weather-card-badge .weather-score-badge {
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Province Controls */
+.province-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.expand-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.expand-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Results Summary */
+.results-summary {
+  max-width: 1200px;
+  margin: 0 auto 30px;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.summary-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.stat-number {
+  font-size: 28px;
+  font-weight: 700;
+  color: #007bff;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Province Info and Region Badge */
+.province-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.region-badge {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  align-self: flex-start;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+}
+
+/* Sort Controls */
+.sort-controls {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.sort-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.sort-select {
+  padding: 8px 12px;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  background: white;
+  color: #495057;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.sort-select:hover {
+  border-color: #007bff;
+}
+
+.sort-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.expand-all-button {
+  background: #f8f9fa;
+  color: #495057;
+  border: 2px solid #dee2e6;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.expand-all-button:hover {
+  background: #e9ecef;
+  border-color: #007bff;
+  color: #007bff;
+}
+
 @media (max-width: 768px) {
   .search-results-container {
     padding: 15px;
@@ -371,47 +608,58 @@
   .search-info h1 {
     font-size: 24px;
   }
+  
+  .province-header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+  
+  .province-name {
+    font-size: 20px;
+  }
+  
+  .province-weather-info {
+    justify-content: center;
+  }
+  
+  .province-group .card-tourist-container {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    padding: 20px 15px;
+  }
+  
+  .province-info {
+    align-items: center;
+    text-align: center;
+  }
+  
+  .region-badge {
+    align-self: center;
+  }
 }
 
-/* Weather Search Specific Styles */
-.weather-search-summary {
-  margin-bottom: 20px;
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border-left: 4px solid #007bff;
-}
-
-.weather-search-summary h3 {
-  margin: 0 0 5px;
-  color: #333;
-  font-size: 18px;
-}
-
-.weather-search-summary p {
-  margin: 0;
-  color: #666;
-  font-size: 14px;
-}
-
-.weather-card-wrapper {
-  position: relative;
-}
-
-.weather-card-badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 2;
-}
-
-.weather-score-badge {
-  background: linear-gradient(135deg, #ffd700, #ffb347);
-  color: #333;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  border: 1px solid #e6b800;
+@media (max-width: 480px) {
+  .province-grouped-results {
+    gap: 20px;
+  }
+  
+  .province-group .card-tourist-container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .summary-stats {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .sort-controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .sort-select {
+    width: 100%;
+    max-width: 200px;
+  }
 }
