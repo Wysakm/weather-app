@@ -109,7 +109,7 @@ function SearchResults() {
                 id={place.id_place}
                 province={place.provinceName}
                 name={place.name_place}
-                imgUrl={null} // We'll rely on CardTourist's fallback image handling
+                imgUrl={place?.posts[0]?.image || null} // We'll rely on CardTourist's fallback image handling
                 type={place.place_type?.name || "tourist"}
               />
               {place.weatherScore && (
