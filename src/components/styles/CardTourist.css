@@ -1,26 +1,26 @@
-
-.card-tourist { 
-  display: flex ;
-  flex-direction: column; 
-  width: 300px ;
+.card-tourist {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
   height: 275px;
   border-radius: 16px;
   background-color: var(--color-navbar-bg)
 }
-.card-tourist-image { 
+
+.card-tourist-image {
   width: 100%;
   height: 60%;
   border-radius: 16px 16px 0px 0px;
 }
 
-.card-tourist-header { 
+.card-tourist-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 20%;
-  margin: 10px 0 0 8px ;
-  
+  margin: 10px 0 0 8px;
 }
+
 .card-more-info {
   display: flex;
   justify-content: center;
@@ -29,10 +29,12 @@
   height: 20%;
   border-radius: 0px 0px 16px 16px;
 }
+
 .card-more-info-I {
   width: 70%;
- 
+
 }
+
 card-more-info-II {
   width: 30%;
 }

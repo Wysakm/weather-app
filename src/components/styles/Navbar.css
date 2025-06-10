@@ -246,7 +246,6 @@ l {
 
     a:focus {
       color: var(--color-primary);
-      /* สีเมื่อคลิกและมีการโฟกัส */
       font-weight: bold;
     }
   }

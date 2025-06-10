@@ -9,11 +9,10 @@
     background: white;
     padding: 30px;
     border-radius: 16px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     width: 80%;
     max-width: 800px;
     margin-bottom: 30px;
-  
 }
 
 .contact-info h2 {
@@ -64,17 +63,17 @@
         grid-template-columns: 1fr;
         gap: 15px;
     }
-    
+
     .contact-info {
         padding: 20px;
         margin-bottom: 20px;
     }
-    
+
     .contact-info h2 {
         font-size: 20px;
         margin-bottom: 15px;
     }
-    
+
     .info-item {
         padding: 8px 0;
     }
@@ -84,13 +83,13 @@
     .contact-info {
         padding: 15px;
     }
-    
+
     .info-item i {
         width: 25px;
         font-size: 16px;
         margin-right: 8px;
     }
-    
+
     .info-item span,
     .info-item div {
         font-size: 14px;

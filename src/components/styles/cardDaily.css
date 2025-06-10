@@ -1,21 +1,20 @@
-.card-daily { 
-  width: 110px ;
+.card-daily {
+  width: 110px;
   height: 90%;
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
-
   gap: 2px;
   background-color: var(--color-navbar-bg);
   border-radius: 15px;
 }
 
-.day { 
+.day {
   font-size: 16px;
 }
 
-.temp-max-min { 
+.temp-max-min {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -23,27 +22,29 @@
   width: 100%;
 
 }
+
 .max {
   font-size: 10px;
 }
+
 .min {
   font-size: 10px;
 }
 
-.icon { 
+.icon {
   width: 30px;
   height: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: transparent; /* เพิ่มบรรทัดนี้ */
+  background-color: transparent;
 }
 
 .condition {
-   font-size: 12px;
+  font-size: 12px;
 }
 
-.rain { 
+.rain {
   font-size: 10px;
 }
 
@@ -51,6 +52,5 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  display: block; /* เพิ่มบรรทัดนี้ */
+  display: block;
 }
-

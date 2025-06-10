@@ -20,7 +20,6 @@
   height: 90%;
   width: 80%;
   position: relative;
-
 }
 
 .searchText-I {
@@ -61,15 +60,10 @@
   height: 45px;
   margin-top: 20px;
   position: absolute;
-
   top: 38%;
-  /* Adjust this value for vertical positioning */
   left: 50%;
-  /* Center horizontally */
   transform: translateX(-50%);
-  /* Center it correctly */
   z-index: 2;
-  /* Ensure it's above the search-button */
 }
 
 .tab {
@@ -82,9 +76,7 @@
   padding: 0 10px;
   border-radius: 50px;
   background-color: transparent;
-  /* พื้นหลังเริ่มต้นเป็นโปร่งใส */
   color: var(--color-navbar-bg);
-  /* สีตัวอักษรเริ่มต้น */
   cursor: pointer;
   font-weight: bold;
   font-size: 16px;
@@ -92,9 +84,7 @@
 
 .tab.active {
   background-color: var(--color-navbar-bg);
-  /* พื้นหลังเมื่อแท็บทำงาน */
   color: var(--color-primary);
-  /* สีตัวอักษรเมื่อแท็บทำงาน */
 }
 
 .tab .icon {
@@ -102,7 +92,6 @@
   height: 24px;
   margin-right: 8px;
   transition: filter 0.3s ease;
-  /* สีเทาเมื่อไม่ active */
   filter: grayscale(100%) opacity(0.6);
 }
 
@@ -110,8 +99,6 @@
   opacity: 1;
   filter: brightness(0%) saturate(0%);
 }
-
-
 
 .search-button {
   display: flex;
@@ -125,9 +112,7 @@
   border-radius: 8px;
   margin-top: 35px;
   position: relative;
-  /* For layering */
   z-index: 1;
-  /* Behind the tab-container */
 }
 
 .search-button-I {
@@ -137,25 +122,19 @@
   flex-direction: column;
   width: 80%;
   height: 80px;
-  /* border: 1px solid black; */
   margin: 20px 5px 30px 20px;
   position: relative;
   transition: background-color 0.3s, color 0.3s;
-  /* ทำให้การเปลี่ยนแปลงนุ่มนวล */
 }
 
 .search-button.location-active {
   background-color: var(--color-navbar-bg);
-  /* พื้นหลังเมื่อเลือกแท็บ location */
   color: var(--color-primary);
-  /* สีข้อความเมื่อเลือกแท็บ location */
 }
 
 .search-button.weather-active {
   background-color: var(--color-navbar-bg);
-  /* พื้นหลังเมื่อเลือกแท็บ weather */
   color: var(--color-primary);
-  /* สีข้อความเมื่อเลือกแท็บ weather */
 }
 
 .search-button-I p {
@@ -186,10 +165,8 @@
 }
 
 .search-input::placeholder {
-  /* padding-left: 10px;     ใช้ padding แทน margin ใน placeholder */
   font-size: 16px;
   color: var(--color-input);
-  /* เลือกสีเทาให้อ่านง่าย (ตามต้องการ) */
 }
 
 .search-button-II {
@@ -198,7 +175,6 @@
   align-items: flex-end;
   width: 20%;
   height: 80px;
-  /* border: 1px solid rgb(128, 66, 66); */
   margin: 20px 20px 30px 5px;
 }
 
@@ -224,7 +200,6 @@
   align-items: flex-start;
   width: 80%;
   height: 80px;
-  /* border: 1px solid black; */
   margin: 20px 5px 30px 20px;
   position: relative;
   transition: background-color 0.3s, color 0.3s;
@@ -237,7 +212,6 @@
   flex-direction: column;
   width: 50%;
   height: 80px;
-  /* border: 1px solid black; */
   border-radius: 16px;
   margin: 0;
   position: relative;
@@ -262,14 +236,16 @@
   border-radius: 8px;
 }
 
-@media screen and (min-width: 768px)  {
+@media screen and (min-width: 768px) {
   .select-WeatherCondition {
     font-size: 12px;
   }
+
   .search-input {
     font-size: 12px;
-   
+
   }
+
   .search-input::placeholder {
     font-size: 12px;
   }
@@ -347,10 +323,8 @@
     display: flex;
     font-size: 20px;
     width: 100%;
-    color : var(--color-primary)
+    color: var(--color-primary)
   }
-
-
 
   .searchText-II {
     display: none;
@@ -365,16 +339,19 @@
     border-radius: 15px;
     margin-top: 20px;
   }
-  .search-button-III{
+
+  .search-button-III {
     margin: 0 0 5px 0;
   }
-.search-button-III-A p {
-  font-size: 12px;
-}
-.select-WeatherCondition {
-  font-size: 12px;
-  height: 24px;
-}
+
+  .search-button-III-A p {
+    font-size: 12px;
+  }
+
+  .select-WeatherCondition {
+    font-size: 12px;
+    height: 24px;
+  }
 
   .tab-container {
     background-color: var(--color-primary);
@@ -422,7 +399,7 @@
 }
 
 @media (max-width: 320px) {
-  .search-container-I { 
+  .search-container-I {
     height: 210px;
   }
 
@@ -435,6 +412,7 @@
   .search-button {
     height: 110px;
   }
+
   .tab {
     font-size: 10px;
   }
@@ -448,9 +426,10 @@
     margin: 0;
     width: 25%;
     height: 24px;
-    
-    margin :10px 0 8px 0;
+
+    margin: 10px 0 8px 0;
   }
+
   .search {
     font-size: 12px;
   }
@@ -464,6 +443,7 @@
   .search-input::placeholder {
     font-size: 10px;
   }
+
   .search-button-III {
     width: 95%;
   }
@@ -473,11 +453,12 @@
   }
 
   .search-button-III-A p {
-  font-size: 10px;
-}
-.select-WeatherCondition {
-  width: 95%;
-}
+    font-size: 10px;
+  }
+
+  .select-WeatherCondition {
+    width: 95%;
+  }
 
 }
 
@@ -536,5 +517,3 @@
   background-color: #6c757d;
   cursor: wait;
 }
-
-
