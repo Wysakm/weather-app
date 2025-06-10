@@ -184,11 +184,12 @@ function SearchLocationWeather() {
                 >
                   <option value="">{t('search.selectWeatherCondition')}</option>
                   <option value="0">☀️ {t('weather.ClearSky')}</option>
-                  <option value="1">🌤️ {t('weather.MainlyClearSky')}</option>
+                  <option value="1">🌤️ {t('weather.MainlyClear')}</option>
                   <option value="2">⛅ {t('weather.PartlyCloudy')}</option>
-                  <option value="3">☁️ {t('weather.Cloudy')}</option>
+                  <option value="3">☁️ {t('weather.Overcast')}</option>
                   <option value="51">🌦️ {t('weather.LightDrizzle')}</option>
-                  <option value="61">🌧️ {t('weather.ModerateShowerRain')}</option>
+                  <option value="61">🌧️ {t('weather.SlightRain')}</option>
+                  <option value="80">🌦️ {t('weather.SlightRainShowers')}</option>
                 </select>
               </div>
 

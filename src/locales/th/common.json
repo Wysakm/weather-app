@@ -68,12 +68,34 @@
     "accommodations": "ที่พัก"
   },
   "weather": {
-    "ClearSky": "ท้องฟ้าโปร่ง",
-    "MainlyClearSky": "ท้องฟ้าโปร่งใสเป็นส่วนใหญ่",
-    "PartlyCloudy": "มีเมฆเป็นบางส่วน",
-    "Cloudy": "มีเมฆมาก",
-    "LightDrizzle": "ฝนตกเบา ๆ",
-    "ModerateShowerRain": "ฝนตกปรอย ๆ"
+    "ClearSky": "ท้องฟ้าแจ่มใส",
+    "MainlyClear": "ส่วนใหญ่แจ่มใส",
+    "PartlyCloudy": "มีเมฆบางส่วน",
+    "Overcast": "เมฆมาก",
+    "Fog": "หมอก",
+    "DepositingRimeFog": "หมอกเยือกแข็ง",
+    "LightDrizzle": "ฝนปรอยเล็กน้อย",
+    "ModerateDrizzle": "ฝนปรอยปานกลาง",
+    "DenseDrizzle": "ฝนปรอยหนัก",
+    "LightFreezingDrizzle": "ฝนน้ำแข็งเบา",
+    "DenseFreezingDrizzle": "ฝนน้ำแข็งหนัก",
+    "SlightRain": "ฝนเล็กน้อย",
+    "ModerateRain": "ฝนปานกลาง",
+    "HeavyRain": "ฝนหนัก",
+    "LightFreezingRain": "ฝนน้ำแข็งเล็กน้อย",
+    "HeavyFreezingRain": "ฝนน้ำแข็งหนัก",
+    "SlightSnowFall": "หิมะตกเล็กน้อย",
+    "ModerateSnowFall": "หิมะตกปานกลาง",
+    "HeavySnowFall": "หิมะตกหนัก",
+    "SnowGrains": "เกล็ดหิมะ",
+    "SlightRainShowers": "ฝนตกปรอย",
+    "ModerateRainShowers": "ฝนตกปานกลาง",
+    "ViolentRainShowers": "ฝนตกหนักมาก",
+    "SlightSnowShowers": "หิมะตกเล็กน้อย",
+    "HeavySnowShowers": "หิมะตกหนัก",
+    "Thunderstorm": "พายุฝนฟ้าคะนอง",
+    "ThunderstormSlightHail": "พายุฝนฟ้าคะนองกับลูกเห็บเล็กน้อย",
+    "ThunderstormHeavyHail": "พายุฝนฟ้าคะนองกับลูกเห็บหนัก"
   },
   "aqi": {
     "Good": "ดี ไม่มีผลกระทบ",
@@ -107,8 +129,7 @@
   "Camp" : "ลานกางเต็นท์"
 },
   "CampStay": {
-  "CampHeader": "แนะนำสถานที่กางเต็นท์ที่มีสภาพอากาศดีที่สุด",
-  "StayHeader": "แนะนำโรงแรมและรีสอร์ตที่มีสภาพอากาศดีที่สุด"
+  "CampStayHeader": "แนะนำสถานที่กางเต็นท์และที่พัก ที่มีสภาพอากาศดีที่สุด"
 },
 
 "Travel" : { 

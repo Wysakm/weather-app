@@ -57,7 +57,7 @@ function Weather({ option }) {
     <>
       {!isHomePage && (
         <div style={{ justifyContent: 'center', display: 'flex' }}>
-          <h1 style={{ margin: '2rem' }}>{t('CampStay.CampHeader')}</h1>
+          <h1 style={{ margin: '2rem', width: '100%', textAlign: 'center',gap:'16px' }}>{t('CampStay.CampStayHeader')}</h1>
         </div>
       )}
       {!isHomePage && (

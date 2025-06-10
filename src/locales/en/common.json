@@ -71,12 +71,34 @@
   },
 
   "weather": {
-    "ClearSky": "Clear Sky",
-    "MainlyClearSky": "Mainly Clear Sky",
-    "PartlyCloudy": "Partly Cloudy",
-    "Cloudy": "Cloudy",
-    "LightDrizzle": "Light Drizzle",
-    "ModerateShowerRain": "Moderate Shower Rain"
+    "ClearSky": "Clear sky",
+    "MainlyClear": "Mainly clear",
+    "PartlyCloudy": "Partly cloudy",
+    "Overcast": "Overcast",
+    "Fog": "Fog",
+    "DepositingRimeFog": "Depositing rime fog",
+    "LightDrizzle": "Light drizzle",
+    "ModerateDrizzle": "Moderate drizzle",
+    "DenseDrizzle": "Dense drizzle",
+    "LightFreezingDrizzle": "Light freezing drizzle",
+    "DenseFreezingDrizzle": "Dense freezing drizzle",
+    "SlightRain": "Slight rain",
+    "ModerateRain": "Moderate rain",
+    "HeavyRain": "Heavy rain",
+    "LightFreezingRain": "Light freezing rain",
+    "HeavyFreezingRain": "Heavy freezing rain",
+    "SlightSnowFall": "Slight snow fall",
+    "ModerateSnowFall": "Moderate snow fall",
+    "HeavySnowFall": "Heavy snow fall",
+    "SnowGrains": "Snow grains",
+    "SlightRainShowers": "Slight rain showers",
+    "ModerateRainShowers": "Moderate rain showers",
+    "ViolentRainShowers": "Violent rain showers",
+    "SlightSnowShowers": "Slight snow showers",
+    "HeavySnowShowers": "Heavy snow showers",
+    "Thunderstorm": "Thunderstorm",
+    "ThunderstormSlightHail": "Thunderstorm with slight hail",
+    "ThunderstormHeavyHail": "Thunderstorm with heavy hail"
   },
   "aqi": {
     "Good": "Good",
@@ -112,8 +134,8 @@
   "Camp" : "Campground"
 },
 "CampStay": {
-  "CampHeader" : "Campground recommendation with the best weather.",
-  "StayHeader" : "Hotel & Resort recommendation with the best weather."
+  "CampStayHeader" : "Campground and Hotel & Resort recommendation with the best weather."
+ 
 },
 
 "Travel" : { 
