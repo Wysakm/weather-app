@@ -28,6 +28,7 @@ function Weather({ option }) {
 
   // Check if we're on the home page
   const isHomePage = location.pathname === '/';
+  const isRecommendPage = location.pathname === '/recommend';
 
   useEffect(() => {
     setLocation(option?.province)
@@ -57,7 +58,9 @@ function Weather({ option }) {
     <>
       {!isHomePage && (
         <div style={{ justifyContent: 'center', display: 'flex' }}>
-          <h1 style={{ margin: '2rem', width: '100%', textAlign: 'center', gap: '16px' }}>{t('CampStay.CampStayHeader')}</h1>
+          <h1 style={{ margin: '2rem', width: '100%', textAlign: 'center', gap: '16px' }}>
+            {isRecommendPage ? t('Recommend.Header') : t('CampStay.CampStayHeader')}
+          </h1>
         </div>
       )}
       {!isHomePage && (

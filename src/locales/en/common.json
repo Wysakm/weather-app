@@ -131,7 +131,8 @@
   "Recommend": {
   "RecommendedTourist" : "Recommend Tourist Attractions",
   "Stay" : "Hotel & Resort",
-  "Camp" : "Campground"
+  "Camp" : "Campground",
+  "Header" : "Weather-based travel recommendations"
 },
 "CampStay": {
   "CampStayHeader" : "Campground and Hotel & Resort recommendation with the best weather."

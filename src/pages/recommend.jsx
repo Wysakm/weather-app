@@ -1,6 +1,6 @@
 import React from 'react';
 import SearchLocationWeather from '../components/SearchLocationWeather';
-import RankPlaces from '../components/RankPlaces';
+import Weather from '../components/Weather';
 import ReccommendedTourist from '../components/ReccommendedTourist';
 import RecommendedStay from "../components/RecommendedStay";
 import RecommendedCamp from '../components/RecommendedCamp';
@@ -14,7 +14,7 @@ function Recommend() {
     return (
       <>
         <SearchLocationWeather />
-        <RankPlaces />
+        <Weather />
         <ReccommendedTourist />
         <RecommendedStay />
         <RecommendedCamp />
