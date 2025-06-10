@@ -9,7 +9,7 @@ function SearchLocationWeather() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("location");
-  
+
   // Search states
   const [searchQuery, setSearchQuery] = useState("");
   const [weatherCondition, setWeatherCondition] = useState("");
@@ -22,7 +22,7 @@ function SearchLocationWeather() {
   // Handle location search input with autocomplete
   const handleSearchInput = (value) => {
     setSearchQuery(value);
-    
+
     // Clear previous timeout
     if (searchTimeout.current) {
       clearTimeout(searchTimeout.current);
@@ -62,7 +62,7 @@ function SearchLocationWeather() {
 
     try {
       let searchResults;
-      
+
       if (activeTab === "location") {
         // Location search
         searchResults = await searchAPI.searchLocations(searchQuery);
@@ -71,18 +71,18 @@ function SearchLocationWeather() {
         const filters = {};
         if (weatherCondition) filters.weather_code = weatherCondition;
         if (aqiRange) filters.aqi_range = aqiRange;
-        
+
         searchResults = await searchAPI.searchByWeather(filters);
       }
 
       // Navigate to search results page with data
-      navigate('/search-results', { 
-        state: { 
+      navigate('/search-results', {
+        state: {
           results: searchResults,
           searchType: activeTab,
           query: activeTab === "location" ? searchQuery : null,
           filters: activeTab === "weather" ? { weatherCondition, aqiRange } : null
-        } 
+        }
       });
 
     } catch (error) {
@@ -147,9 +147,9 @@ function SearchLocationWeather() {
             <div className='search-button-I'>
               <p>{t('search.location')}</p>
               <div className="search-input-container">
-                <input 
-                  className='search-input' 
-                  type="text" 
+                <input
+                  className='search-input'
+                  type="text"
                   placeholder={t('search.searchText')}
                   value={searchQuery}
                   onChange={(e) => handleSearchInput(e.target.value)}
@@ -157,7 +157,7 @@ function SearchLocationWeather() {
                 {showSuggestions && suggestions.length > 0 && (
                   <div className="suggestions-dropdown">
                     {suggestions.map((suggestion, index) => (
-                      <div 
+                      <div
                         key={index}
                         className="suggestion-item"
                         onClick={() => handleSuggestionClick(suggestion)}
@@ -177,7 +177,7 @@ function SearchLocationWeather() {
             <div className='search-button-III'>
               <div className='search-button-III-A'>
                 <p>{t('search.WeatherCondition')}</p>
-                <select 
+                <select
                   className="select-WeatherCondition"
                   value={weatherCondition}
                   onChange={(e) => setWeatherCondition(e.target.value)}
@@ -195,7 +195,7 @@ function SearchLocationWeather() {
 
               <div className='search-button-III-A'>
                 <p>{t('search.AQL')}</p>
-                <select 
+                <select
                   className="select-WeatherCondition"
                   value={aqiRange}
                   onChange={(e) => setAqiRange(e.target.value)}
@@ -211,8 +211,8 @@ function SearchLocationWeather() {
 
 
           <div className='search-button-II'>
-            <button 
-              className='search' 
+            <button
+              className='search'
               onClick={handleSearch}
               disabled={isLoading}
             >

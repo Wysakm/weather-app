@@ -13,7 +13,7 @@ const Register = ({ handleCancel }) => {
 
   const onFinish = async (values) => {
     console.log('Register values:', values);
-    
+
     // Check if passwords match
     if (values.password !== values.confirmPassword) {
       message.error('Passwords do not match!');
@@ -61,8 +61,8 @@ const Register = ({ handleCancel }) => {
 
   return (
     <div style={{ width: '100%', display: 'flex', justifyContent: 'center', margin: '30px' }}>
-      <Card 
-        style={{ 
+      <Card
+        style={{
           width: '60%',
           boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
           borderRadius: '8px'

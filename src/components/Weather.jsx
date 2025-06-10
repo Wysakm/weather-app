@@ -7,7 +7,7 @@ import './styles/Weather.css';
 import { getFormattedDate } from '../utils/dateUtils.js';
 import { WeatherForecast } from './WeatherForecast.jsx';
 import { AirQuality } from './AirQuality';
-import Weekly from './Weekly.jsx';  // เปลี่ยนจาก { Weekly }
+import Weekly from './Weekly.jsx';  
 import TabProvinces from './TabProvinces.jsx';
 
 const mockAqiData = {
@@ -36,13 +36,13 @@ function Weather({ option }) {
   // Handle province selection from TabProvinces
   const handleProvinceSelect = useCallback((provinceFromApi) => {
     console.log('Selected province from tab:', provinceFromApi);
-    
+
     // Find matching province from the provinces config based on province name
-    const matchingProvince = provinces.find(p => 
+    const matchingProvince = provinces.find(p =>
       p.names.en.toLowerCase() === provinceFromApi.province_name?.toLowerCase() ||
       p.names.th === provinceFromApi.province_name
     );
-    
+
     if (matchingProvince) {
       setLocation({ province: matchingProvince });
     } else {
@@ -57,7 +57,7 @@ function Weather({ option }) {
     <>
       {!isHomePage && (
         <div style={{ justifyContent: 'center', display: 'flex' }}>
-          <h1 style={{ margin: '2rem', width: '100%', textAlign: 'center',gap:'16px' }}>{t('CampStay.CampStayHeader')}</h1>
+          <h1 style={{ margin: '2rem', width: '100%', textAlign: 'center', gap: '16px' }}>{t('CampStay.CampStayHeader')}</h1>
         </div>
       )}
       {!isHomePage && (
@@ -86,10 +86,10 @@ function Weather({ option }) {
               t={t}
               i18n={i18n}
             />
-            <AirQuality 
+            <AirQuality
               key={`aqi-${selectedProvince?.lat}-${selectedProvince?.lon}`}
-              t={t} 
-              aqiData={mockAqiData} 
+              t={t}
+              aqiData={mockAqiData}
             />
           </div>
           <div className='container-weeklyForecast'>

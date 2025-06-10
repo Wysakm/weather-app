@@ -43,19 +43,19 @@ const WeatherArticle = ({ latitude, longitude, provinceName }) => {
       </div>
 
 
-   
-       
-        <div className="condition">
-          {weatherCodeToDescription(current.weather_code, 'en')}
-        </div>
 
-       <div className="HL-box">
-          H: {Math.round(daily.temperature_2m_max[0])}°C / L: {Math.round(daily.temperature_2m_min[0])}°C 
-          </div>
 
-            <div className="feelsLike-box">
-          Feels like: {Math.round(current.apparent_temperature)}°C 
-        </div>
+      <div className="condition">
+        {weatherCodeToDescription(current.weather_code, 'en')}
+      </div>
+
+      <div className="HL-box">
+        H: {Math.round(daily.temperature_2m_max[0])}°C / L: {Math.round(daily.temperature_2m_min[0])}°C
+      </div>
+
+      <div className="feelsLike-box">
+        Feels like: {Math.round(current.apparent_temperature)}°C
+      </div>
 
       <div className="etc-forecast">
         <div className="etc-left">
@@ -63,7 +63,7 @@ const WeatherArticle = ({ latitude, longitude, provinceName }) => {
             Sun rise: {formatTime(daily.sunrise[0], 'th')}
           </div>
           <div>
-            Sun set: {formatTime(daily.sunset[0], 'th')} 
+            Sun set: {formatTime(daily.sunset[0], 'th')}
           </div>
         </div>
 
@@ -72,7 +72,7 @@ const WeatherArticle = ({ latitude, longitude, provinceName }) => {
             Rain: {daily.precipitation_probability_max[0] || 0}%
           </div>
           <div>
-            UV Index: {Math.round(daily.uv_index_max[0]) || 0} 
+            UV Index: {Math.round(daily.uv_index_max[0]) || 0}
           </div>
         </div>
       </div>

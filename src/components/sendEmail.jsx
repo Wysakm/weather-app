@@ -67,12 +67,12 @@ const SendEmail = () => {
                 templateParams,
                 EMAILJS_PUBLIC_KEY
             );
-            
+
             setStatusMessage({
                 text: 'Message sent successfully! We will get back to you soon.',
                 type: 'success'
             });
-            
+
             // Reset form
             setFormData({
                 name: '',
@@ -84,7 +84,7 @@ const SendEmail = () => {
 
         } catch (error) {
             let errorMessage = 'Failed to send message. Please try again later.';
-            
+
             if (error.status === 400) {
                 errorMessage = 'Bad Request: Please check your EmailJS template configuration.';
             } else if (error.status === 401) {
@@ -96,7 +96,7 @@ const SendEmail = () => {
             } else if (error.text) {
                 errorMessage = `Error: ${error.text}`;
             }
-            
+
             setStatusMessage({
                 text: errorMessage,
                 type: 'error'
@@ -112,7 +112,7 @@ const SendEmail = () => {
     return (
         <div className="contact-form">
             <h2>Send us a message</h2>
-            
+
             {!isConfigured && (
                 <div className="status-message error">
                     ⚠️ EmailJS is not configured. Please check your .env file and restart the server.
@@ -120,7 +120,7 @@ const SendEmail = () => {
                     Missing: {!EMAILJS_SERVICE_ID && 'SERVICE_ID '}{!EMAILJS_TEMPLATE_ID && 'TEMPLATE_ID '}{!EMAILJS_PUBLIC_KEY && 'PUBLIC_KEY'}
                 </div>
             )}
-            
+
             {statusMessage.text && (
                 <div className={`status-message ${statusMessage.type}`}>
                     {statusMessage.text}
@@ -194,9 +194,9 @@ const SendEmail = () => {
                 </div>
 
                 <div className="button-container">
-                    <button 
-                        type="submit" 
-                        className="submit-btn" 
+                    <button
+                        type="submit"
+                        className="submit-btn"
                         disabled={isSubmitting || !isConfigured}
                     >
                         {isSubmitting ? 'Sending...' : 'Send Message'}

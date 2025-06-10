@@ -28,9 +28,6 @@ const CardTourist = ({ id, province, name, imgUrl, type }) => {
         </Link>
       </div>
     </div>
-
-
-
   );
 }
 export default CardTourist;

@@ -12,8 +12,6 @@ const TravelerContainer = ({ id_place, id_post }) => {
 
       <CardTravelerContainer id_place={id_place} id_post={id_post} />
     </div>
-
-
   );
 };
 

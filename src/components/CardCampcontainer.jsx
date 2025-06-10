@@ -22,7 +22,7 @@ const CardCampContainer = ({ selectedProvince }) => {
           // Get all posts if no province selected
           response = { data: { posts: [] } }; // Fallback to empty array if no province selected
         }
-        
+
         const data = response.data.posts || response.data || [];
         setCampData(data);
       } catch (err) {

@@ -7,7 +7,7 @@ import { useWeatherIconFromData } from '../hooks/useWeatherIcon';
 export const WeatherForecast = ({ t, i18n }) => {
   const { weatherData, loading } = useCurrentWeather();
   const { weatherIconUrl } = useWeatherIconFromData(weatherData);
-  
+
   if (loading || !weatherIconUrl) return <div className="loading-spinner">Loading...</div>;
 
   return (

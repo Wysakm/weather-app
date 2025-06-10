@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { 
-  Card, 
-  Form, 
-  Input, 
-  Button, 
-  Row, 
-  Col, 
-  Typography, 
-  Space, 
+import {
+  Card,
+  Form,
+  Input,
+  Button,
+  Row,
+  Col,
+  Typography,
+  Space,
   message,
   Avatar,
   Divider
 } from "antd";
-import { 
-  UserOutlined, 
-  MailOutlined, 
-  PhoneOutlined, 
-  EditOutlined, 
-  SaveOutlined, 
-  CloseOutlined 
+import {
+  UserOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  EditOutlined,
+  SaveOutlined,
+  CloseOutlined
 } from "@ant-design/icons";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -91,42 +91,42 @@ const MyAccount = () => {
     try {
       setLoading(true);
       const values = await form.validateFields();
-      
+
       console.log('Form values to save:', values);
-      
+
       // รวมข้อมูลเดิมกับข้อมูลใหม่
       const updatedUserInfo = {
         ...userInfo,
         ...values
       };
-      
+
       console.log('Updated user info:', updatedUserInfo);
-      
+
       // เรียก API เพื่อบันทึกข้อมูลในฐานข้อมูล
       try {
         await updateUserProfile(values);
         console.log('Profile updated in database successfully');
-        
+
         // อัพเดต local state หลังจากบันทึกฐานข้อมูลสำเร็จ
         setUserInfo(updatedUserInfo);
         setIsEditing(false);
         message.success('บันทึกข้อมูลเรียบร้อยแล้ว');
-        
+
       } catch (dbError) {
         console.error('Database update failed:', dbError);
-        
+
         // ถ้าบันทึกฐานข้อมูลไม่สำเร็จ ให้อัพเดตเฉพาะ local state
         setUserInfo(updatedUserInfo);
         setIsEditing(false);
-        
+
         // อัพเดต context ด้วย local updateUser
         if (updateUser) {
           updateUser(updatedUserInfo);
         }
-        
+
         message.warning('บันทึกข้อมูลในเครื่องเรียบร้อยแล้ว แต่ไม่สามารถซิงค์กับเซิร์ฟเวอร์ได้');
       }
-      
+
     } catch (error) {
       console.error('Validation failed:', error);
       message.error('กรุณากรอกข้อมูลให้ครบถ้วน');
@@ -140,9 +140,9 @@ const MyAccount = () => {
   };
 
   return (
-    <div style={{ 
-      width: '80%', 
-      margin: '0 auto', 
+    <div style={{
+      width: '80%',
+      margin: '0 auto',
       padding: '24px',
       minHeight: '100vh',
       backgroundColor: '#f5f5f5'
@@ -158,16 +158,16 @@ const MyAccount = () => {
           >
             {/* Header Section */}
             <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <Avatar 
-                size={80} 
-                style={{ 
+              <Avatar
+                size={80}
+                style={{
                   backgroundColor: '#1890ff',
                   fontSize: '24px',
                   marginBottom: '16px'
                 }}
                 icon={!userInfo.first_name && !userInfo.last_name ? <UserOutlined /> : null}
               >
-                {(userInfo.first_name || userInfo.last_name) && 
+                {(userInfo.first_name || userInfo.last_name) &&
                   getInitials(userInfo.first_name, userInfo.last_name)
                 }
               </Avatar>
@@ -195,7 +195,7 @@ const MyAccount = () => {
                     label="ชื่อผู้ใช้ (Username)"
                     name="username"
                   >
-                    <Input 
+                    <Input
                       prefix={<UserOutlined />}
                       placeholder="ชื่อผู้ใช้"
                       disabled={true}
@@ -212,7 +212,7 @@ const MyAccount = () => {
                     label="อีเมล"
                     name="email"
                   >
-                    <Input 
+                    <Input
                       prefix={<MailOutlined />}
                       placeholder="อีเมล"
                       disabled={true}
@@ -233,7 +233,7 @@ const MyAccount = () => {
                       { min: 2, message: 'ชื่อต้องมีอย่างน้อย 2 ตัวอักษร' }
                     ]}
                   >
-                    <Input 
+                    <Input
                       prefix={<UserOutlined />}
                       placeholder="กรอกชื่อ"
                       disabled={!isEditing}
@@ -253,7 +253,7 @@ const MyAccount = () => {
                       { min: 2, message: 'นามสกุลต้องมีอย่างน้อย 2 ตัวอักษร' }
                     ]}
                   >
-                    <Input 
+                    <Input
                       prefix={<UserOutlined />}
                       placeholder="กรอกนามสกุล"
                       disabled={!isEditing}
@@ -273,7 +273,7 @@ const MyAccount = () => {
                       { min: 2, message: 'ชื่อที่แสดงต้องมีอย่างน้อย 2 ตัวอักษร' }
                     ]}
                   >
-                    <Input 
+                    <Input
                       prefix={<UserOutlined />}
                       placeholder="กรอกชื่อที่แสดง"
                       disabled={!isEditing}
@@ -293,7 +293,7 @@ const MyAccount = () => {
                       { pattern: /^[0-9+\-\s()]+$/, message: 'รูปแบบเบอร์โทรศัพท์ไม่ถูกต้อง' }
                     ]}
                   >
-                    <Input 
+                    <Input
                       prefix={<PhoneOutlined />}
                       placeholder="กรอกเบอร์โทรศัพท์"
                       disabled={!isEditing}
@@ -312,8 +312,8 @@ const MyAccount = () => {
                 <Col>
                   <Space size="middle">
                     {!isEditing ? (
-                      <Button 
-                        type="primary" 
+                      <Button
+                        type="primary"
                         icon={<EditOutlined />}
                         size="large"
                         onClick={handleEdit}
@@ -330,8 +330,8 @@ const MyAccount = () => {
                       </Button>
                     ) : (
                       <>
-                        <Button 
-                          type="primary" 
+                        <Button
+                          type="primary"
                           icon={<SaveOutlined />}
                           size="large"
                           loading={loading}
@@ -347,7 +347,7 @@ const MyAccount = () => {
                         >
                           {loading ? 'กำลังบันทึก...' : 'บันทึก'}
                         </Button>
-                        <Button 
+                        <Button
                           icon={<CloseOutlined />}
                           size="large"
                           onClick={handleCancel}

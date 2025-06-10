@@ -13,13 +13,13 @@ const WeeklyArticle = ({ latitude, longitude }) => {
   const daily = weatherData.daily;
   // Get next 4 days (excluding today)
   const nextFourDays = daily.time.slice(1, 5);
-  
+
   return (
     <div className="weekly-article">
       {nextFourDays.map((date, index) => {
         const dataIndex = index + 1; // Offset by 1 since we're skipping today
         return (
-          <CardDailyArticle 
+          <CardDailyArticle
             key={index}
             date={date}
             tempMax={daily.temperature_2m_max[dataIndex]}

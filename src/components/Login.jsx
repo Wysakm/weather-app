@@ -4,8 +4,6 @@ import { UserOutlined, LockOutlined, GoogleOutlined } from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { GOOGLE_CLIENT_ID } from '../config/googleAuth';
-// import GoogleSignInButton from './GoogleSignInButton';
-
 
 const { Title } = Typography;
 
@@ -132,16 +130,7 @@ const Login = ({ handleCancel }) => {
           </p>
         </div>
 
-        {/* Google Sign-In Button - Primary */}
-        {/* <GoogleSignInButton onSuccess={handleCancel} /> */}
 
-        {/* <div style={{ textAlign: 'center', margin: '10px 0' }}>
-          <span style={{ color: '#999', fontSize: '12px' }}>
-            If the button above doesn't work, try the alternative below:
-          </span>
-        </div> */}
-
-        {/* Alternative: Custom Google Sign-In Button */}
         <Button
           icon={<GoogleOutlined />}
           size="large"
@@ -232,8 +221,8 @@ const Login = ({ handleCancel }) => {
         </Form>
 
         <div style={{ textAlign: 'center' }}>
-          <Button 
-            type="link" 
+          <Button
+            type="link"
             style={{ padding: 0 }}
             onClick={handleForgotPasswordClick}
           >
@@ -248,7 +237,6 @@ const Login = ({ handleCancel }) => {
           </span>
         </div>
       </Space>
-
     </div>
   );
 };

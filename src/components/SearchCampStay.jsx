@@ -26,7 +26,7 @@ function SearchCampStay() {
   // Handle search input with autocomplete
   const handleSearchInput = (value) => {
     setSearchText(value);
-    
+
     // Clear previous timeout
     if (searchTimeout.current) {
       clearTimeout(searchTimeout.current);
@@ -38,12 +38,12 @@ function SearchCampStay() {
         try {
           // Get suggestions using the dedicated suggestions endpoint
           const response = await searchAPI.getSuggestions(value, 'place');
-          
+
           // Filter suggestions by current place type (could be enhanced later)
           const filteredSuggestions = response.data?.filter(suggestion => {
             return suggestion.type === 'place';
           }) || [];
-          
+
           setSuggestions(filteredSuggestions.slice(0, 5));
           setShowSuggestions(true);
         } catch (error) {
@@ -69,20 +69,20 @@ function SearchCampStay() {
     try {
       // Determine place type filter based on active tab using UUID
       const placeTypeId = PLACE_TYPE_IDS[activeTab];
-      
+
       // Search with place type filter
       const searchResults = await searchAPI.searchLocations(searchText, {
         place_type_id: placeTypeId
       });
 
       // Navigate to search results page with filtered data
-      navigate('/search-results', { 
-        state: { 
+      navigate('/search-results', {
+        state: {
           results: searchResults,
           searchType: 'location',
           query: searchText,
           filters: { placeType: activeTab }
-        } 
+        }
       });
 
     } catch (error) {
@@ -118,21 +118,21 @@ function SearchCampStay() {
     // If there's existing search text, refresh suggestions for new tab
     if (searchText.trim().length > 2) {
       const placeTypeId = PLACE_TYPE_IDS[activeTab];
-      
+
       const fetchSuggestions = async () => {
         try {
           const response = await searchAPI.searchLocations(searchText, {
             place_type_id: placeTypeId,
             limit: 5
           });
-          
+
           const placeSuggestions = response.data?.places?.map(place => ({
             type: 'place',
             id: place.id_place,
             text: place.name_place,
             subtitle: place.province?.name
           })) || [];
-          
+
           setSuggestions(placeSuggestions);
           setShowSuggestions(true);
         } catch (error) {
@@ -140,7 +140,7 @@ function SearchCampStay() {
           setSuggestions([]);
         }
       };
-      
+
       fetchSuggestions();
     }
   }, [activeTab, searchText]);
@@ -161,8 +161,8 @@ function SearchCampStay() {
             onClick={() => setActiveTab("camp")}
             data-tab="camp"
           >
-            <img 
-              src={campIcon} 
+            <img
+              src={campIcon}
               alt="camp-icon"
               className={activeTab === "camp" ? "icon active" : "icon"}
             />
@@ -173,8 +173,8 @@ function SearchCampStay() {
             onClick={() => setActiveTab("stay")}
             data-tab="stay"
           >
-            <img 
-              src={stayIcon} 
+            <img
+              src={stayIcon}
               alt="stay-icon"
               className={activeTab === "stay" ? "icon active" : "icon"}
             />
@@ -196,7 +196,7 @@ function SearchCampStay() {
               {showSuggestions && suggestions.length > 0 && (
                 <div className="suggestions-dropdown">
                   {suggestions.map((suggestion, index) => (
-                    <div 
+                    <div
                       key={index}
                       className="suggestion-item"
                       onClick={() => handleSuggestionClick(suggestion)}

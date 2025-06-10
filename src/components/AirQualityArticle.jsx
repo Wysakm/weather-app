@@ -49,13 +49,13 @@ const AirQualityArticle = ({ latitude, longitude }) => {
   return (
     <div className="aqi-container" style={{ backgroundColor: `${aqiColor}20` }}>
       <div className='aqi-status-article'>
-        <div 
+        <div
           className='aqi'
           style={{ backgroundColor: aqiBackgroundColor }}
         >
-          <div 
+          <div
             className='aqi-box'
-            style={{ 
+            style={{
               backgroundColor: aqiColor,
               color: 'var(--color-text)'
             }}
@@ -68,7 +68,7 @@ const AirQualityArticle = ({ latitude, longitude }) => {
           </div>
         </div>
 
-        <div 
+        <div
           className='main-pollutant'
           style={{ backgroundColor: aqiBackgroundColor }}
         >
@@ -81,7 +81,7 @@ const AirQualityArticle = ({ latitude, longitude }) => {
           </div>
         </div>
       </div>
-      
+
       <div className='etc'>
         <div className='etc-left'>
           <div>NO2: {aqiData.no2 || 'N/A'} µg/m³</div>

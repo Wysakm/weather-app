@@ -17,14 +17,14 @@ const PrivacyText = () => {
             Last Updated: May 5, 2025 / อัปเดตล่าสุด: 5 พฤษภาคม 2025
           </Text>
         </div>
-        
+
         <div>
           <Title level={3}>1. General Information / ข้อมูลทั่วไป</Title>
           <Paragraph>
-            Our website is committed to protecting user privacy in accordance with the Personal Data Protection Act B.E. 2562 (PDPA). 
+            Our website is committed to protecting user privacy in accordance with the Personal Data Protection Act B.E. 2562 (PDPA).
             This policy explains how we collect, use, and protect your personal information.
             <br /><br />
-            เว็บไซต์ของเรามุ่งมั่นในการปกป้องความเป็นส่วนตัวของผู้ใช้ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 
+            เว็บไซต์ของเรามุ่งมั่นในการปกป้องความเป็นส่วนตัวของผู้ใช้ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562
             นโยบายนี้อธิบายวิธีที่เราเก็บรวบรวม ใช้ และปกป้องข้อมูลส่วนบุคคลของคุณ
           </Paragraph>
           <Divider />
@@ -32,7 +32,7 @@ const PrivacyText = () => {
 
         <div>
           <Title level={3}>2. Information We Collect / ข้อมูลที่เราเก็บรวบรวม</Title>
-          
+
           <Title level={4}>2.1 Information you provide / ข้อมูลที่คุณให้มา:</Title>
           <ul>
             <li>Full name / ชื่อ-นามสกุล</li>
@@ -116,7 +116,7 @@ const PrivacyText = () => {
             <li>Improve user experience / ปรับปรุงประสบการณ์ผู้ใช้</li>
           </ul>
           <Paragraph>
-            You can disable cookies in your browser settings. / 
+            You can disable cookies in your browser settings. /
             คุณสามารถปิดการใช้งานคุกกี้ในการตั้งค่าเบราว์เซอร์ของคุณ
           </Paragraph>
           <Divider />
@@ -136,7 +136,7 @@ const PrivacyText = () => {
         <div>
           <Title level={3}>9. Contact Us / ติดต่อเรา</Title>
           <Paragraph>
-            If you have questions about our privacy policy, please contact us at: / 
+            If you have questions about our privacy policy, please contact us at: /
             หากคุณมีคำถามเกี่ยวกับนโยบายความเป็นส่วนตัวของเรา กรุณาติดต่อเราที่:
           </Paragraph>
           <Paragraph>Email: privacy@example.com / อีเมล: privacy@example.com</Paragraph>
@@ -148,7 +148,7 @@ const PrivacyText = () => {
         <div>
           <Title level={3}>10. Policy Updates / การอัปเดตนโยบาย</Title>
           <Paragraph>
-            We may update this policy periodically. Changes will take effect when posted on the website. Continued use of the website after changes implies acceptance of the updated policy. / 
+            We may update this policy periodically. Changes will take effect when posted on the website. Continued use of the website after changes implies acceptance of the updated policy. /
             เราอาจอัปเดตนโยบายนี้เป็นระยะ การเปลี่ยนแปลงจะมีผลเมื่อโพสต์บนเว็บไซต์ การใช้งานเว็บไซต์ต่อไปหลังจากการเปลี่ยนแปลงถือว่ายอมรับนโยบายที่อัปเดตแล้ว
           </Paragraph>
         </div>

@@ -25,24 +25,24 @@ function SearchResults() {
     }
     setExpandedPlaceTypes(newExpanded);
   };
-  
+
   // ฟังก์ชันจัดกลุ่มสถานที่ตาม place type
   const groupPlacesByType = (places) => {
     return places.reduce((acc, place) => {
       const placeType = place.place_type?.name || place.place_type?.type_name;
       let category = 'tourist'; // default category
-      
+
       if (placeType === 'camp') {
         category = 'camp';
       } else if (placeType === 'stay') {
         category = 'stay';
       }
-      
+
       if (!acc[category]) {
         acc[category] = [];
       }
       acc[category].push(place);
-      
+
       return acc;
     }, {});
   };
@@ -73,14 +73,14 @@ function SearchResults() {
 
   const sortProvinceGroups = (groups, sortCriteria) => {
     const sortedGroups = [...groups];
-    
+
     switch (sortCriteria) {
       case 'name':
-        return sortedGroups.sort((a, b) => 
+        return sortedGroups.sort((a, b) =>
           a.provinceName.localeCompare(b.provinceName, 'th')
         );
       case 'count':
-        return sortedGroups.sort((a, b) => 
+        return sortedGroups.sort((a, b) =>
           b.places.length - a.places.length
         );
       case 'region':
@@ -112,14 +112,14 @@ function SearchResults() {
     }
 
     // Filter places that have posts
-    const placesWithPosts = results.data.places.filter(place => 
+    const placesWithPosts = results.data.places.filter(place =>
       place.posts && place.posts.length > 0
     );
 
     // Group places by province
     const groupedPlaces = groupPlacesByProvince(placesWithPosts);
     const sortedProvinceGroups = sortProvinceGroups(
-      getSortedProvinceGroups(groupedPlaces), 
+      getSortedProvinceGroups(groupedPlaces),
       sortBy
     );
 
@@ -135,10 +135,10 @@ function SearchResults() {
       <div className="province-grouped-results">
         {sortedProvinceGroups.map((provinceGroup, index) => {
           const isExpanded = expandedProvinces.has(provinceGroup.provinceName);
-          
+
           // จัดกลุ่มสถานที่ตาม place type
           const placesByType = groupPlacesByType(provinceGroup.places);
-          
+
           return (
             <div key={`province-${index}`} className="province-group" id={`province-${provinceGroup.provinceName}`}>
               <div className="province-header">
@@ -155,7 +155,7 @@ function SearchResults() {
                     {provinceGroup.places.length} {t('search.places')}
                   </span>
                   {provinceGroup.places.length > 6 && (
-                    <button 
+                    <button
                       className="expand-button"
                       onClick={() => toggleProvinceExpansion(provinceGroup.provinceName)}
                     >
@@ -191,12 +191,12 @@ function SearchResults() {
                       })()}
                     </div>
                     {placesByType.tourist.length > 3 && (
-                      <button 
+                      <button
                         className="show-more-places-button"
                         onClick={() => togglePlaceTypeExpansion(provinceGroup.provinceName, 'tourist')}
                       >
-                        {expandedPlaceTypes.has(`${provinceGroup.provinceName}-tourist`) 
-                          ? t('search.showLess') 
+                        {expandedPlaceTypes.has(`${provinceGroup.provinceName}-tourist`)
+                          ? t('search.showLess')
                           : `${t('search.showMore')} (${placesByType.tourist.length - 3})`
                         }
                       </button>
@@ -228,12 +228,12 @@ function SearchResults() {
                       })()}
                     </div>
                     {placesByType.camp.length > 3 && (
-                      <button 
+                      <button
                         className="show-more-places-button"
                         onClick={() => togglePlaceTypeExpansion(provinceGroup.provinceName, 'camp')}
                       >
-                        {expandedPlaceTypes.has(`${provinceGroup.provinceName}-camp`) 
-                          ? t('search.showLess') 
+                        {expandedPlaceTypes.has(`${provinceGroup.provinceName}-camp`)
+                          ? t('search.showLess')
                           : `${t('search.showMore')} (${placesByType.camp.length - 3})`
                         }
                       </button>
@@ -265,12 +265,12 @@ function SearchResults() {
                       })()}
                     </div>
                     {placesByType.stay.length > 3 && (
-                      <button 
+                      <button
                         className="show-more-places-button"
                         onClick={() => togglePlaceTypeExpansion(provinceGroup.provinceName, 'stay')}
                       >
-                        {expandedPlaceTypes.has(`${provinceGroup.provinceName}-stay`) 
-                          ? t('search.showLess') 
+                        {expandedPlaceTypes.has(`${provinceGroup.provinceName}-stay`)
+                          ? t('search.showLess')
                           : `${t('search.showMore')} (${placesByType.stay.length - 3})`
                         }
                       </button>
@@ -299,13 +299,13 @@ function SearchResults() {
         <div className="weather-search-summary">
           <h3>{t('search.foundPlacesInProvinces')}: {results.data.provinces.length} {t('search.provinces')}</h3>
           <p>{t('search.showingTopPlaces')}</p>
-          
+
           {/* แสดงรายชื่อจังหวัดที่คลิกได้สำหรับ weather search */}
           <div className="found-provinces">
             <span className="provinces-label">{t('search.provinces')}: </span>
             {results.data.provinces.map((province, index) => (
               <span key={province.name}>
-                <button 
+                <button
                   className="province-link"
                   onClick={() => {
                     const element = document.getElementById(`province-${province.name}`);
@@ -321,12 +321,12 @@ function SearchResults() {
             ))}
           </div>
         </div>
-        
+
         {/* Group places by province for weather results */}
         <div className="province-grouped-results">
           {results.data.provinces.map((province, provinceIndex) => {
             if (!province.places || province.places.length === 0) return null;
-            
+
             // Sort places by weather score within each province
             const sortedPlaces = province.places
               .map(place => ({
@@ -366,7 +366,7 @@ function SearchResults() {
                     </span>
                   </div>
                 </div>
-                
+
                 {/* แสดงสถานที่แยกตาม place type สำหรับ weather results */}
                 <div className="place-types-container">
                   {/* Tourist Places */}
@@ -401,12 +401,12 @@ function SearchResults() {
                         })()}
                       </div>
                       {placesByType.tourist.length > 3 && (
-                        <button 
+                        <button
                           className="show-more-places-button"
                           onClick={() => togglePlaceTypeExpansion(province.name, 'tourist')}
                         >
-                          {expandedPlaceTypes.has(`${province.name}-tourist`) 
-                            ? t('search.showLess') 
+                          {expandedPlaceTypes.has(`${province.name}-tourist`)
+                            ? t('search.showLess')
                             : `${t('search.showMore')} (${placesByType.tourist.length - 3})`
                           }
                         </button>
@@ -446,12 +446,12 @@ function SearchResults() {
                         })()}
                       </div>
                       {placesByType.camp.length > 3 && (
-                        <button 
+                        <button
                           className="show-more-places-button"
                           onClick={() => togglePlaceTypeExpansion(province.name, 'camp')}
                         >
-                          {expandedPlaceTypes.has(`${province.name}-camp`) 
-                            ? t('search.showLess') 
+                          {expandedPlaceTypes.has(`${province.name}-camp`)
+                            ? t('search.showLess')
                             : `${t('search.showMore')} (${placesByType.camp.length - 3})`
                           }
                         </button>
@@ -491,12 +491,12 @@ function SearchResults() {
                         })()}
                       </div>
                       {placesByType.stay.length > 3 && (
-                        <button 
+                        <button
                           className="show-more-places-button"
                           onClick={() => togglePlaceTypeExpansion(province.name, 'stay')}
                         >
-                          {expandedPlaceTypes.has(`${province.name}-stay`) 
-                            ? t('search.showLess') 
+                          {expandedPlaceTypes.has(`${province.name}-stay`)
+                            ? t('search.showLess')
                             : `${t('search.showMore')} (${placesByType.stay.length - 3})`
                           }
                         </button>
@@ -559,13 +559,13 @@ function SearchResults() {
               <p className="summary-description">
                 {t('search.foundResultsIn')} {Object.keys(groupPlacesByProvince(results.data.places.filter(place => place.posts && place.posts.length > 0))).length} {t('search.provinces')}
               </p>
-              
+
               {/* แสดงรายชื่อจังหวัดที่คลิกได้ */}
               <div className="found-provinces">
                 <span className="provinces-label">{t('search.provinces')}: </span>
                 {getSortedProvinceGroups(groupPlacesByProvince(results.data.places.filter(place => place.posts && place.posts.length > 0))).map((provinceGroup, index) => (
                   <span key={provinceGroup.provinceName}>
-                    <button 
+                    <button
                       className="province-link"
                       onClick={() => {
                         const element = document.getElementById(`province-${provinceGroup.provinceName}`);
@@ -581,7 +581,7 @@ function SearchResults() {
                 ))}
               </div>
             </div>
-            
+
             <div className="summary-stats">
               <div className="stat-item">
                 <span className="stat-number">{Object.keys(groupPlacesByProvince(results.data.places.filter(place => place.posts && place.posts.length > 0))).length}</span>
@@ -599,13 +599,13 @@ function SearchResults() {
                 <span className="stat-label">{t('search.posts')}</span>
               </div>
             </div>
-            
+
             {/* Sort Controls */}
             <div className="sort-controls">
               <div className="sort-section">
                 <label className="sort-label">{t('search.sortBy')}:</label>
-                <select 
-                  value={sortBy} 
+                <select
+                  value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                   className="sort-select"
                 >
@@ -614,8 +614,8 @@ function SearchResults() {
                   <option value="count">{t('search.byPlaceCount')}</option>
                 </select>
               </div>
-              
-              <button 
+
+              <button
                 onClick={toggleAllProvinces}
                 className="expand-all-button"
               >
@@ -627,7 +627,7 @@ function SearchResults() {
             </div>
           </div>
         )}
-        
+
         {searchType === 'location' ? renderLocationResults() : renderWeatherResults()}
       </div>
     </div>

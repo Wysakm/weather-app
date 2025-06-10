@@ -56,8 +56,8 @@ export const AirQuality = ({ t }) => {
           </div>
         </div>
       </div>
-      
-      <div className='aqi-box-II'> 
+
+      <div className='aqi-box-II'>
         <div className='pollutant-secondary'>
           <div className='pollutant-secondary-left'>
             <div>NO2 : {aqiData.no2} µg/m³</div>

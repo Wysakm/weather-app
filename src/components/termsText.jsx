@@ -8,7 +8,7 @@ const TermsText = () => {
     <div style={{ width: '80%', margin: '0 auto', textAlign: 'justify', padding: '30px' }}>
       <Typography>
         <h1 style={{ color: 'var(--color-primary)' }}>Terms of Service / ข้อกำหนดและเงื่อนไขการใช้บริการ</h1>
-        
+
         <div style={{ marginBottom: '20px' }}>
           <Text type="secondary">
             Last updated: May 27, 2025
@@ -16,14 +16,14 @@ const TermsText = () => {
             อัปเดตล่าสุด: 27 พฤษภาคม 2025
           </Text>
         </div>
-        
+
         <div>
           <Title level={3}>1. Terms of Service (ToS) / ข้อกำหนดการใช้บริการ</Title>
           <Paragraph>
-            By accessing or using our website or services, you agree to comply with these Terms of Service. 
+            By accessing or using our website or services, you agree to comply with these Terms of Service.
             Users are prohibited from engaging in unlawful, offensive, or disruptive behavior.
             <br /><br />
-            โดยการเข้าถึงหรือใช้เว็บไซต์หรือบริการของเรา คุณตกลงที่จะปฏิบัติตามข้อกำหนดการใช้บริการเหล่านี้ 
+            โดยการเข้าถึงหรือใช้เว็บไซต์หรือบริการของเรา คุณตกลงที่จะปฏิบัติตามข้อกำหนดการใช้บริการเหล่านี้
             ผู้ใช้ห้ามมีพฤติกรรมที่ผิดกฎหมาย น่ารังเกียจ หรือก่อให้เกิดการรบกวน
           </Paragraph>
           <Text strong>User Rights and Limitations / สิทธิและข้อจำกัดของผู้ใช้:</Text>

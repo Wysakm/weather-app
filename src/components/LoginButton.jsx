@@ -24,8 +24,6 @@ const LoginButton = () => {
         {t('auth.login')}
       </Button>
       <Modal
-        // title="Basic Modal"
-        // closable={{ 'aria-label': 'Custom Close Button' }}
         closable={false}
         open={isModalOpen}
         onOk={handleOk}
@@ -35,7 +33,7 @@ const LoginButton = () => {
         width={400}
         styles={{
           content: {
-            // padding: '2rem',
+          
           },
         }}
       >
