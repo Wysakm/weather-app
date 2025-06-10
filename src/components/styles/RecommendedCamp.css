@@ -4,32 +4,28 @@
   align-items: flex-start;
   width: 100%;
   margin: 0;
-  background-color: var(--color-background) ;
-
-
+  background-color: var(--color-background);
 }
+
 .camp-head {
   display: flex;
   justify-content: center;
   width: 100%;
-  margin: 16px ;
+  margin: 16px;
 }
-.camp-box { 
+
+.camp-box {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column  ;
+  flex-direction: column;
   width: 100%;
-  /* height: 700px; */
-
 }
 
-.stay-box-A { 
+.stay-box-A {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column  ;
+  flex-direction: column;
   width: 100%;
-
 }
-

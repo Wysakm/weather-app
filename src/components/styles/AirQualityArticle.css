@@ -69,20 +69,20 @@
   background-color: var(--color-navbar-bg);
 }
 
-.etc-left { 
+.etc-left {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  width: 30%; 
+  width: 30%;
 }
 
-.etc-right { 
+.etc-right {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  width: 30%; 
+  width: 30%;
 }
 
 .aqi-box {
@@ -117,7 +117,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  ;
   width: auto;
   height: 100%;
   margin-left: 16px;
