@@ -36,7 +36,7 @@
     "pleaseSelectWeatherCondition": "กรุณาเลือกสภาพอากาศหรือช่วงคุณภาพอากาศ",
     "searchError": "เกิดข้อผิดพลาดในการค้นหา กรุณาลองใหม่อีกครั้ง",
     "noResultsFound": "ไม่พบผลการค้นหา",
-    "backToSearch": "กลับไปหน้าค้นหา",
+    "backToSearch": "กลับ",
     "noPlacesFound": "ไม่พบสถานที่ที่ตรงกับเกณฑ์การค้นหา",
     "noProvincesFound": "ไม่พบจังหวัดที่ตรงกับเกณฑ์การค้นหา",
     "searchResultsFor": "ผลการค้นหาสำหรับ",
@@ -62,7 +62,10 @@
     "score": "คะแนนสภาพอากาศ",
     "foundPlacesInProvinces": "พบสถานที่ใน",
     "provinces": "จังหวัด",
-    "showingTopPlaces": "แสดงสถานที่ยอดนิยมเรียงตามคะแนนสภาพอากาศ"
+    "showingTopPlaces": "แสดงสถานที่ยอดนิยมเรียงตามคะแนนสภาพอากาศ",
+    "touristAttractions": "สถานที่ท่องเที่ยว",
+    "campgrounds": "ลานกางเต็นท์",
+    "accommodations": "ที่พัก"
   },
   "weather": {
     "ClearSky": "ท้องฟ้าโปร่ง",

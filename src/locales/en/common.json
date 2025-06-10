@@ -38,7 +38,7 @@
     "pleaseSelectWeatherCondition": "Please select weather condition or AQI range",
     "searchError": "An error occurred while searching. Please try again.",
     "noResultsFound": "No results found",
-    "backToSearch": "Back to Search",
+    "backToSearch": "Back",
     "noPlacesFound": "No places found matching your criteria",
     "noProvincesFound": "No provinces found matching your criteria",
     "searchResultsFor": "Search Results for",
@@ -64,7 +64,10 @@
     "score": "Weather Score",
     "foundPlacesInProvinces": "Found places in",
     "provinces": "provinces",
-    "showingTopPlaces": "Showing top places sorted by weather score"
+    "showingTopPlaces": "Showing top places sorted by weather score",
+    "touristAttractions": "Tourist Attractions",
+    "campgrounds": "Campgrounds",
+    "accommodations": "Hotel & Resort"
   },
 
   "weather": {

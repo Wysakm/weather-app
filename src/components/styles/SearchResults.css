@@ -2,7 +2,7 @@
 .search-results-main-container {
   min-height: 100vh;
   background-color: var(--color-navbar-bg);
-  padding: 20px 0px;
+  padding: 20px 10%;
 }
 
 .search-results-no-results {
@@ -30,6 +30,7 @@
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.3s;
+  margin-bottom: 30px;
 }
 
 .search-results-back-button:hover {
@@ -46,6 +47,7 @@
   max-width: 1200px;
   margin: 0 auto 30px;
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
   gap: 20px;
 }
@@ -59,6 +61,7 @@
   cursor: pointer;
     font-size: 14px;
   transition: background-color 0.3s;
+  margin-bottom: 30px;
 }
 
 .search-results-back-button:hover {
@@ -131,8 +134,7 @@
   box-shadow: 0 4px 16px var(--color-shadow);
 }
 
-.place-info h3,
-.province-info h3 {
+.place-info h3 {
   margin: 0 0 10px;
   color: var(--color-text);
   font-size: 20px;
@@ -644,7 +646,7 @@
 
 /* Summary Header */
 .summary-header {
-  text-align: center;
+  text-align: left;
   margin-bottom: 25px;
   padding-bottom: 20px;
   border-bottom: 1px solid var(--color-border);
@@ -662,6 +664,7 @@
   font-size: 14px;
   color: var(--color-input);
   line-height: 1.5;
+  text-align: left;
 }
 
 /* Province Info and Region Badge */
@@ -862,4 +865,135 @@
     width: 100%;
     max-width: 200px;
   }
+}
+
+/* Place Types Container Styles */
+.place-types-container {
+  padding: 1rem;
+  background: #fafbfc;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.place-type-section {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px var(--color-shadow);
+}
+
+.place-type-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 1rem;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.place-type-icon {
+  font-size: 18px;
+}
+
+/* Remove the old :has() selectors that may not work in all browsers */
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .place-types-container {
+    padding: 0.5rem;
+    gap: 1rem;
+  }
+  
+  .place-type-section {
+    padding: 0.75rem;
+  }
+  
+  .place-type-title {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .place-types-container {
+    gap: 0.75rem;
+  }
+  
+  .place-type-section {
+    padding: 0.5rem;
+  }
+}
+
+/* Card container adjustments for place type sections */
+.place-type-section .card-tourist-container {
+  padding: 0;
+  background: transparent;
+  gap: 1rem;
+}
+
+/* Show More Places Button */
+.show-more-places-button {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.show-more-places-button:hover {
+  background: var(--color-secondary);
+  transform: translateY(-1px);
+}
+
+.show-more-places-button:active {
+  transform: translateY(0);
+}
+
+/* Found Provinces Section */
+.found-provinces {
+  margin-top: 15px;
+  padding: 12px 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.provinces-label {
+  font-weight: 600;
+  color: var(--color-text);
+  margin-right: 8px;
+}
+
+.province-link {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+  padding: 2px 4px;
+  margin: 0 2px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.province-link:hover {
+  background: var(--color-primary);
+  color: white;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.province-link:active {
+  transform: translateY(0);
 }
