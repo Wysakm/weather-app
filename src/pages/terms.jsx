@@ -6,7 +6,6 @@ const Terms = () => {
   return (
     <div>
       <TermsText />
-
     </div>
   );
 };

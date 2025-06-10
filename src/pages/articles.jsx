@@ -67,16 +67,16 @@ const Article = () => {
           )}
         </div>
         <div className='article-box-I-right'>
-          <WeatherArticle 
+          <WeatherArticle
             latitude={post?.place?.latitude}
             longitude={post?.place?.longitude}
             provinceName={post?.place?.province?.name}
           />
-          <WeeklyArticle 
+          <WeeklyArticle
             latitude={post?.place?.latitude}
             longitude={post?.place?.longitude}
           />
-          <AirQualityArticle 
+          <AirQualityArticle
             latitude={post?.place?.latitude}
             longitude={post?.place?.longitude}
           />

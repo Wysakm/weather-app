@@ -6,7 +6,6 @@ const RegisterPage = () => {
     <div >
         <Register />
       </div>
-    
   );
 };
 

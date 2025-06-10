@@ -8,9 +8,7 @@ body {
   font-variation-settings:
     "wdth" 100;
   background-color: #f9f9f9;
-  /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif; */
+ 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -40,9 +38,9 @@ h1, h2, h3, h4, h5, h6 {
   --color-unhealthy-sensitive-bg: #f8e8d8;
   --color-unhealthy-bg: #e0bac4;
   --color-very-unhealthy-bg: #e2c8ef;
-  --color-hazardous-gg: #f4bccc;
+  --color-hazardous-bg: #f4bccc;
 
-  --color-aticles-bg: #F5FFFE;
+  --color-articles-bg: #F5FFFE;
   --color-background: #fbfbfb; /* พื้นหลัง */
   --color-map-bg: #f5f8f7; /* พื้นหลังแผนที่ */
 }

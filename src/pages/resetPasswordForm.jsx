@@ -76,15 +76,15 @@ const ResetPasswordForm = () => {
 
   if (verifying) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         minHeight: '60vh',
         padding: '20px'
       }}>
-        <Card 
-          style={{ 
+        <Card
+          style={{
             width: '100%',
             maxWidth: '450px',
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
@@ -106,15 +106,15 @@ const ResetPasswordForm = () => {
 
   if (resetSuccess) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         minHeight: '60vh',
         padding: '20px'
       }}>
-        <Card 
-          style={{ 
+        <Card
+          style={{
             width: '100%',
             maxWidth: '450px',
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
@@ -158,15 +158,15 @@ const ResetPasswordForm = () => {
   }
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
       minHeight: '60vh',
       padding: '20px'
     }}>
-      <Card 
-        style={{ 
+      <Card
+        style={{
           width: '100%',
           maxWidth: '450px',
           boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
@@ -274,8 +274,8 @@ const ResetPasswordForm = () => {
           </Form>
 
           <div style={{ textAlign: 'center' }}>
-            <Button 
-              type="link" 
+            <Button
+              type="link"
               icon={<ArrowLeftOutlined />}
               style={{ padding: 0 }}
               onClick={handleBackToLogin}

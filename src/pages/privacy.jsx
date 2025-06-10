@@ -6,7 +6,6 @@ const PricacyPolicy = () => {
   return (
     <div>
       <PrivacyText />
-
     </div>
   );
 };

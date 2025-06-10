@@ -81,17 +81,17 @@ const AddPost = () => {
   // Extract province from Google Places address components
   const extractProvinceFromPlace = useCallback((addressComponents) => {
     if (!addressComponents?.length) return null;
-    
+
     const provinceTypes = [
       'administrative_area_level_1',
       'locality'
     ];
-    
+
     for (const component of addressComponents) {
       const hasProvinceType = provinceTypes.some(type => component.types.includes(type));
       if (hasProvinceType) {
         // Find matching province from provinces array
-        const matchingProvince = provinces.find(province => 
+        const matchingProvince = provinces.find(province =>
           province.label.toLowerCase().includes(component.long_name.toLowerCase()) ||
           component.long_name.toLowerCase().includes(province.label.toLowerCase())
         );
@@ -134,13 +134,13 @@ const AddPost = () => {
     try {
       const response = await apiClient.get('/provinces');
       const rawProvinces = response.data?.data || [];
-      
+
       // Transform provinces to match the standalone version format
       const provinceOptions = rawProvinces.map(province => ({
         value: province.id_province,
         label: province.name,
       }));
-      
+
       setProvinces(provinceOptions);
     } catch (error) {
       console.error('Error fetching provinces:', error);
@@ -294,7 +294,7 @@ const AddPost = () => {
           const post = response.data || response;
           console.log('Loaded post data:', post);
           setEditingPost(post);
-          
+
           // Construct location string from place data
           let locationValue = '';
           if (post.place) {
@@ -305,14 +305,14 @@ const AddPost = () => {
             locationValue = `${placeName} - ${district}, ${provinceName}`;
           } else if (post.id_place) {
             // Fallback: find from allPlaces if place object is not included
-            const foundPlace = allPlaces.find(place => 
+            const foundPlace = allPlaces.find(place =>
               place.place.id_place === post.id_place || place.place.id === post.id_place
             );
             if (foundPlace) {
               locationValue = foundPlace.label;
             }
           }
-          
+
           // Prepare cover image data for form
           let coverImageData = null;
           if (post.image) {
@@ -323,7 +323,7 @@ const AddPost = () => {
               url: post.image
             };
           }
-          
+
           // Set form values
           const initialValues = {
             title: post.title,
@@ -331,7 +331,7 @@ const AddPost = () => {
             status: post.status,
             coverImage: coverImageData ? [coverImageData] : []
           };
-          
+
           form.setFieldsValue(initialValues);
           setFormData(prev => ({
             ...prev,
@@ -504,7 +504,7 @@ const AddPost = () => {
         // status: isEditMode ? (editingPost?.status || 'pending') : 'pending',
         id_place: selectedPlace.place.id_place || selectedPlace.place.id
       };
-        console.log(' submitData:', submitData)
+      console.log(' submitData:', submitData)
 
       // Handle image upload if a new image is provided
       if (formData.coverImage) {
@@ -517,7 +517,7 @@ const AddPost = () => {
             return;
           }
           submitData.image = uploadData.imageUrl;
-          
+
           // If editing and there was an old image, send the old image URL to delete it
           if (isEditMode && editingPost?.image && editingPost.image !== uploadData.imageUrl) {
             submitData.oldImageUrl = editingPost.image;
@@ -535,7 +535,7 @@ const AddPost = () => {
       // Submit post (create or update)
       if (isEditMode) {
         await postsAPI.update(id, submitData);
-        
+
         // If we have an old image URL and it's different from the new one, try to delete it
         if (submitData.oldImageUrl && submitData.oldImageUrl !== submitData.image) {
           try {
@@ -546,7 +546,7 @@ const AddPost = () => {
             // Don't fail the whole operation if image deletion fails
           }
         }
-        
+
         message.success('Post updated successfully!');
       } else {
         await postsAPI.create(submitData);
@@ -591,15 +591,15 @@ const AddPost = () => {
 
         // Check if replacing an existing image in edit mode
         const isReplacingImage = isEditMode && editingPost?.image;
-        
+
         setFormData(prev => ({ ...prev, coverImage: file }));
-        
+
         if (isReplacingImage) {
           message.success(`${file.name} selected. Previous image will be replaced.`);
         } else {
           message.success(`${file.name} selected successfully`);
         }
-        
+
         return false;
       },
       onRemove: () => {
@@ -610,7 +610,7 @@ const AddPost = () => {
         return true;
       }
     };
-    
+
     // Add onChange as a separate function to avoid capturing formData in closure
     config.onChange = (info) => {
       const fileList = info.fileList;
@@ -618,7 +618,7 @@ const AddPost = () => {
         fileListLength: fileList.length,
         files: fileList.map(f => ({ name: f.name, status: f.status, hasUrl: !!f.url }))
       });
-      
+
       // Prevent unnecessary state updates that could cause race conditions
       if (fileList.length > 0) {
         const file = fileList[0];
@@ -628,7 +628,7 @@ const AddPost = () => {
           hasOriginFileObj: !!file.originFileObj,
           hasUrl: !!file.url
         });
-        
+
         // Only update if file status indicates it's ready or being processed
         if (file.status === 'done' || file.status === 'uploading' || !file.status) {
           const actualFile = file.originFileObj || file;
@@ -649,7 +649,7 @@ const AddPost = () => {
         form.setFieldsValue({ coverImage: [] });
       }
     };
-    
+
     return config;
   }, [form, message, isEditMode, editingPost?.image]);
 
@@ -796,14 +796,14 @@ const AddPost = () => {
                 return e && e.fileList;
               }}
             >
-              <Upload 
-                {...uploadProps} 
+              <Upload
+                {...uploadProps}
                 fileList={(() => {
                   console.log('🔄 Calculating fileList:', {
                     formDataCoverImage: formData.coverImage,
                     formFieldValue: form.getFieldValue('coverImage')
                   });
-                  
+
                   if (formData.coverImage) {
                     if (formData.coverImage.url) {
                       // Existing image with URL - keep it stable
@@ -828,7 +828,7 @@ const AddPost = () => {
                       return [fileListItem];
                     }
                   }
-                  
+
                   const formValue = form.getFieldValue('coverImage') || [];
                   console.log('📸 Using form value:', formValue);
                   return formValue;

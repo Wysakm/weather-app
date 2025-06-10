@@ -48,15 +48,15 @@ const ResetPassword = () => {
 
   if (emailSent) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         minHeight: '60vh',
         padding: '20px'
       }}>
-        <Card 
-          style={{ 
+        <Card
+          style={{
             width: '100%',
             maxWidth: '450px',
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
@@ -71,11 +71,11 @@ const ResetPassword = () => {
                 Email Sent!
               </Title>
               <Text style={{ color: '#666', fontSize: '14px' }}>
-                We've sent a password reset link to your email address. 
+                We've sent a password reset link to your email address.
                 Please check your inbox and follow the instructions to reset your password.
               </Text>
             </div>
-            
+
             <div style={{ margin: '20px 0' }}>
               <Text style={{ color: '#999', fontSize: '12px' }}>
                 Didn't receive the email? Check your spam folder or try again.
@@ -96,7 +96,7 @@ const ResetPassword = () => {
               >
                 Send Another Email
               </Button>
-              
+
               <Button
                 icon={<ArrowLeftOutlined />}
                 size="large"
@@ -116,15 +116,15 @@ const ResetPassword = () => {
   }
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
       minHeight: '60vh',
       padding: '20px'
     }}>
-      <Card 
-        style={{ 
+      <Card
+        style={{
           width: '100%',
           maxWidth: '450px',
           boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
@@ -190,8 +190,8 @@ const ResetPassword = () => {
           </Form>
 
           <div style={{ textAlign: 'center' }}>
-            <Button 
-              type="link" 
+            <Button
+              type="link"
               icon={<ArrowLeftOutlined />}
               style={{ padding: 0 }}
               onClick={handleBackToLogin}

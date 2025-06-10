@@ -15,13 +15,9 @@ function CampStay() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <SearchCampStay />
         </div>
-       
         <Weather />
         <RecommendedCamp />
         <RecommendedStay />
-
-
-
       </>
     );
   } else {
