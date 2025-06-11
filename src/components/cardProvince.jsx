@@ -56,9 +56,7 @@ const CardProvince = ({ locationData }) => {
           </div>
         </div>
       </div>
-      <div className='card-info'>
-        <p>Info more</p>
-      </div>
+      
 
     </div>
 
