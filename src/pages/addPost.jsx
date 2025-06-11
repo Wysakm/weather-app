@@ -500,10 +500,13 @@ const AddPost = () => {
       const submitData = {
         title: values.title.trim(),
         body: formData.content.trim(),
-        status: isEditMode ? (values.status || 'pending') : 'pending',
-        // status: isEditMode ? (editingPost?.status || 'pending') : 'pending',
         id_place: selectedPlace.place.id_place || selectedPlace.place.id
       };
+
+      // Only add status if user is admin
+      if (isAdmin()) {
+        submitData.status = isEditMode ? (values.status || 'pending') : 'pending';
+      }
       console.log(' submitData:', submitData)
 
       // Handle image upload if a new image is provided
