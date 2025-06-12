@@ -4,7 +4,7 @@
   align-items: flex-start;
   width: 100%;
   margin: 0;
-  background-color: var(--color-background);
+  background-color: var(--color-articles-bg);
 }
 
 .camp-head {
