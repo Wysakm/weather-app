@@ -202,6 +202,8 @@ const PlacesTable = () => {
     if (!editingPlace) return; // Only handle editing now
     
     setLoading(true);
+    delete values.latitude
+    delete values.longitude
     
     try {
       // Update existing place
@@ -356,7 +358,7 @@ const PlacesTable = () => {
             label="Latitude"
             rules={[
               { required: true, message: 'Please input latitude!' },
-              { type: 'number', min: -90, max: 90, message: 'Latitude must be between -90 and 90!' }
+              // { type: 'number', min: -90, max: 90, message: 'Latitude must be between -90 and 90!' }
             ]}
           >
             <InputNumber 
@@ -365,6 +367,7 @@ const PlacesTable = () => {
               style={{ width: '100%' }}
               step={0.000001}
               precision={6}
+              disabled
             />
           </Form.Item>
 
@@ -373,7 +376,7 @@ const PlacesTable = () => {
             label="Longitude"
             rules={[
               { required: true, message: 'Please input longitude!' },
-              { type: 'number', min: -180, max: 180, message: 'Longitude must be between -180 and 180!' }
+              // { type: 'number', min: -180, max: 180, message: 'Longitude must be between -180 and 180!' }
             ]}
           >
             <InputNumber 
@@ -382,6 +385,7 @@ const PlacesTable = () => {
               style={{ width: '100%' }}
               step={0.000001}
               precision={6}
+              disabled
             />
           </Form.Item>
 
