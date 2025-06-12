@@ -6,12 +6,11 @@ import {
   Form, 
   Input, 
   Space, 
-  Popconfirm, 
   message,
   Typography,
   Select
 } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { usersAPI } from '../../api/users';
 
 const { Title } = Typography;
