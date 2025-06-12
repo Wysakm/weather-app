@@ -480,12 +480,14 @@ const AddPost = () => {
       // Validate cover image (only required for new posts)
       if (!isEditMode && !formData.coverImage) {
         message.error('Please select a cover image!');
+        setLoading(false);
         return;
       }
 
       // Validate content using utility function
       if (!validateQuillContent(formData.content)) {
         message.error('Please add some content to your post!');
+        setLoading(false);
         return;
       }
 
@@ -493,6 +495,7 @@ const AddPost = () => {
       const selectedPlace = allPlaces.find(place => place.label === values.location);
       if (!selectedPlace) {
         message.error('Please select a valid location from the list!');
+        setLoading(false);
         return;
       }
 
@@ -503,9 +506,18 @@ const AddPost = () => {
         id_place: selectedPlace.place.id_place || selectedPlace.place.id
       };
 
-      // Only add status if user is admin
-      if (isAdmin()) {
-        submitData.status = isEditMode ? (values.status || 'pending') : 'pending';
+      // Handle status logic
+      if (isEditMode) {
+        if (isAdmin()) {
+          // Admin can control status
+          submitData.status = values.status || editingPost?.status || 'pending';
+        } else {
+          // Regular user: reset to pending for re-approval
+          submitData.status = 'pending';
+        }
+      } else {
+        // New post: always pending
+        submitData.status = 'pending';
       }
       console.log(' submitData:', submitData)
 
@@ -550,7 +562,11 @@ const AddPost = () => {
           }
         }
 
-        message.success('Post updated successfully!');
+        if (isAdmin()) {
+          message.success('Post updated successfully!');
+        } else {
+          message.success('Post updated successfully! Your post has been submitted for review.');
+        }
       } else {
         await postsAPI.create(submitData);
         message.success('Post submitted successfully!');
