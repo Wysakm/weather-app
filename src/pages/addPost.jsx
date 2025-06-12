@@ -411,18 +411,68 @@ const AddPost = () => {
       }
       // debugger
       // Check for duplicates
-      const duplicates = await placesAPI.checkDuplicate(
-        values.name_place,
-        values.latitude,
-        values.longitude,
-        ggRef
-      );
+      let duplicates = null;
+      try {
+        duplicates = await placesAPI.checkDuplicate(
+          values.name_place,
+          values.latitude,
+          values.longitude,
+          ggRef
+        );
+      } catch (error) {
+        // Handle 409 Conflict - duplicate found
+        if (error.response?.status === 409) {
+          duplicates = error.response.data;
+        } else {
+          throw error; // Re-throw other errors
+        }
+      }
 
       if (duplicates) {
-        message.warning({
-          content: 'Duplicate place! Please check if this is the place you want to add.',
-          duration: 8,
+        // Auto-fill location field with the existing duplicate place
+        const duplicatePlace = duplicates.data || duplicates;
+        console.log('Full duplicate response:', duplicates);
+        console.log('Duplicate place data:', duplicatePlace);
+        console.log('Duplicate place keys:', Object.keys(duplicatePlace || {}));
+        
+        // Handle different possible field names for place name
+        const placeName = duplicatePlace.name_place || duplicatePlace.name || duplicatePlace.place_name || '';
+        const district = duplicatePlace.district || '';
+        
+        // Find province name from provinces array using province_id
+        let provinceName = '';
+        if (duplicatePlace.province_id) {
+          const province = provinces.find(p => p.value === duplicatePlace.province_id);
+          provinceName = province ? province.label : '';
+          console.log('Found province:', province);
+        }
+        
+        const duplicateLocation = `${placeName} - ${district}, ${provinceName}`;
+        
+        console.log('Place name used:', placeName);
+        console.log('Generated location string:', duplicateLocation);
+        console.log('Current formData before update:', formData);
+        console.log('Current form values before update:', form.getFieldsValue());
+        
+        // Update both form data and form field
+        setFormData(prev => {
+          const newData = { ...prev, location: duplicateLocation };
+          console.log('Setting formData to:', newData);
+          return newData;
         });
+        
+        form.setFieldsValue({ location: duplicateLocation });
+        console.log('Form values after update:', form.getFieldsValue());
+        
+        // Refresh places list to make sure the duplicate place is in the options
+        await fetchAllPlaces();
+        
+        message.warning({
+          content: 'สถานที่นี้มีอยู่ในระบบแล้ว! ระบบได้เลือกสถานที่ที่มีอยู่ให้อัตโนมัติ',
+          duration: 6,
+        });
+        
+        closeAddPlaceModal();
         setAddPlaceLoading(false);
         return;
       }
@@ -438,17 +488,79 @@ const AddPost = () => {
         place_type_id: values.place_type_id
       };
 
-      await placesAPI.create(placeData);
+      try {
+        await placesAPI.create(placeData);
 
-      // Update location field
-      const newLocation = `${values.name_place} - ${values.district || ''}, ${provinceName}`;
-      // debugger
-      setFormData(prev => ({ ...prev, location: newLocation }));
-      form.setFieldsValue({ location: newLocation });
+        // Update location field
+        const newLocation = `${values.name_place} - ${values.district || ''}, ${provinceName}`;
+        // debugger
+        setFormData(prev => ({ ...prev, location: newLocation }));
+        form.setFieldsValue({ location: newLocation });
 
-      message.success('Place added successfully!');
-      fetchAllPlaces();
-      closeAddPlaceModal();
+        message.success('Place added successfully!');
+        fetchAllPlaces();
+        closeAddPlaceModal();
+      } catch (createError) {
+        // Handle 409 Conflict during create - duplicate found even after check
+        if (createError.response?.status === 409) {
+          console.log('409 Conflict during create - trying to find existing place');
+          
+          // The create API doesn't return place data, so we need to search for it
+          // Using the place name from the original form values
+          const existingPlace = allPlaces.find(place => 
+            place.place.name_place === values.name_place ||
+            place.label.toLowerCase().includes(values.name_place.toLowerCase())
+          );
+          
+          if (existingPlace) {
+            console.log('Found existing place in allPlaces:', existingPlace);
+            
+            // Use the existing place location
+            const duplicateLocation = existingPlace.label;
+            
+            console.log('Using existing place location:', duplicateLocation);
+            
+            // Update both form data and form field
+            setFormData(prev => ({ ...prev, location: duplicateLocation }));
+            form.setFieldsValue({ location: duplicateLocation });
+            
+            message.warning({
+              content: 'สถานที่นี้มีอยู่ในระบบแล้ว! ระบบได้เลือกสถานที่ที่มีอยู่ให้อัตโนมัติ',
+              duration: 6,
+            });
+            
+            closeAddPlaceModal();
+          } else {
+            // If we can't find the place, refresh places list and try again
+            console.log('Place not found in allPlaces, refreshing list...');
+            await fetchAllPlaces();
+            
+            // Try to find again after refresh
+            const refreshedPlace = allPlaces.find(place => 
+              place.place.name_place === values.name_place ||
+              place.label.toLowerCase().includes(values.name_place.toLowerCase())
+            );
+            
+            if (refreshedPlace) {
+              const duplicateLocation = refreshedPlace.label;
+              setFormData(prev => ({ ...prev, location: duplicateLocation }));
+              form.setFieldsValue({ location: duplicateLocation });
+              
+              message.warning({
+                content: 'สถานที่นี้มีอยู่ในระบบแล้ว! ระบบได้เลือกสถานที่ที่มีอยู่ให้อัตโนมัติ',
+                duration: 6,
+              });
+              
+              closeAddPlaceModal();
+            } else {
+              message.error('เกิดข้อผิดพลาดในการค้นหาสถานที่ที่มีอยู่แล้ว');
+              closeAddPlaceModal();
+            }
+          }
+        } else {
+          throw createError; // Re-throw other errors
+        }
+      }
     } catch (error) {
       console.error('Error adding place:', error);
       if (error.response?.status === 401) {
@@ -960,7 +1072,18 @@ const AddPost = () => {
                 label="Place Type"
                 rules={VALIDATION_RULES.placeType}
               >
-                <Select placeholder="Select place type" size="large">
+                <Select 
+                  showSearch
+                  placeholder="Search and select place type" 
+                  size="large"
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
+                  }
+                  filterSort={(optionA, optionB) =>
+                    (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+                  }
+                >
                   {placeTypes.map(type => (
                     <Option key={type.id_place_type || type.id} value={type.id_place_type || type.id}>
                       {type.type_name || type.name}
