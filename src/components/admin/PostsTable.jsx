@@ -339,8 +339,8 @@ const PostsTable = () => {
             rowKey="id"
             pagination={{
               pageSize: 10,
-              showSizeChanger: true,
-              showQuickJumper: true,
+              showSizeChanger: false,
+              showQuickJumper: false,
               showTotal: (total, range) =>
                 `${range[0]}-${range[1]} of ${total} items`,
             }}

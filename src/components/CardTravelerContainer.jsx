@@ -26,7 +26,7 @@ const CardTravelerContainer = ({ id_place, id_post }) => {
     };
 
     fetchPlaces();
-  }, []);
+  }, [id_place, id_post]);
 
   if (loading) {
     return <div className="card-tourist-container">Loading...</div>;
@@ -35,6 +35,12 @@ const CardTravelerContainer = ({ id_place, id_post }) => {
   if (error) {
     console.error('Error fetching places:', error);
   }
+
+  // Hide the component if there are no posts to display
+  if (posts.length === 0 && !loading) {
+    return null;
+  }
+
   return (
     <div className="card-tourist-container">
       {posts.length > 0 ? (
@@ -49,11 +55,11 @@ const CardTravelerContainer = ({ id_place, id_post }) => {
           />
         ))
       ) : (
-        <div className="no-data">
-          {posts.length === 0
-            ? `No tourist attractions found for place`
-            : "No tourist attractions available"}
-        </div>
+        !loading && (
+          <div className="no-data">
+            No tourist attractions found for place
+          </div>
+        )
       )}
     </div>
   );
