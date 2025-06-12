@@ -68,61 +68,8 @@ const UserTable = () => {
       key: 'role',
       width: '20%',
     },
-    // {
-    //   title: 'Actions',
-    //   key: 'actions',
-    //   width: '20%',
-    //   align: 'center',
-    //   render: (_, record) => (
-    //     <Space size="small">
-    //       <Button
-    //         type="primary"
-    //         icon={<EditOutlined />}
-    //         size="small"
-    //         onClick={() => handleEdit(record)}
-    //       >
-    //         Edit
-    //       </Button>
-    //       <Popconfirm
-    //         title="Are you sure to delete this user?"
-    //         onConfirm={() => handleDelete(record.id || record.id_user)}
-    //         okText="Yes"
-    //         cancelText="No"
-    //         placement="topRight"
-    //       >
-    //         <Button
-    //           danger
-    //           icon={<DeleteOutlined />}
-    //           size="small"
-    //         >
-    //           Delete
-    //         </Button>
-    //       </Popconfirm>
-    //     </Space>
-    //   ),
-    // },
   ];
 
-  // const handleEdit = (user) => {
-  //   console.log(' user:', user)
-  //   setEditingUser(user);
-  //   form.setFieldsValue({...user, role: user.role?.role_name || ''});
-  //   setIsModalVisible(true);
-  // };
-
-  // const handleDelete = async (userId) => {
-  //   setLoading(true);
-  //   try {
-  //     await usersAPI.delete(userId);
-  //     setUsers(prevUsers => prevUsers.filter(user => (user.id || user.id_user) !== userId));
-  //     message.success('User deleted successfully');
-  //   } catch (error) {
-  //     console.error('Failed to delete user:', error);
-  //     message.error('Failed to delete user');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleAdd = () => {
     setEditingUser(null);
