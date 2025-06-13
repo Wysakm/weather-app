@@ -1,149 +1,113 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
+import { useLocationStore } from '../stores/useLocationStore.js';
 import { provinces } from '../configs/provinces.js';
-import { weatherCodeToIcon } from '../utils/weatherIconMap.js'
 import './styles/Weather.css';
-import useCurrentWeather from '../hooks/useCurrentWeather.js';
+import { getFormattedDate } from '../utils/dateUtils.js';
+import { WeatherForecast } from './WeatherForecast.jsx';
+import { AirQuality } from './AirQuality';
+import Weekly from './Weekly.jsx';  
+import TabProvinces from './TabProvinces.jsx';
 
-const initialProvince = provinces.find(p => p.names.en === 'Bangkok');
+const mockAqiData = {
+  aqi: 24,
+  pm25: 5,
+  pm10: 49,
+  no2: 0.4,
+  so2: 0.4,
+  o3: 0.1,
+  co: 0.4
+};
 
-function Weather() {
+function Weather({ option }) {
+  console.log(' option:', option)
   const { t, i18n } = useTranslation();
-  const [selectedProvince, setSelectedProvince] = useState(initialProvince);
-  
-  // eslint-disable-next-line no-unused-vars
-  const [weatherIcon, setWeatherIcon] = useState(null);
+  const location = useLocation();
+  const { selectedProvince, loading: locationLoading, setLocation } = useLocationStore();
 
-  const { weatherData, loading } = useCurrentWeather(selectedProvince.lat, selectedProvince.lon)
-
-  useEffect(() => {
-    const getLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-
-            const province = provinces.find(p => (
-              (p.lat - 0.5 <= latitude && latitude <= p.lat + 0.5) &&
-              (p.lon - 0.5 <= longitude && longitude <= p.lon + 0.5)
-            ));
-
-            setSelectedProvince(province || initialProvince);
-          },
-          (error) => {
-            console.error("Error getting location:", error);
-            setSelectedProvince(initialProvince);
-          }
-        );
-      } else {
-        setSelectedProvince(initialProvince);
-      }
-    };
-
-    getLocation();
-  }, []);
+  // Check if we're on the home page
+  const isHomePage = location.pathname === '/';
+  const isRecommendPage = location.pathname === '/recommend';
 
   useEffect(() => {
-    if (!weatherData) return
-    const icon = weatherCodeToIcon(weatherData.current.weather_code);
-    console.log(' icon:', icon)
-    setWeatherIcon(icon)
-  }, [weatherData])
+    setLocation(option?.province)
+  }, [option?.province, setLocation])
 
+  // Handle province selection from TabProvinces
+  const handleProvinceSelect = useCallback((provinceFromApi) => {
+    console.log('Selected province from tab:', provinceFromApi);
 
-  const getFormattedDate = () => {
-    const date = new Date();
+    // Find matching province from the provinces config based on province name
+    const matchingProvince = provinces.find(p =>
+      p.names.en.toLowerCase() === provinceFromApi.province_name?.toLowerCase() ||
+      p.names.th === provinceFromApi.province_name
+    );
 
-    if (i18n.language === 'th') {
-      // ภาษาไทย: ไม่มี ,
-      return date.toLocaleDateString('th-TH', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      });
+    if (matchingProvince) {
+      setLocation({ province: matchingProvince });
     } else {
-      // ภาษาอังกฤษ: แทรก ,
-      const formatted = date.toLocaleDateString('en-GB', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      });
-
-      // เพิ่ม , หลัง weekday ด้วย split
-      const parts = formatted.split(' ');
-      return `${parts[0]}, ${parts.slice(1).join(' ')}`;
+      console.warn('No matching province found for:', provinceFromApi.province_name);
     }
-  };
-  const formattedDate = getFormattedDate();
+  }, [setLocation]);
 
-
-  if (loading) return <div>Loading...</div>;
+  if (locationLoading || !selectedProvince) return <div className="loading-spinner">Loading...</div>;
+  // console.log(' selectedProvince:', selectedProvince, locationLoading)
 
   return (
-    <div className='weather-container'>
-      <div className='container'>
-        <div className='container-lacationDate'>
-          <div className='container-blank'>
-            {t('aqi.Good')}
-          </div>
-
-          <div className='container-location'>
-            <h2>
-              {selectedProvince.names[i18n.language === 'th' ? 'th' : 'en']}
-            </h2>
-          </div>
-          <div className='container-date'>{formattedDate}</div>
+    <>
+      {!isHomePage && (
+        <div style={{ justifyContent: 'center', display: 'flex' }}>
+          <h1 style={{ margin: '2rem', width: '100%', textAlign: 'center', gap: '16px' }}>
+            {isRecommendPage ? t('Recommend.Header') : t('CampStay.CampStayHeader')}
+          </h1>
         </div>
-
-
-
-        <div className='container-forecastAql'>
-          <div className='container-forecast'>
-            <div className='forecast-box-I'>
-
-              <div className='temp-box'>
-                <div className='icon-weather'>
-                  <img src={require('../assets/svg/wi-cloud.svg').default} alt='mySvgImage' />
-                </div>
-                <div className='temp'>
-
-                </div>
-              </div>
-
-
-              <div className='weather-condition'> </div>
-              <div className='temp-HL'></div>
-              <div className='feels-like'></div>
-            </div>
-
-            <div className='forecast-box-II'>
-              sss
-            </div>
-
-          </div>
-
-
-
-
-          <div className='container-aqi'>
-            <div className='aqi-box-I'>
-              aaa
-            </div>
-            <div className='aqi-box-II'>
-              sss
-            </div>
-          </div>
-
-
+      )}
+      {!isHomePage && (
+        <div style={{ justifyContent: 'center', display: 'flex' }}>
+          <TabProvinces onProvinceSelect={handleProvinceSelect} />
         </div>
+      )}
+      <div className='weather-container'>
+        <div className='container'>
+          <div className='container-lacationDate'>
+            <div className='container-blank'></div>
 
-        <div className='container-weeklyForecast'>
-          พยากรณ์อากาศรายสัปดาห์ (Weekly): dddd
+            <div className='container-location'>
+              <h1>
+                {selectedProvince.names[i18n.language === 'th' ? 'th' : 'en']}
+              </h1>
+            </div>
+            <div className='container-date'>{getFormattedDate(i18n.language)}</div>
+          </div>
+
+          <div className='container-forecastAql'>
+            <WeatherForecast
+              key={`weather-${selectedProvince?.lat}-${selectedProvince?.lon}`}
+              latitude={selectedProvince.lat}
+              longitude={selectedProvince.lon}
+              t={t}
+              i18n={i18n}
+            />
+            <AirQuality
+              key={`aqi-${selectedProvince?.lat}-${selectedProvince?.lon}`}
+              t={t}
+              aqiData={mockAqiData}
+            />
+          </div>
+          <div className='container-weeklyForecast'>
+            <Weekly
+              key={`weekly-${selectedProvince?.lat}-${selectedProvince?.lon}`}
+              latitude={selectedProvince.lat}
+              longitude={selectedProvince.lon}
+              t={t}
+              i18n={i18n}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
+
   );
 }
 

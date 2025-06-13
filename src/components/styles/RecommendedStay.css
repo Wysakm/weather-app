@@ -1,0 +1,24 @@
+.stay-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin: 0;
+
+
+}
+.stay-head {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 32px ;
+
+}
+.stay-box { 
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column  ;
+  gap: 28px;
+  width: 100%;
+}

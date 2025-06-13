@@ -2,6 +2,19 @@ import Home from '../pages/home';
 import Recommend from '../pages/recommend';
 import CampStay from '../pages/campStay';
 import Contact from '../pages/contact';
+import Article from '../pages/articles';
+import Types from '../pages/admin/types';
+import Places from '../pages/admin/places';
+import Posts from '../pages/admin/posts';
+import Users from '../pages/admin/users';
+import AddPlace from '../pages/admin/addPlace';
+import AddPost from '../pages/addPost';
+import Terms from '../pages/terms';
+import PrivacyPolicy from '../pages/privacy';
+import Register from '../pages/register';
+import ResetPassword from '../pages/resetPassword';
+import Account from '../pages/admin/account';
+import SearchResults from '../components/SearchResults';
 
 export const routes = [
   {
@@ -11,14 +24,102 @@ export const routes = [
   },
   {
     path: '/recommend',
-    element: Recommend
+    element: Recommend,
+    // children: [
+    //   {
+    //     path: ':id',
+    //     element: Article
+    //   }
+    // ]
   },
   {
     path: '/campStay',
-    element: CampStay
+    element: CampStay,
+    // children: [
+    //   {
+    //     path: ':id',
+    //     element: Article
+    //   },
+    // ]
+  },
+  {
+    path: '/article/:id',
+    element: Article,
+    // children: [
+    //   {
+    //     path: ':id',
+    //     element: Article
+    //   }
+    // ]
   },
   {
     path: '/contact',
     element: Contact
+  },
+  {
+    path: '/search-results',
+    element: SearchResults
+  },
+
+  //admin routes
+  {
+    path: '/admin/users',
+    element: Users
+  },
+
+  {
+    path: '/posts',
+    element: Posts
+  },
+
+  {
+    path: '/add-post',
+    element: AddPost
+  },
+  {
+    path: '/edit-post/:id',
+    element: AddPost
+  },
+
+  {
+    path: '/admin/places',
+    element: Places
+  },
+  {
+    path: '/admin/addPlace',
+    element: AddPlace
+  },
+
+  {
+    path: '/admin/types',
+    element: Types
+  },
+
+  {
+    path: '/terms',
+    element: Terms
+  },
+  {
+    path: '/privacy',
+    element: PrivacyPolicy
+  },
+  {
+    path: '/register',
+    element: Register
+  },
+  {
+    path: '/reset-password',
+    element: ResetPassword
+  },
+  {
+    path: '/account',
+    element: Account // Assuming this is the MyAccount component
+  },
+  {
+    path: '*',
+    element: () => {
+      window.location.href = '/';
+      return null;
+    }
   }
 ];

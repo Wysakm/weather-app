@@ -1,5 +1,3 @@
-
-
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -7,8 +5,7 @@
   width: 100%;
   height: 64px;
   padding: 0;
-  /* border: 1px solid #FF0000; */
-
+  background-color: var(--color-navbar-bg);
 }
 
 .nav-container1 {
@@ -16,15 +13,14 @@
   justify-content: flex-start;
   align-items: center;
   align-content: center;
-  /* border: 1px solid #000000; */
   width: 25%;
   height: 100%;
+  padding-left: 1rem;
 }
 
 .nav-container2 {
   display: flex;
   align-items: center;
-  /* border: 1px solid #3809c3; */
   width: 50%;
   height: 100%;
   font-size: 16px;
@@ -35,7 +31,6 @@
   align-items: center;
   align-content: center;
   justify-content: flex-end;
-  /* border: 1px solid #000000; */
   width: 25%;
   height: 100%;
   font-size: 12px;
@@ -106,7 +101,6 @@
   align-items: center;
   width: 75px;
   height: 36px;
-  /* border: 1px solid #ffffff66; */
   padding: 0;
 }
 
@@ -253,7 +247,6 @@ l {
 
     a:focus {
       color: var(--color-primary);
-      /* สีเมื่อคลิกและมีการโฟกัส */
       font-weight: bold;
     }
   }
@@ -350,5 +343,33 @@ l {
 
 }
 
-/* laptop > */
-@media screen and (min-width: 1025px) {}
+.botton-login:hover {
+  background-color:var(--color-navbar-bg) !important; /* สีเขียว */
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
+  transition: all 0.3s ease;
+}
+
+.profile-dropdown {
+  min-width: 250px !important;
+}
+
+.profile-dropdown .ant-dropdown-menu-item {
+  font-size: 16px !important; /* ปรับขนาดฟอนต์ */
+  padding: 12px 16px !important;
+  min-height: 40px !important;
+}
+
+.profile-dropdown .ant-dropdown-menu-item-divider {
+  margin: 8px 0 !important;
+}
+
+/* ปรับขนาดฟอนต์ส่วน profile header */
+.profile-header {
+  font-size: 16px !important;
+}
+
+.profile-username {
+  font-size: 18px !important;
+  font-weight: bold !important;
+}

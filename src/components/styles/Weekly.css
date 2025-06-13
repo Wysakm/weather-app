@@ -1,0 +1,25 @@
+.container-weekly {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 0px 20px;
+  border-radius: 16px;
+  background-color: var(--color-border);
+  gap: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.container-weekly::-webkit-scrollbar {
+  height: 6px;
+}
+
+.container-weekly::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.container-weekly::-webkit-scrollbar-track {
+  background-color: rgba(255, 255, 255, 0.1);
+}

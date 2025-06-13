@@ -1,0 +1,141 @@
+.article-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  background-color: var(--color-aticles-bg);
+
+}
+
+.article-box {
+  width: 80%;
+  height: auto;
+  margin: 32px 16px;
+
+  h1 {
+    margin: 16px;
+  }
+}
+
+.district-province {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: auto;
+  margin: 16px;
+  gap: 16px;
+}
+
+.tag-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: auto;
+  margin: 16px;
+  gap: 16px;
+
+}
+
+.tag {
+  width: auto;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: var(--color-navbar-bg);
+  background-color: var(--color-primary);
+}
+
+.article-box-I {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+  height: 450px;
+
+  margin: 16px;
+}
+
+.article-box-I-left {
+  width: 575px;
+  height: 100%;
+}
+
+.article-box-I-right {
+  width: 420px;
+  height: 100%;
+  border-radius: 16px;
+}
+
+.content-container {
+  display: flex;
+  width: 80%;
+  height: auto;
+  margin-top: 3rem;
+}
+
+.traveler-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  width: 80%;
+  height: auto;
+
+}
+
+.article-box-II {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  margin: 16px;
+}
+
+
+
+.main-image {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.weather-widget {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #e0f7fa;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+input[type="text"],
+input[type="file"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.submit-button {
+  padding: 10px 15px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #45a049;
+}

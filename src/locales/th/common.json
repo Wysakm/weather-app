@@ -8,32 +8,132 @@
   "auth": {
     "login": "เข้าสู่ระบบ/สมัคร"
   },
+
+    "user" : {
+    "userManage": "จัดการผู้ใช้",
+    "postManage": "จัดการโพสต์",
+    "placeManage": "จัดการสถานที่",
+    "typeManage": "จัดการประเภท",
+    "logOut": "ออกจากระบบ",
+    "myAccount": "บัญชีของฉัน",
+    "post": "โพสต์"   
+  },
+
   "search": {
     "Discover": "ค้นหาสถานที่ท่องเที่ยวที่ดีที่สุด",
     "based": "จากข้อมูลสภาพอากาศและคุณภาพอากาศ",
     "location": "พิกัดสถานที่",
-  "searchText": "จังหวัด หรือ สถานที่",
-  "search": "ค้นหา",
-   "Search by Location" : "ค้นหาจากพิกัดสถานที่",
-  "Search by Weather" : "ค้นหาจากสภาพอากาศ",
-  "WeatherCondition" : "สภาพอากาศโดยทั่วไป",
-  "AQL" : "คุณภาพอากาศ"
-},
-  "weather": {
-    "ClearSky": "ท้องฟ้าโปร่ง",
-    "MainlyClearSky": "ท้องฟ้าโปร่งใสเป็นส่วนใหญ่",
-    "PartlyCloudy": "มีเมฆเป็นบางส่วน",
-    "Cloudy": "มีเมฆมาก",
-    "LightDrizzle": "ฝนตกเบา ๆ",
-    "ModerateShowerRain": "ฝนตกปรอย ๆ"
+    "searchText": "จังหวัด หรือ สถานที่",
+    "search": "ค้นหา",
+    "searching": "กำลังค้นหา...",
+    "Search by Location": "ค้นหาจากพิกัดสถานที่",
+    "Search by Weather": "ค้นหาจากสภาพอากาศ",
+    "WeatherCondition": "สภาพอากาศโดยทั่วไป",
+    "AQL": "คุณภาพอากาศ",
+    "selectWeatherCondition": "เลือกสภาพอากาศ",
+    "selectAQI": "เลือกช่วงคุณภาพอากาศ",
+    "pleaseEnterLocation": "กรุณากรอกสถานที่ที่ต้องการค้นหา",
+    "pleaseSelectWeatherCondition": "กรุณาเลือกสภาพอากาศหรือช่วงคุณภาพอากาศ",
+    "searchError": "เกิดข้อผิดพลาดในการค้นหา กรุณาลองใหม่อีกครั้ง",
+    "noResultsFound": "ไม่พบผลการค้นหา",
+    "backToSearch": "กลับ",
+    "noPlacesFound": "ไม่พบสถานที่ที่ตรงกับเกณฑ์การค้นหา",
+    "noProvincesFound": "ไม่พบจังหวัดที่ตรงกับเกณฑ์การค้นหา",
+    "searchResultsFor": "ผลการค้นหาสำหรับ",
+    "weatherSearchResults": "ผลการค้นหาจากสภาพอากาศ",
+    "filters": "ตัวกรอง",
+    "resultsFound": "ผลการค้นหา",
+    "places": "สถานที่",
+    "showMore": "ดูเพิ่มเติม",
+    "showLess": "ดูน้อยลง",
+    "sortBy": "เรียงตาม",
+    "byRegion": "ภูมิภาค",
+    "byProvinceName": "ชื่อจังหวัด",
+    "byPlaceCount": "จำนวนสถานที่",
+    "expandAll": "ขยายทั้งหมด",
+    "collapseAll": "ย่อทั้งหมด",
+    "searchSummary": "สรุปผลการค้นหา",
+    "foundResultsIn": "พบผลการค้นหาใน",
+    "posts": "โพสต์",
+    "recentPosts": "โพสต์ล่าสุด",
+    "viewPlace": "ดูสถานที่",
+    "topPlaces": "สถานที่ยอดนิยม",
+    "viewProvince": "ดูจังหวัด",
+    "score": "คะแนนสภาพอากาศ",
+    "foundPlacesInProvinces": "พบสถานที่ใน",
+    "provinces": "จังหวัด",
+    "showingTopPlaces": "แสดงสถานที่ยอดนิยมเรียงตามคะแนนสภาพอากาศ",
+    "touristAttractions": "สถานที่ท่องเที่ยว",
+    "campgrounds": "ลานกางเต็นท์",
+    "accommodations": "ที่พัก"
   },
-
-    "aqi": {
+  "weather": {
+    "ClearSky": "ท้องฟ้าแจ่มใส",
+    "MainlyClear": "ส่วนใหญ่แจ่มใส",
+    "PartlyCloudy": "มีเมฆบางส่วน",
+    "Overcast": "เมฆมาก",
+    "Fog": "หมอก",
+    "DepositingRimeFog": "หมอกเยือกแข็ง",
+    "LightDrizzle": "ฝนปรอยเล็กน้อย",
+    "ModerateDrizzle": "ฝนปรอยปานกลาง",
+    "DenseDrizzle": "ฝนปรอยหนัก",
+    "LightFreezingDrizzle": "ฝนน้ำแข็งเบา",
+    "DenseFreezingDrizzle": "ฝนน้ำแข็งหนัก",
+    "SlightRain": "ฝนเล็กน้อย",
+    "ModerateRain": "ฝนปานกลาง",
+    "HeavyRain": "ฝนหนัก",
+    "LightFreezingRain": "ฝนน้ำแข็งเล็กน้อย",
+    "HeavyFreezingRain": "ฝนน้ำแข็งหนัก",
+    "SlightSnowFall": "หิมะตกเล็กน้อย",
+    "ModerateSnowFall": "หิมะตกปานกลาง",
+    "HeavySnowFall": "หิมะตกหนัก",
+    "SnowGrains": "เกล็ดหิมะ",
+    "SlightRainShowers": "ฝนตกปรอย",
+    "ModerateRainShowers": "ฝนตกปานกลาง",
+    "ViolentRainShowers": "ฝนตกหนักมาก",
+    "SlightSnowShowers": "หิมะตกเล็กน้อย",
+    "HeavySnowShowers": "หิมะตกหนัก",
+    "Thunderstorm": "พายุฝนฟ้าคะนอง",
+    "ThunderstormSlightHail": "พายุฝนฟ้าคะนองกับลูกเห็บเล็กน้อย",
+    "ThunderstormHeavyHail": "พายุฝนฟ้าคะนองกับลูกเห็บหนัก"
+  },
+  "aqi": {
     "Good": "ดี ไม่มีผลกระทบ",
     "Moderate": "อากาศปานกลาง",
-    "UnhealthyForSensitiveGroups": "เร่ิ่มกระทบกลุ่มเสี่ยง",
-    "Unhealthy": "เร่ิมกระทบต่อทุกคน",
+    "UnhealthyForSensitiveGroups": "เริ่มมกระทบกลุ่มเสี่ยง",
+    "Unhealthy": "เริ่มมกระทบต่อทุกคน",
     "VeryUnhealthy": "กระทบต่อสุขภาพรุนแรง",
     "Hazardous": "อันตราย ควรอยู่ในอาคาร"
-  }
+  },
+  "forecast": {
+    "High": "สูงสุด",
+    "Low": "ต่ำสุด",
+    "FeelsLike": " รู้สึกเหมือน",
+    "Sunrise": "พระอาทิตย์ขึ้น",
+    "Sunset": "พระอาทิตย์ตก",
+    "AM": "น.",
+    "PM": "น.",
+    "RainChance": "โอกาสฝนตก",
+    "UVindex": "รังสืยูวี"
+  },
+  "pollutant": {
+    "MainPollutant": "มลพิษหลัก"
+  },
+  "map": {
+    "head": "พยากรณ์อากาศและคุณภาพอากาศในประเทศไทยวันนี้"
+  },
+
+  "Recommend": {
+  "RecommendedTourist" : "สถานที่ท่องเที่ยวแนะนำ",
+  "Stay" : "โรงแรม & รีสอร์ท",
+  "Camp" : "ลานกางเต็นท์",
+  "Header" : "แนะนำการท่องเที่ยวตามสภาพอากาศ"
+},
+  "CampStay": {
+  "CampStayHeader": "แนะนำสถานที่กางเต็นท์และที่พัก ที่มีสภาพอากาศดีที่สุด"
+},
+
+"Travel" : { 
+  "Traveler" : "ประสบการณ์จากนักท่องเที่ยว"
+}
 }

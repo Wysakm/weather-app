@@ -2,13 +2,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
-  border-radius: 16px;
-  background: linear-gradient(to left, #F5FFFE, #E0F7FA);
-  /* ไล่จากขวาไปซ้าย */
+  color: var(--color-primary);
+  padding: 30px 0;
   width: 100%;
-  height: 450px;
-  border: 1px solid var(--color-primary);
+  height: 500px;
 }
 
 .container {
@@ -17,8 +14,7 @@
   justify-content: center;
   align-items: center;
   width: 75%;
-  height: 420px;
-  border: 1px solid red;
+  height: auto;
 }
 
 .container-lacationDate {
@@ -28,10 +24,10 @@
   width: 100%;
   height: 50px;
 }
+
 .container-blank {
   width: 25%;
   height: 100%;
-  border: 1px solid blue;
 }
 
 .container-location {
@@ -39,9 +35,7 @@
   justify-content: center;
   align-items: center;
   width: 50%;
-  height: 100%; 
-  border: 1px solid red;
-
+  height: 100%;
 }
 
 .container-date {
@@ -51,120 +45,128 @@
   width: 25%;
   height: 100%;
 }
+
 .container-forecastAql {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 290px;
-  border: 1px solid green;
+  height: 260px;
+  gap: 1rem;
 }
 
-.container-forecast { 
+.container-forecast {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: 49%;
-  height: 100%; 
+  width: 50%;
+  height: 100%;
+  gap: 1rem;
+  ;
   background-color: var(--color-navbar-bg);
   border-radius: 16px;
+  box-shadow: 2px 2px 6px var(--color-border)
 }
 
-.forecast-box-I { 
+.forecast-box-I {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   width: 100%;
   height: 75%;
-  border-radius: 16px 16px 0 0 ;
-  border: 1px solid var(--color-border);
+  border-radius: 16px 16px 0 0;
+  border-bottom: 1px solid var(--color-border);
 }
-.forecast-box-II { 
+
+.forecast-box-II {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
   height: 25%;
-  border-radius: 0 0 16px 16px  ;
-  border: 1px solid var(--color-border);
+  border-radius: 0 0 16px 16px;
 }
 
-.temp-box { 
+.forecast-box-II-left {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  margin-left: 15px;
+}
+
+.forecast-box-II-right {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  margin-right: 15px;
+}
+
+.temp-box {
   display: flex;
   width: 70%;
-  height: 64%;
-  border: 1px solid red;
+  height: 40%;
+}
+
+.weather-icon {
+  display: flex;
 }
 
 .icon-weather {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 30%;
   height: 100%;
-  border: 1px solid green;
 }
+
 .temp {
-  width: 70%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 50%;
   height: 100%;
-  border: 1px solid blue;
+  font-size: 54px;
+  font-weight: bold;
+  padding-left: 10px;
 }
+
+
 
 .weather-condition {
-  width: 70%;
-  height: 10%;
-  border: 1px solid blue;
-}
- .temp-HL {
-  width: 70%;
-  height: 10%;
-  border: 1px solid red;
-}
-
-.feels-like { 
-  width: 70%;
-  height: 10%;
-  border: 1px solid blue;
-}
-
-
-
-
-
-.aqi-box-I { 
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
-  height: 65%;
-  border-radius: 16px 16px 0 0 ;
-  border: 1px solid var(--color-border);
+  height: 20%;
+  font-weight: bold;
+  font-size: 20px;
+
 }
-.aqi-box-II { 
+
+.temp-HL {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 35%;
-  border-radius: 0 0 16px 16px  ;
-  border: 1px solid var(--color-border);
+  width: 70%;
+  height: 10%;
+  font-size: 14px;
+  gap: 10px;
+
 }
 
-
-
-
-
-
-
-
-.container-aqi { 
+.feels-like {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  width: 49%;
-  height: 100%;
-    background-color: var(--color-navbar-bg);
-    border-radius: 16px;
+  ;
+  width: 70%;
+  height: 10%;
+  margin-top: 5px;
+  font-size: 14px;
 
 }
 
@@ -172,9 +174,9 @@
 .container-weeklyForecast {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
   width: 100%;
-  height: 110px;
-  border: 1px solid red;
+  height: 120px;
+  margin-top: 10px;
+  border-radius: 16px;
 }
-

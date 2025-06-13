@@ -1,0 +1,35 @@
+.tab-province { 
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 75%;
+  height: 40px;
+    gap: 20px;
+}
+
+
+.tab-box { 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  font-weight: bold;
+  height: 100%;
+  padding: 0 24px;
+  color: var(--color-primary);
+  background-color: var(--color-navbar-bg);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.tab-box:hover {
+  background-color: var(--color-border);
+  transform: translateY(-2px);
+}
+
+.tab-box.active {
+  background-color: var(--color-primary);
+  color: var(--color-navbar-bg);
+}
+
+

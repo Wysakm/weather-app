@@ -1,59 +1,68 @@
 import { useState, useEffect } from 'react';
+import { useLocationStore } from '../stores/useLocationStore';
 
-const useCurrentWeather = (latitude, longitude) => {
-  const [weatherData, setWeatherData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+export const useCurrentWeather = () => {
+    const [weatherData, setWeatherData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const {selectedProvince: province} = useLocationStore();
+    console.log(' province:', province)
 
-  useEffect(() => {
-    const fetchWeather = async () => {
-      try {
-        const url = new URL('https://api.open-meteo.com/v1/forecast');
-        url.searchParams.append('latitude', latitude);
-        url.searchParams.append('longitude', longitude);
-        url.searchParams.append('timezone', 'Asia/Bangkok');
-        
-        // Current weather parameters
-        url.searchParams.append('current', [
-          'weather_code',
-          'temperature_2m',
-          'rain',
-          'precipitation',
-          'apparent_temperature'
-        ].join(','));
-        
-        // Daily forecast parameters
-        url.searchParams.append('daily', [
-          'sunrise',
-          'sunset',
-          'uv_index_max',
-          'rain_sum',
-          'precipitation_probability_max',
-          'temperature_2m_min',
-          'temperature_2m_max',
-          'wind_speed_10m_max'
-        ].join(','));
+    useEffect(() => {
+        setLoading(true);
+        const fetchWeather = async () => {
+            try {
+                // Construct the URL with latitude, longitude, and timezone
+                let url = new URL('https://api.open-meteo.com/v1/forecast');
+                url.searchParams.append('latitude', province.lat);
+                url.searchParams.append('longitude', province.lon);
+                url.searchParams.append('timezone', 'Asia/Bangkok');
 
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error('Weather data fetch failed');
+                // Define weather parameters to fetch
+                const params = {
+                    current: [
+                        'weather_code',
+                        'temperature_2m',
+                        'rain',
+                        'precipitation',
+                        'apparent_temperature'
+                    ].join(','),
+                    daily: [
+                        'sunrise',
+                        'sunset',
+                        'uv_index_max',
+                        'rain_sum',
+                        'precipitation_probability_max',
+                        'temperature_2m_min',
+                        'temperature_2m_max',
+                        'wind_speed_10m_max'
+                    ].join(',')
+                };
+
+                // Append each parameter to the URL
+                Object.entries(params).forEach(([key, value]) => {
+                    url.searchParams.append(key, value);
+                });
+
+                // Fetch weather data from the constructed URL
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: \${response.status}`);
+                }
+
+                const data = await response.json();
+                setWeatherData(data);
+                setLoading(false);
+            } catch (e) {
+                setError(e.message);
+                setLoading(false);
+            }
+        };
+
+        if (province) {
+            fetchWeather();
         }
-        
-        const data = await response.json();
-        setWeatherData(data);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
+    }, [province]);
 
-    if (latitude && longitude) {
-      fetchWeather();
-    }
-  }, [latitude, longitude]);
-
-  return { weatherData, loading, error };
+    return { weatherData, loading, error };
 };
-
-export default useCurrentWeather;

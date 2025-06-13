@@ -1,0 +1,31 @@
+.camp-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin: 0;
+  background-color: var(--color-articles-bg);
+}
+
+.camp-head {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 16px;
+}
+
+.camp-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+.stay-box-A {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+}

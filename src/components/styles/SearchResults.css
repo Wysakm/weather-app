@@ -1,0 +1,994 @@
+/* Search Results Styles */
+.search-results-main-container {
+  min-height: 100vh;
+  background-color: var(--color-navbar-bg);
+  padding: 20px 10%;
+}
+
+.search-results-no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.search-results-no-results h2,
+.search-results-no-results h3 {
+  margin: 0 0 20px;
+  color: var(--color-input);
+  font-size: 24px;
+}
+
+.search-results-back-button {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  margin-bottom: 30px;
+}
+
+.search-results-back-button:hover {
+  background: var(--color-secondary);
+}
+
+.search-results-info h1 {
+  margin: 0 0 10px;
+  color: var(--color-text);
+  font-size: 28px;
+}
+
+.search-results-header {
+  max-width: 1200px;
+  margin: 0 auto 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.search-results-back-button {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+    font-size: 14px;
+  transition: background-color 0.3s;
+  margin-bottom: 30px;
+}
+
+.search-results-back-button:hover {
+  background: var(--color-secondary);
+}
+
+.search-results-info h1 {
+  margin: 0 0 10px;
+  color: var(--color-text);
+  font-size: 28px;
+}
+
+.search-results-applied-filters {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.search-results-filter-tag {
+  background: #e7f3ff;
+  color: var(--color-secondary);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.search-results-count {
+  color: var(--color-input);
+  font-size: 14px;
+  margin: 5px 0 0;
+}
+
+.search-results-content {
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  /* margin: 0 auto; */
+  /* display: grid;
+  grid-template-columns: 350px 1fr; */
+  gap: 1rem;
+  /* align-items: start; */
+}
+
+/* On smaller screens, stack vertically */
+@media (max-width: 1024px) {
+  .search-results-content {
+    gap: 1rem;
+  }
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.result-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px var(--color-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.result-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--color-shadow);
+}
+
+.place-info h3 {
+  margin: 0 0 10px;
+  color: var(--color-text);
+  font-size: 20px;
+}
+
+.location {
+  color: var(--color-input);
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.place-type {
+  background: #f0f8ff;
+  color: var(--color-secondary);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: inline-block;
+  margin: 5px 0;
+}
+
+.posts-count {
+  color: var(--color-input);
+  font-size: 12px;
+  margin: 10px 0;
+}
+
+.place-posts {
+  margin: 15px 0;
+  padding-top: 15px;
+  border-top: 1px solid var(--color-border);
+}
+
+.place-posts h4 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: var(--color-input);
+}
+
+.posts-preview {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.post-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8f9fa;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.post-thumbnail {
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.post-title {
+  color: var(--color-input);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.view-place-btn,
+.view-province-btn {
+  width: 100%;
+  margin-top: 15px;
+  padding: 10px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.view-place-btn:hover,
+.view-province-btn:hover {
+  background: var(--color-secondary);
+}
+
+/* Province-specific styles */
+.province-card {
+  border-left: 4px solid var(--color-primary);
+}
+
+.weather-score {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 10px 0;
+}
+
+.score-label {
+  color: var(--color-input);
+  font-size: 14px;
+}
+
+.score-value {
+  font-weight: bold;
+  color: var(--color-primary);
+  font-size: 16px;
+}
+
+.current-weather {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 6px;
+  margin: 10px 0;
+}
+
+.weather-condition-I {
+  font-size: 14px;
+  color: var(--color-input);
+}
+
+.temperature-I {
+  font-weight: bold;
+  color: var(--color-text);
+  font-size: 16px;
+}
+
+.aqi-info {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 10px 0;
+}
+
+.aqi-label-I {
+  color: var(--color-input);
+  font-size: 14px;
+}
+
+.aqi-value {
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.aqi-good {
+  background: #d4edda;
+  color: #155724;
+}
+
+.aqi-moderate {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.aqi-unhealthy-sensitive {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.aqi-unhealthy {
+  background: #f5c6cb;
+  color: #721c24;
+}
+
+.province-places {
+  margin: 15px 0;
+  padding-top: 15px;
+  border-top: 1px solid var(--color-border);
+}
+
+.province-places h4 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: var(--color-input);
+}
+
+.places-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.place-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.place-name {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.place-posts {
+  color: var(--color-input);
+  font-size: 11px;
+}
+
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.no-results h2,
+.no-results h3 {
+  color: var(--color-input);
+  margin-bottom: 20px;
+}
+
+/* Suggestions dropdown styles */
+.search-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 8px var(--color-shadow);
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.suggestion-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color 0.2s;
+}
+
+.suggestion-item:hover {
+  background-color: #f8f9fa;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-type {
+  color: var(--color-input);
+  font-size: 11px;
+  margin-left: 8px;
+}
+
+/* Province Grouping Styles */
+.province-grouped-results {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.province-group {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px var(--color-shadow);
+  overflow: hidden;
+  margin-bottom: 20px;
+  animation: slideInUp 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.province-group:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.province-group:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.province-group:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.province-group:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.province-group:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+.province-group:nth-child(n+6) {
+  animation-delay: 0.6s;
+}
+
+@keyframes slideInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hover Effects */
+.province-group:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--color-shadow);
+  transition: all 0.3s ease;
+}
+
+/* Loading State */
+.province-group.loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, transparent 37%, #f0f0f0 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Weather Province Group Specific Styles */
+.province-header {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  color: white;
+  padding: 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.province-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+.province-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+  z-index: 1;
+}
+
+.province-name-I {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: white;
+}
+
+.region-badge {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.place-count {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.weather-province-group .province-header {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+}
+
+.province-weather-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.weather-score-badge {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--color-text);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Card Tourist Container within Province Groups */
+.province-group .card-tourist-container {
+  padding: 1rem;
+  width: 100%;
+  gap: 1rem;
+  background: #fafbfc;
+}
+
+/* Weather Card Wrapper */
+.weather-card-wrapper {
+  position: relative;
+}
+
+.weather-card-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+}
+
+.weather-card-badge .weather-score-badge {
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Province Controls */
+.province-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.expand-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.expand-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Results Summary */
+.results-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px var(--color-shadow);
+  /* position: sticky; */
+  /* top: 20px; */
+  height: fit-content;
+}
+
+.summary-stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.stat-number {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--color-input);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Summary Header */
+.summary-header {
+  text-align: left;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.summary-title {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.summary-description {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-input);
+  line-height: 1.5;
+  text-align: left;
+}
+
+/* Province Info and Region Badge */
+.province-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.region-badge {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  align-self: flex-start;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+}
+
+/* Sort Controls */
+.sort-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.sort-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sort-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.sort-select {
+  padding: 8px 12px;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  background: white;
+  color: var(--color-text);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(5, 54, 42, 0.1);
+}
+
+.expand-all-button {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.expand-all-button:hover {
+  background: var(--color-secondary);
+  transform: translateY(-1px);
+}
+
+.expansion-indicator {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.sort-select:hover {
+  border-color: var(--color-primary);
+}
+
+/* Summary Header */
+/* .summary-header {
+  text-align: center;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-border);
+} */
+
+.summary-title {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.summary-description {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-input);
+  line-height: 1.5;
+}
+
+.expand-all-button:hover {
+  background: var(--color-border);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+  .search-results-container {
+    padding: 15px;
+  }
+
+  .search-results-content {
+    gap: 1rem;
+  }
+
+  .search-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .results-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .result-card {
+    padding: 15px;
+  }
+
+  .search-info h1 {
+    font-size: 24px;
+  }
+
+  .province-header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .province-name-I {
+    font-size: 20px;
+  }
+
+  .province-weather-info {
+    justify-content: center;
+  }
+
+  .province-info {
+    align-items: center;
+    text-align: center;
+  }
+
+  .region-badge {
+    align-self: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .province-grouped-results {
+    gap: 20px;
+  }
+
+  .province-group .card-tourist-container {
+    /* grid-template-columns: 1fr; */
+    gap: 1rem;
+  }
+
+  .summary-stats {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  /* .sort-controls {
+    flex-direction: column;
+    gap: 10px;
+  } */
+
+  .sort-select {
+    width: 100%;
+    max-width: 200px;
+  }
+}
+
+/* Place Types Container Styles */
+.place-types-container {
+  padding: 1rem;
+  background: #fafbfc;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.place-type-section {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px var(--color-shadow);
+}
+
+.place-type-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 1rem;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.place-type-icon {
+  font-size: 18px;
+}
+
+/* Remove the old :has() selectors that may not work in all browsers */
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .place-types-container {
+    padding: 0.5rem;
+    gap: 1rem;
+  }
+  
+  .place-type-section {
+    padding: 0.75rem;
+  }
+  
+  .place-type-title {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .place-types-container {
+    gap: 0.75rem;
+  }
+  
+  .place-type-section {
+    padding: 0.5rem;
+  }
+}
+
+/* Card container adjustments for place type sections */
+.place-type-section .card-tourist-container {
+  padding: 0;
+  background: transparent;
+  gap: 1rem;
+}
+
+/* Show More Places Button */
+.show-more-places-button {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.show-more-places-button:hover {
+  background: var(--color-secondary);
+  transform: translateY(-1px);
+}
+
+.show-more-places-button:active {
+  transform: translateY(0);
+}
+
+/* Found Provinces Section */
+.found-provinces {
+  margin-top: 15px;
+  padding: 12px 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.provinces-label {
+  font-weight: 600;
+  color: var(--color-text);
+  margin-right: 8px;
+}
+
+.province-link {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+  padding: 2px 4px;
+  margin: 0 2px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.province-link:hover {
+  background: var(--color-primary);
+  color: white;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.province-link:active {
+  transform: translateY(0);
+}
